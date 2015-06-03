@@ -14,8 +14,8 @@
             android:id="@+id/slider_loading"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@android:color/black"
+            android:layout_margin="0dp"
+            android:background="@android:color/darker_gray"
             android:gravity="center" >
 
             <ProgressBar
