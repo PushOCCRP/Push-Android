@@ -9,7 +9,7 @@ import com.push.app.model.Post;
 
 /**
  * Listener for the action when a post should be opened in a single page
- * @author Bryan
+ * @author Bryan Lamtoo
  */
 public class PostListener implements View.OnClickListener {
     /**
@@ -34,7 +34,8 @@ public class PostListener implements View.OnClickListener {
      *            <code>MainActivity</code> instance to delegate control to
      * @param postToLoad
      *            the post that is going to be loaded
-     * @param postPosition
+     * @param   postPosition
+     *              the position of the post in the list
      * @param mHandler
      *            action handler
      */

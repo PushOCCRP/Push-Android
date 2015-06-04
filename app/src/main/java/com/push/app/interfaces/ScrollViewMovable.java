@@ -1,7 +1,7 @@
 package com.push.app.interfaces;
 
 /**
- * @author Bryan
+ * @author Bryan Lamtoo
  */
 public interface ScrollViewMovable {
     /**
@@ -18,6 +18,6 @@ public interface ScrollViewMovable {
      * @param previousVertical
      *            Previous vertical scroll origin.
      */
-    public void onScrollChanged(int currentHorizontal, int currentVertical,
+     void onScrollChanged(int currentHorizontal, int currentVertical,
                                 int previourHorizontal, int previousVertical);
 }

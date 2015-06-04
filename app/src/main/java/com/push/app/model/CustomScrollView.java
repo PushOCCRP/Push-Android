@@ -7,7 +7,7 @@ import android.widget.ScrollView;
 import com.push.app.interfaces.ScrollViewMovable;
 
 /**
- * Created by CEO on 03/06/2015.
+ * @author Bryan Lamtoo
  */
 public class CustomScrollView extends ScrollView {
 
