@@ -17,10 +17,15 @@
         <item>@string/nav_item_notifications</item>
     </string-array>
 
-    <string name="title_messages">Messages</string>
-    <string name="title_item_one">Item One</string>
-    <string name="title_item_two">Item Two</string>
+    <string name="title_home">Home</string>
+    <string name="title_item_one">Donate</string>
+    <string name="title_item_two">About</string>
+    <string name="main_screen_cell_date_string">Date</string>
+    <string name="share_via">Share via</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_detail_post">DetailPostActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

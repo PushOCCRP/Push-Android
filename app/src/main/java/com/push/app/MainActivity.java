@@ -15,6 +15,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -28,6 +32,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +50,7 @@ import com.push.app.model.CustomScrollView;
 import com.push.app.model.Post;
 import com.push.app.util.Contants;
 import com.push.app.util.ImageUtil;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,6 +58,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.push.app.util.Contants.WORDPRESS_SERVER_URL;
 import static com.push.app.util.Contants.WORDPRES_SLIDER_MAX_POSTS;
 
 
@@ -77,6 +85,14 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
     private ViewPager mPostPager;
 
     /**
+     * Indicator of the slider. This is the dots that are shown when the slider
+     * changes its position
+     */
+    private CirclePageIndicator mIndicator;
+
+    private RecyclerView mNewsListView;
+
+    /**
      * Layout for the progress bar for loading the posts
      */
     private LinearLayout mListNewsLoading;
@@ -85,7 +101,15 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
      * Layout for the progress bar of the loading slider
      */
     private LinearLayout mSliderLoading;
+    /**
+    * URL to fetch Wordpress recent posts by given category
+    */
+    private String WORDPRESS_FETCH_RECENT_POSTS_URL = "%s?json=get_recent_posts";
 
+    /**
+     * Handler for the slider
+     */
+    private Handler mSliderHandler;
 
     /**
      * Height of the device screen
@@ -101,6 +125,20 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
     * List of posts for the slider
     */
     private ArrayList<Post> recentPosts;
+    /**
+     * Thread for slider animation
+     */
+    private Runnable mSliderThread;
+
+    /**
+     * Layout for the news
+     */
+    private LinearLayout mNewsContainer;
+
+    /**
+     * Main Layout for the home screen
+     */
+    private RelativeLayout mHomeScreenLayout;
 
     /**
      * The actionbar
@@ -109,9 +147,11 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
 
     private FragmentDrawer drawerFragment;
 
+    private NewListAdapter mListAdapter;
+
     /**
      * ArrayList to hold all download Posts
-     * @param
+     * @param Post
      */
     private ArrayList<Post> downloadedPosts;
 
@@ -120,10 +160,15 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
      */
     private ArrayList<Post> mSliderPosts;
 
+    public MainActivity() {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        aq = new AQuery(this);
 
         //initialise the actionBar
         initActionBar();
@@ -131,11 +176,41 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         //Setup the drawer
         setUpDrawer();
 
+        initViews();
+
         //initialize the display components
         initComponents();
 
         //Display files from Cache
         displayFromCache();
+    }
+
+    /**
+     * Initializes the Activity views
+     */
+    private void initViews() {
+       /* this.mPullRefreshScrollView = (PullToRefreshScrollView) findViewById(R.id.pull_refresh_scrollview);
+        this.mPullRefreshScrollView.setOnRefreshListener(new OnRefreshListener<ScrollView>() {
+
+            @Override
+            public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+                loadMorePosts();
+                mPullRefreshScrollView.onRefreshComplete();
+            }
+        });*/
+
+        this.mNewsListView = (RecyclerView) findViewById(R.id.newList);
+        this.mNewsListView.setHasFixedSize(true);
+        this.mNewsListView.setLayoutManager(new LinearLayoutManager(this));
+        this.mNewsListView.setItemAnimator(new DefaultItemAnimator());
+        this.mHomeScreenLayout = (RelativeLayout) findViewById(R.id.act_main_rl);
+        this.mNewsContainer = (LinearLayout) findViewById(R.id.main_news_container);
+        this.mSliderLoading = (LinearLayout) findViewById(R.id.slider_loading);
+        this.mListNewsLoading = (LinearLayout) findViewById(R.id.list_news_loading);
+        //this.mDotsContainer = (LinearLayout) findViewById(R.id.slider_posts_dots_container);
+
+
+
     }
 
     private void displayFromCache() {
@@ -146,8 +221,9 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
     private void checkForNewContent() {
 
         if(Online()){
+            WORDPRESS_FETCH_RECENT_POSTS_URL = String.format(WORDPRESS_FETCH_RECENT_POSTS_URL,WORDPRESS_SERVER_URL);
             //Download the news articles
-            aq.ajax(Contants.URLS.FEED_URL, JSONObject.class, this,"postDownloadCallBack");
+            aq.ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this,"postDownloadCallBack");
 
         }else{
             Toast.makeText(this,"Check your internet connection",Toast.LENGTH_LONG).show();
@@ -182,6 +258,54 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    public class NewListAdapter extends RecyclerView.Adapter<NewListAdapter.PostViewHolder>{
+
+        public class PostViewHolder extends RecyclerView.ViewHolder {
+            CardView cv;
+            TextView postName;
+            TextView postDescription;
+            ImageView postImage;
+
+            PostViewHolder(View itemView) {
+                super(itemView);
+                cv = (CardView)itemView.findViewById(R.id.cv);
+                postName = (TextView)itemView.findViewById(R.id.post_name);
+                postDescription = (TextView)itemView.findViewById(R.id.post_Description);
+                postImage = (ImageView)itemView.findViewById(R.id.post_Image);
+            }
+        }
+
+        List<Post> posts;
+
+        NewListAdapter(List<Post> posts){
+            this.posts = posts;
+        }
+
+        @Override
+        public int getItemCount() {
+            return posts.size();
+        }
+
+        @Override
+        public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_news_item, viewGroup, false);
+            PostViewHolder pvh = new PostViewHolder(v);
+            return pvh;
+        }
+
+        @Override
+        public void onBindViewHolder(PostViewHolder personViewHolder, int i) {
+            personViewHolder.postName.setText(posts.get(i).getTitle());
+            personViewHolder.postDescription.setText(posts.get(i).getContent());
+//            personViewHolder.postImage.setImageResource(posts.get(i).get);
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+        }
     }
 
     @Override
@@ -283,8 +407,9 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         String title = getString(R.string.app_name);
         switch (position) {
             case 0:
-                fragment = new HomeFragment();
-                title = getString(R.string.title_messages);
+                this.mHomeScreenLayout.setVisibility(View.VISIBLE);
+//                fragment = new HomeFragment();
+                title = getString(R.string.title_home);
                 break;
             case 1:
                 fragment = new Item_one();
@@ -303,6 +428,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.container_body, fragment);
             fragmentTransaction.commit();
+            this.mHomeScreenLayout.setVisibility(View.GONE);
 
             // set the toolbar title
             try {
@@ -578,6 +704,8 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         fixSliderPostsItems(sliderPosts);
         fillSlider(sliderPosts);
 
+        this.mListAdapter = new NewListAdapter(listPosts);
+        this.mNewsListView.setAdapter(mListAdapter);
     }
 
     /**
@@ -605,6 +733,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
      */
     @SuppressWarnings("deprecation")
     private void initComponents() {
+
         this.mScreenWidth = getWindowManager().getDefaultDisplay().getWidth();
         this.mScreenHeight = getWindowManager().getDefaultDisplay().getHeight();
 
@@ -628,6 +757,8 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
                 sliderPosts.get(i).getAttachments()
                         .set(0, sliderPosts.get(i).getAttachments().get(j));
                 sliderPosts.get(i).getAttachments().set(j, currentAttachment);
+                Toast.makeText(this,"Attachment size at position ="+i+" " + sliderPosts.get(i).getAttachments().size(),Toast.LENGTH_LONG).show();
+                System.out.println("Attachment size at position ="+i+" "+sliderPosts.get(i).getAttachments().size());
                 break;
             }
         }
@@ -666,6 +797,132 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         }
 
     }
+
+
+    /**
+     * Called as part of the activity lifecycle when an activity is going into
+     * the background, but has not (yet) been killed. The counterpart to
+     * onResume().
+     *
+     * When activity B is launched in front of activity A, this callback will be
+     * invoked on A. B will not be created until A's onPause() returns, so be
+     * sure to not do anything lengthy here.
+     *
+     * This callback is mostly used for saving any persistent state the activity
+     * is editing, to present a "edit in place" model to the user and making
+     * sure nothing is lost if there are not enough resources to start the new
+     * activity without first killing this one. This is also a good place to do
+     * things like stop animations and other things that consume a noticeable
+     * amount of CPU in order to make the switch to the next activity as fast as
+     * possible, or to close resources that are exclusive access such as the
+     * camera.
+     *
+     * In situations where the system needs more memory it may kill paused
+     * processes to reclaim resources. Because of this, you should be sure that
+     * all of your state is saved by the time you return from this function. In
+     * general onSaveInstanceState(Bundle) is used to save per-instance state in
+     * the activity and this method is used to store global persistent data (in
+     * content providers, files, etc.)
+     *
+     * After receiving this call you will usually receive a following call to
+     * onStop() (after the next activity has been resumed and displayed),
+     * however in some cases there will be a direct call back to onResume()
+     * without going through the stopped state.
+     *
+     * Derived classes must call through to the super class's implementation of
+     * this method. If they do not, an exception will be thrown.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        enableSliding();
+    }
+
+    /**
+     * Called when you are no longer visible to the user. You will next receive
+     * either onRestart(), onDestroy(), or nothing, depending on later user
+     * activity.
+     *
+     * Note that this method may never be called, in low memory situations where
+     * the system does not have enough memory to keep your activity's process
+     * running after its onPause() method is called.
+     *
+     * Derived classes must call through to the super class's implementation of
+     * this method. If they do not, an exception will be thrown.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopSliding();
+    }
+
+    /**
+     * Stops the slider
+     */
+    private void stopSliding() {
+        if (mSliderHandler != null) {
+            mSliderHandler.removeCallbacksAndMessages(null);
+        }
+
+    }
+
+    /**
+     * Enables the slider animation
+     */
+    private void enableSliding() {
+        stopSliding();
+        mSliderHandler = new Handler();
+        mSliderThread = new Runnable() {
+            public void run() {
+                if (mPostPager != null) {
+                    mPostPager.setCurrentItem(mPosition++, true);
+                    mIndicator.setCurrentItem(mPosition++);
+                }
+                if (mPosition > 3) {
+                    mPosition = 0;
+                }
+                mSliderHandler.postDelayed(this, 3000);
+            }
+        };
+        mSliderThread.run();
+    }
+
+
+
+    /**
+     * Fills the container of the slider that contains the dots
+     *
+     * @param sliderPosts
+     *            the posts for the slider
+     */
+    private void fillDotsContainer(ArrayList<Post> sliderPosts) {
+		/*if (this.mDotsContainer != null) {
+			this.mDotsContainer.removeAllViews();
+		}
+		if (sliderPosts.size() > 1) {
+			for (int i = 0; i < sliderPosts.size(); i++) {
+				ImageView unselectedDot = (ImageView) getInflater().inflate(
+						R.layout.slider_dot, null);
+
+				if (i == mPosition) {
+					unselectedDot.setImageResource(R.drawable.red_dot);
+				}
+
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT);
+				lp.setMargins(5, 0, 5, 0);
+				unselectedDot.setLayoutParams(lp);
+
+				this.mDotsContainer.addView(unselectedDot);
+			}
+		}
+		this.mDotsContainer.setVisibility(View.VISIBLE);
+		this.mDotsContainer.requestLayout();*/
+
+    }
+
+
     /**
      * Sets post for the Activity
      *
@@ -683,6 +940,15 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
      */
     public LayoutInflater getInflater() {
         return (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+
+    /**
+     * Sets the position of the current post
+     */
+    private void setCurrentPostPosition() {
+
+        mPostPager.setCurrentItem(mPosition);
     }
 
 
@@ -715,7 +981,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
 
         setCurrentPostPosition();
 
-        mIndicator.setOnPageChangeListener(new OnPageChangeListener() {
+        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             /**
              * This method will be invoked when the current page is scrolled,
@@ -752,7 +1018,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
              * This method will be invoked when a new page becomes selected.
              * Animation is not necessarily complete.
              *
-             * @param position
+             * @param selectedPage
              *            Position index of the new selected page.
              *
              */
@@ -763,5 +1029,35 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
             }
         });
 
+    }
+
+    /**
+     * Marks the dot that corresponds to the visible post in the slider in red
+     * colour
+     *
+     * @param position
+     *            the position of the visible post in the slider
+     */
+    public void setActiveDotForSlider(int position) {
+		/*if (mDotsContainer.getChildCount() > 0) {
+
+			for (int i = 0; i < mDotsContainer.getChildCount(); i++) {
+				ImageView dotToBeReplaced = (ImageView) mDotsContainer
+						.getChildAt(i);
+
+				if (i == position) {
+					dotToBeReplaced.setImageResource(R.drawable.red_dot);
+				} else {
+					dotToBeReplaced.setImageResource(R.drawable.black_dot);
+				}
+
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT);
+				lp.setMargins(5, 0, 5, 0);
+				dotToBeReplaced.setLayoutParams(lp);
+
+			}
+		}*/
     }
 }

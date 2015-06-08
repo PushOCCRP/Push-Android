@@ -22,6 +22,82 @@
                 layout="@layout/toolbar" />
         </LinearLayout>
 
+        <RelativeLayout
+            android:id="@+id/act_main_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/act_main_bg" >
+
+            <LinearLayout
+                android:id="@+id/slider_loading"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@android:color/black"
+                android:gravity="center" >
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/black" />
+            </LinearLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/slider_posts_viewpager"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:visibility="gone" />
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/indicator"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/main_news_container"
+                android:background="@android:color/transparent"
+                app:fillColor="#FF888888"
+                app:pageColor="#881c8bbd"
+                app:strokeColor="#FF1c8bbd"
+                app:strokeWidth="2dp" />
+
+
+            <LinearLayout
+                android:id="@+id/main_news_container"
+                android:layout_below="@+id/slider_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@color/act_main_bg"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/newList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                android:background="@android:color/white"
+                android:layout_below="@id/slider_loading"
+                android:gravity="center"/>
+
+            <LinearLayout
+                android:id="@+id/list_news_loading"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+
+                 >
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
         <FrameLayout
             android:id="@+id/container_body"
             android:layout_width="fill_parent"
@@ -30,6 +106,8 @@
 
 
     </LinearLayout>
+
+
 
 
     <fragment

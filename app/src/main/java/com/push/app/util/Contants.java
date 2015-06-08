@@ -6,6 +6,10 @@ package com.push.app.util;
 public class Contants {
 
     /**
+     * URL of your WordPress server
+     */
+    public static final String WORDPRESS_SERVER_URL = "http://dmb-team.com/wp/";
+    /**
      * Maximum number of posts for the slider in the MainActivity
      */
     public static final int WORDPRES_SLIDER_MAX_POSTS = 3;

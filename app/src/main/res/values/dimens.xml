@@ -3,4 +3,13 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_drawer_width">260dp</dimen>
+    <dimen name="home_news_title_size">13sp</dimen>
+    <dimen name="home_news_content_size">12sp</dimen>
+    <dimen name="home_news_datelabel_marginTop">0dp</dimen>
+    <dimen name="share_dialog_click_to_login">125dp</dimen>
+    <dimen name="share_dialog_icons_left_padding">55dp</dimen>
+    <dimen name="share_dialog_icons_bottom_padding">12dp</dimen>
+    <dimen name="share_dialog_home_top_pading">0dp</dimen>
+    <dimen name="share_dialog_home_right_pading">9dp</dimen>
+    <dimen name="share_dialog_home_bottom_pading">2dp</dimen>
 </resources>
