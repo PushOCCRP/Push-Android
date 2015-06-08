@@ -28,4 +28,5 @@
     <string name="title_activity_detail_post">DetailPostActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_home">HomeActivity</string>
 </resources>
