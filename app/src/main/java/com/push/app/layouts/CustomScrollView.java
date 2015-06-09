@@ -1,4 +1,4 @@
-package com.push.app.model;
+package com.push.app.layouts;
 
 import android.content.Context;
 import android.util.AttributeSet;

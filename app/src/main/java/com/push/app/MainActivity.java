@@ -32,7 +32,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -40,15 +39,13 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-import com.push.app.fragment.HomeFragment;
 import com.push.app.fragment.Item_one;
 import com.push.app.fragment.Item_two;
 import com.push.app.interfaces.OnFragmentInteractionListener;
 import com.push.app.listener.PostListener;
 import com.push.app.model.Attachment;
-import com.push.app.model.CustomScrollView;
+import com.push.app.layouts.CustomScrollView;
 import com.push.app.model.Post;
-import com.push.app.util.Contants;
 import com.push.app.util.ImageUtil;
 import com.viewpagerindicator.CirclePageIndicator;
 

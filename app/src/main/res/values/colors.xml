@@ -9,4 +9,5 @@
     <color name="colorAccent">#448AFF</color>
     <color name="act_main_cell_date_text_color">#e23b3e</color>
     <color name="act_main_cell_subtitle_text_color">#606060</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

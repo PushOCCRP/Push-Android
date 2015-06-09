@@ -84,7 +84,7 @@ public class Item_two extends Fragment implements AbsListView.OnItemClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item_two, container, false);
+        View view = inflater.inflate(R.layout.fragment_item_two_grid, container, false);
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
