@@ -6,15 +6,24 @@ package com.push.app.model;
 public class NavDrawerItem {
     private boolean showNotify;
     private String title;
+    private String iconID;
 
+    public String getIconID() {
+        return iconID;
+    }
+
+    public void setIconID(String iconID) {
+        this.iconID = iconID;
+    }
 
     public NavDrawerItem() {
 
     }
 
-    public NavDrawerItem(boolean showNotify, String title) {
+    public NavDrawerItem(boolean showNotify, String title,String iconID) {
         this.showNotify = showNotify;
         this.title = title;
+        this.iconID = iconID;
     }
 
     public boolean isShowNotify() {

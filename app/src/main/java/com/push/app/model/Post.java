@@ -69,6 +69,8 @@ public class Post implements Serializable {
      */
     private String mUrl;
 
+    public Post(){}
+
     /**
      * Class constructor
      *

@@ -30,7 +30,7 @@
             android:layout_marginLeft="72dp"
             android:layout_marginStart="72dp"
             android:textSize="14sp"
-            android:textColor="#000"
+            android:textColor="#2196F3"
             android:alpha="0.87"
             android:layout_toLeftOf="@+id/section_notification"
             android:layout_toStartOf="@+id/section_notification"

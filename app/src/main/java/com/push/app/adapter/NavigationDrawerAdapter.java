@@ -1,14 +1,21 @@
 package com.push.app.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.push.app.R;
 import com.push.app.model.NavDrawerItem;
+import com.push.app.util.Utils;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +50,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public void onBindViewHolder(MyViewHolder holder, int position) {
         NavDrawerItem current = data.get(position);
         holder.title.setText(current.getTitle());
+        holder.mIcon.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_home_black_24dp));
     }
 
     @Override
@@ -51,11 +59,17 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
+
         TextView title;
+        ImageView mIcon;
+        private boolean realColor;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.section_text);
+            mIcon = (ImageView)itemView.findViewById(R.id.section_icon);
+
+
         }
     }
 }

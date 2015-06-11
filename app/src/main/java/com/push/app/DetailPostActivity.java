@@ -1,17 +1,55 @@
 package com.push.app;
 
+import android.content.Intent;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.push.app.adapter.PostFragmentAdapter;
+import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator.PageIndicator;
+
 
 public class DetailPostActivity extends ActionBarActivity {
+    /**
+     * The actionbar
+     */
+    private Toolbar mToolbar;
+    ViewPager mPager;
+    PageIndicator mIndicator;
+    private PostFragmentAdapter mAdapter;
+    private int postPosition;
+    private String mPostTitle;
+    private String mPostURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_post);
+
+        Bundle m = getIntent().getExtras();
+        postPosition = m.getInt("postPosition");
+        mPostTitle = m.getString("postTitle");
+
+        //initialise the actionBar
+        initActionBar();
+
+        mAdapter = new PostFragmentAdapter(getSupportFragmentManager());
+
+        mPager = (ViewPager)findViewById(R.id.pager);
+        mPager.setAdapter(mAdapter);
+        mPager.setOffscreenPageLimit(2);
+        mIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
+        mIndicator.setViewPager(mPager,postPosition);
+    }
+
+    private void initActionBar() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -31,8 +69,24 @@ public class DetailPostActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if(id==R.id.action_share){
+            doShare();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void doShare() {
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TITLE, mPostTitle);
+
+        try {
+            startActivity(Intent.createChooser(intent, "Select an action"));
+        } catch (android.content.ActivityNotFoundException ex) {
+            // (handle error)
+        }
+    }
+
+
 }

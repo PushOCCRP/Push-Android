@@ -7,28 +7,37 @@
     <string name="drawer_close">Close</string>
 
     <string name="nav_item_home">Home</string>
-    <string name="nav_item_friends">Friends</string>
-    <string name="nav_item_notifications">Messages</string>
+    <string name="nav_item_donate">Donate</string>
+    <string name="nav_item_about">About</string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
         <item>@string/nav_item_home</item>
-        <item>@string/nav_item_friends</item>
-        <item>@string/nav_item_notifications</item>
+        <item>@string/nav_item_donate</item>
+        <item>@string/nav_item_about</item>
+    </string-array>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_icons">
+        <item>R.id.ic_home_black_24dp</item>
+        <item>R.id.ic_account_circle_white</item>
+        <item>R.id.ic_account_circle_white</item>
     </string-array>
 
     <string name="title_home">Home</string>
     <string name="title_item_one">Donate</string>
     <string name="title_item_two">About</string>
-    <string name="main_screen_cell_date_string">Date</string>
+    <string name="main_screen_cel_date_string">Date</string>
     <string name="share_via">Share via</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_detail_post">DetailPostActivity</string>
+    <string name="title_activity_detail_post">Story Detail</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_home">HomeActivity</string>
 
     <string name="nothing"></string>
+    <string name="clock">clock</string>
+    <string name="timePlaceholder">40 minutes ago John Smith</string>
 </resources>

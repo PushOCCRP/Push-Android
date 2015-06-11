@@ -16,10 +16,10 @@ import com.push.app.interfaces.OnFragmentInteractionListener;
  * Activities that contain this fragment must implement the
  * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Item_one#newInstance} factory method to
+ * Use the {@link AboutPage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Item_one extends Fragment {
+public class AboutPage extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -37,11 +37,11 @@ public class Item_one extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Item_one.
+     * @return A new instance of fragment AboutPage.
      */
     // TODO: Rename and change types and number of parameters
-    public static Item_one newInstance(String param1, String param2) {
-        Item_one fragment = new Item_one();
+    public static AboutPage newInstance(String param1, String param2) {
+        AboutPage fragment = new AboutPage();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -49,7 +49,7 @@ public class Item_one extends Fragment {
         return fragment;
     }
 
-    public Item_one() {
+    public AboutPage() {
         // Required empty public constructor
     }
 
@@ -66,7 +66,7 @@ public class Item_one extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_item_one, container, false);
+        return inflater.inflate(R.layout.fragment_about_page, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

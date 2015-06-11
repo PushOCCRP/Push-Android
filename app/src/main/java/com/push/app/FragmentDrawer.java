@@ -1,6 +1,8 @@
 package com.push.app;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -13,9 +15,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.push.app.adapter.NavigationDrawerAdapter;
 import com.push.app.model.NavDrawerItem;
+import com.push.app.util.TypefaceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +39,7 @@ public class FragmentDrawer extends Fragment {
     private NavigationDrawerAdapter adapter;
     private View containerView;
     private static String[] titles = null;
+    private static String[] icons = null;
     private FragmentDrawerListener drawerListener;
 
     public FragmentDrawer() {
@@ -51,17 +58,29 @@ public class FragmentDrawer extends Fragment {
         for (int i = 0; i < titles.length; i++) {
             NavDrawerItem navItem = new NavDrawerItem();
             navItem.setTitle(titles[i]);
+            navItem.setIconID(icons[i]);
             data.add(navItem);
         }
         return data;
     }
+    // resources
+    private Resources resources;
+    private TypefaceManager fontManager;
+    private ImageView usercover;
+    private ImageView appLogo;
+    private TextView appName;
+    private TextView appVersion;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // init Typeface
+        fontManager = new TypefaceManager(getActivity().getAssets());
         // drawer labels
         titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
+        icons = getActivity().getResources().getStringArray(R.array.nav_drawer_icons);
     }
 
     @Override
@@ -71,7 +90,12 @@ public class FragmentDrawer extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
 
+        appName = (TextView) layout.findViewById(R.id.user_nome);
+        appVersion = (TextView) layout.findViewById(R.id.user_email);
+        appLogo = (ImageView) layout.findViewById(R.id.user_photo);
+
         adapter = new NavigationDrawerAdapter(getActivity(), getData());
+
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
@@ -87,7 +111,10 @@ public class FragmentDrawer extends Fragment {
             }
         }));
 
-        return layout;
+        appName.setTypeface(fontManager.getRobotoMedium());
+        appVersion.setTypeface(fontManager.getRobotoRegular());
+
+          return layout;
     }
 
 
