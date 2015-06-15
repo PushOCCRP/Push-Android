@@ -1,16 +1,24 @@
 package com.push.app.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.androidquery.AQuery;
 import com.push.app.R;
 import com.push.app.interfaces.OnFragmentInteractionListener;
 import com.push.app.util.Utils;
+
+import java.text.DecimalFormat;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +37,8 @@ public class DonatePage extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    AQuery aq;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,8 +76,22 @@ public class DonatePage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Utils.log("onCreateView()");
-        return inflater.inflate(R.layout.fragment_donate_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_donate_page, container, false);
+        aq = new AQuery(view);
+
+        aq.id(R.id.btn_donate).clicked(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.log("Donate button clicked");
+                String amount = aq.id(R.id.txt_amount).getText().toString().trim();
+                if(amount.length() == 0){
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.enter_valid_amount), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                DonateConfirmationDialog.newInstance(amount).show(getFragmentManager(), "confirm_donation");
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -94,4 +118,34 @@ public class DonatePage extends Fragment {
         mListener = null;
     }
 
+    public static class DonateConfirmationDialog extends DialogFragment{
+        public static DonateConfirmationDialog newInstance(String a){
+            DonateConfirmationDialog fragment = new DonateConfirmationDialog();
+            Bundle b = new Bundle();
+            b.putString("amount", a);
+            fragment.setArguments(b);
+
+            return fragment;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            String amount = getArguments().getString("amount");
+            amount = new DecimalFormat("$###,###.##").format(Double.parseDouble(amount));
+            builder.setTitle("Confirm Donation");
+            builder.setMessage(getActivity().getString(R.string.donate_confirmation_prompt) + " " + amount);
+            builder.setPositiveButton("Donate", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+
+            builder.setNegativeButton("Nope!", null);
+            Dialog dialog = builder.create();
+
+            return dialog;
+        }
+    }
 }
