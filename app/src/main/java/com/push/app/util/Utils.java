@@ -1,14 +1,11 @@
 package com.push.app.util;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
@@ -16,14 +13,11 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.widget.ImageView;
 
 import java.util.Locale;
 
@@ -34,6 +28,10 @@ import java.util.Locale;
  */
 public class Utils {
     private Utils() {}
+
+    public static void log(String msg){
+        Log.d("PUSHAPP", msg);
+    }
 
     public static int getDrawerWidth(Resources res) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {

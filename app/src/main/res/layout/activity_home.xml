@@ -20,73 +20,72 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
     <FrameLayout
-        android:id="@+id/mHomeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/flexible_space_image_height"
-        android:scaleType="centerCrop"
-        android:src="@drawable/example" />
-
-</RelativeLayout>
-
-    <View
-        android:id="@+id/list_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/act_main_bg" />
-
-    <ProgressBar
-        android:id="@+id/downloadProgress"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_height="wrap_content" />
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/activity_main_swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <com.push.app.ObservableList.ObservableListView
-        android:id="@+id/mList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-    <include layout="@layout/gradient_header" />
-    </FrameLayout>
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
-        app:theme="@style/Toolbar" />
 
         <FrameLayout
+            android:id="@+id/mHomeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/flexible_space_image_height"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/example" />
+            </RelativeLayout>
 
-        android:id="@+id/container_body"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+            <View
+                android:id="@+id/list_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/act_main_bg" />
 
+            <ProgressBar
+                android:id="@+id/downloadProgress"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_height="wrap_content" />
 
-</FrameLayout>
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/activity_main_swipe_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.push.app.ObservableList.ObservableListView
+                    android:id="@+id/mList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.v4.widget.SwipeRefreshLayout>
 
+            <include layout="@layout/gradient_header" />
+        </FrameLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
+                app:theme="@style/Toolbar" />
+
+            <FrameLayout
+                android:id="@+id/container_body"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </FrameLayout>
 
     <fragment
         android:id="@+id/fragment_navigation_drawer"

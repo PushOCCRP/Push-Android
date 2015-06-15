@@ -40,4 +40,6 @@
     <string name="nothing"></string>
     <string name="clock">clock</string>
     <string name="timePlaceholder">40 minutes ago John Smith</string>
+    <string name="donate_description">Help us grow and give you faster news updates. Your donation goes towards purchasing better equipment for a seamleass broadcast.</string>
+    <string name="amount_label">Amount</string>
 </resources>

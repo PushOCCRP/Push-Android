@@ -1,9 +1,47 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.push.app.fragment.DonatePage">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin"
+    tools:context="com.push.app.fragment.DonatePage">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/donate_description"
+        android:textColor="#7f7f7f"
+        android:textSize="22sp"
+        android:id="@+id/txt_desc"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal" />
 
-</FrameLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/txt_amount"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textColorHint="#bdbdbd"
+            android:inputType="numberSigned"
+            android:gravity="center_horizontal"
+            android:hint="@string/amount_label"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="45dp"
+        android:background="@color/colorPrimary"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="20dp"
+        android:textSize="22sp"
+        android:layout_gravity="center_horizontal"
+        android:text="Donate"/>
+</LinearLayout>

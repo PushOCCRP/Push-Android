@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.push.app.R;
 import com.push.app.interfaces.OnFragmentInteractionListener;
+import com.push.app.util.Utils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,9 +64,9 @@ public class DonatePage extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Utils.log("onCreateView()");
         return inflater.inflate(R.layout.fragment_donate_page, container, false);
     }
 
