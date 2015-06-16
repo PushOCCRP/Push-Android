@@ -1,16 +1,21 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.push.app.fragment.DetailPost"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/scrollView"
-    android:background="@android:color/white"
-    tools:context="com.push.app.fragment.DetailPost">
-<LinearLayout
+    android:layout_height="match_parent">
+
+<com.push.app.ObservableList.ObservableScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-   >
+    android:layout_height="wrap_content"
+    android:id="@+id/scroll"
+    android:background="@android:color/white"
+    android:fillViewport="true">
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/postImage"
@@ -18,6 +23,21 @@
         android:src="@drawable/example"
         android:scaleType="centerCrop"
         android:layout_height="320dp" />
+
+    <View
+        android:id="@+id/anchor"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:minHeight="320dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/anchor"
+        android:padding="5dp"
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
@@ -91,5 +111,19 @@
         android:layout_height="wrap_content" />
 
 
-</LinearLayout>
-</ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>
+</com.push.app.ObservableList.ObservableScrollView>
+
+<include layout="@layout/gradient_header" />
+
+<android.support.v7.widget.Toolbar
+android:id="@+id/toolbar"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:background="?attr/colorPrimary"
+android:minHeight="?attr/actionBarSize"
+app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
+app:theme="@style/Toolbar" />
+    </FrameLayout>
