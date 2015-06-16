@@ -28,16 +28,54 @@
             android:id="@+id/mHomeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <RelativeLayout
+
+            <LinearLayout
+                android:id="@+id/FirstItem"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <ImageView
                     android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/flexible_space_image_height"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/example" />
-            </RelativeLayout>
+                    android:src="@drawable/bamboo"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/firstPostHeadline"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:src="@mipmap/ic_action_time"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/clock" />
+
+                    <TextView
+                        android:id="@+id/first_post_Date"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/act_main_cell_subtitle_text_color"
+                        android:text="@string/timePlaceholder"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
 
             <View
                 android:id="@+id/list_background"
@@ -56,10 +94,13 @@
                 android:id="@+id/activity_main_swipe_refresh_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <com.push.app.ObservableList.ObservableListView
+                    android:layout_marginTop="10dp"
                     android:id="@+id/mList"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content" />
+
             </android.support.v4.widget.SwipeRefreshLayout>
 
             <include layout="@layout/gradient_header" />

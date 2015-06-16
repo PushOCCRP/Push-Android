@@ -31,7 +31,7 @@
     <string name="share_via">Share via</string>
 
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">About the PUSH APP</string>
     <string name="title_activity_detail_post">Story Detail</string>
 
     <string name="hello_world">Hello world!</string>
@@ -39,7 +39,8 @@
 
     <string name="nothing"></string>
     <string name="clock">clock</string>
-    <string name="timePlaceholder">40 minutes ago John Smith</string>
+    <string name="timePlaceholder">40 mins ago John Smith</string>
     <string name="donate_description">Help us grow and give you faster news updates. Your donation goes towards purchasing better equipment for a seamleass broadcast.</string>
     <string name="amount_label">Amount</string>
+    <string name="news_category">Local</string>
 </resources>

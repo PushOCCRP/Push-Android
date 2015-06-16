@@ -37,7 +37,7 @@ public class DetailPostActivity extends ActionBarActivity {
         //initialise the actionBar
         initActionBar();
 
-        mAdapter = new PostFragmentAdapter(getSupportFragmentManager());
+        mAdapter = new PostFragmentAdapter(this,getSupportFragmentManager());
 
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -50,6 +50,7 @@ public class DetailPostActivity extends ActionBarActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
     }
 
     @Override

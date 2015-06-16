@@ -1,9 +1,10 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/scrollView"
+    android:background="@android:color/white"
     tools:context="com.push.app.fragment.DetailPost">
 <LinearLayout
     android:layout_width="match_parent"
@@ -11,16 +12,62 @@
     android:orientation="vertical"
    >
 
+    <ImageView
+        android:id="@+id/postImage"
+        android:layout_width="match_parent"
+        android:src="@drawable/example"
+        android:scaleType="centerCrop"
+        android:layout_height="320dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textAllCaps="true"
+        android:background="@drawable/capsule_shape"
+        android:textColor="@android:color/white"
+        android:text="@string/news_category"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:padding="5dp"
+        android:paddingLeft="5dp"
         android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:src="@mipmap/ic_action_time"
+                android:layout_height="24dp"
+                android:contentDescription="@string/clock" />
+
+            <TextView
+                android:id="@+id/post_Date"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_width="wrap_content"
+                android:textColor="@color/act_main_cell_subtitle_text_color"
+                android:text="@string/timePlaceholder"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/postHeadline"
             android:layout_width="match_parent"
             android:textSize="22dp"
-            android:gravity="center"
+            android:layout_marginTop="20dp"
             android:textStyle="bold"
             android:layout_height="wrap_content" />
         <TextView
@@ -29,20 +76,18 @@
             android:textSize="14sp"
             android:layout_marginTop="10dp"
             android:text="by John Smith"
+            android:visibility="gone"
             android:textColor="@color/switch_thumb_disabled_material_dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/postImage"
-        android:layout_width="match_parent"
-        android:src="@drawable/example"
-        android:layout_height="@dimen/parallax_image_height" />
+
     <WebView
         android:id="@+id/postBody"
         android:layout_width="match_parent"
         android:padding="5dp"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content" />
 
 

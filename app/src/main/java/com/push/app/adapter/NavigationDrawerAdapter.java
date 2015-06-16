@@ -27,11 +27,17 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     List<NavDrawerItem> data = Collections.emptyList();
     private LayoutInflater inflater;
     private Context context;
+    private int[] icons;
 
     public NavigationDrawerAdapter(Context context, List<NavDrawerItem> data) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
+        icons = new int[]{
+                R.mipmap.ic_home_black_24dp,
+                R.mipmap.dollar,
+                R.mipmap.about
+        };
     }
 
     public void delete(int position) {
@@ -50,7 +56,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public void onBindViewHolder(MyViewHolder holder, int position) {
         NavDrawerItem current = data.get(position);
         holder.title.setText(current.getTitle());
-        holder.mIcon.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_home_black_24dp));
+        holder.mIcon.setImageResource(icons[position]);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.push.app.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
 import com.push.app.R;
 import com.push.app.model.Post;
 
@@ -32,12 +34,14 @@ public final class DetailPost extends Fragment {
     private TextView mPostDescription;
     private WebView mPostBody;
     private ImageView mpostImage;
+    private AQuery aq;
+    private Context mContext;
 
-    public static DetailPost newInstance(Post postItem) {
+    public static DetailPost newInstance(Context mContext,Post postItem) {
         DetailPost fragment = new DetailPost();
-
+        fragment.mContext = mContext;
         fragment.postItem = postItem;
-
+        fragment.aq = new AQuery(mContext);
         return fragment;
     }
 
@@ -71,7 +75,9 @@ public final class DetailPost extends Fragment {
 
         //Set the values
         mPostTitle.setText(postItem.getTitle());
-        mPostBody.loadData(postItem.getContentString(),"text/html", "UTF-8");
+        mPostBody.loadData(postItem.getContentString(), "text/html", "UTF-8");
+
+//        aq.id(mpostImage).image(imageUrl, true, true, getResources().getDimension(R.dimen), 0);
 
         return rootView;
     }
