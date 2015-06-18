@@ -20,7 +20,7 @@ public class DonationSummary extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_donate_page, container, false);
+        View view = inflater.inflate(R.layout.donation_summary, container, false);
         aq = new AQuery(view);
         return view;
     }

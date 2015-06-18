@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,13 +133,13 @@ public class DonatePage extends Fragment {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             String amount = getArguments().getString("amount");
-            amount = new DecimalFormat("$###,###.##").format(Double.parseDouble(amount));
-            builder.setTitle("Confirm Donation");
-            builder.setMessage(getActivity().getString(R.string.donate_confirmation_prompt) + " " + amount);
+            amount = new DecimalFormat("USD ###,###.##").format(Double.parseDouble(amount));
+            //builder.setTitle("Confirm Donation");
+            builder.setMessage(getActivity().getString(R.string.donate_confirmation_prompt) + " " + amount + "?");
             builder.setPositiveButton("Donate", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-
+                    showDonationSummary();
                 }
             });
 
@@ -146,6 +147,19 @@ public class DonatePage extends Fragment {
             Dialog dialog = builder.create();
 
             return dialog;
+        }
+
+        private void showDonationSummary(){
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.container_body, new DonationSummary());
+            transaction.commit();
+
+            // set the toolbar title
+            try {
+                getActivity().getActionBar().setTitle("Thank you!");
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
         }
     }
 }
