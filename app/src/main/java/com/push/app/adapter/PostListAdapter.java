@@ -29,6 +29,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
     private ArrayList<Post> items;
     private AQuery aq;
 
+    String imageUrl = "http://farm6.static.flickr.com/5035/5802797131_a729dac808_b.jpg";
 
     private int layout;
     private LayoutInflater inflater;
@@ -63,6 +64,14 @@ public class PostListAdapter extends ArrayAdapter<Post> {
 
         holder.postTitle.setTypeface(fontManager.getRobotoMedium());
         holder.postTitle.setText(items.get(position).getTitle());
+
+        if(position%2 ==0) {
+            holder.postImage.setVisibility(View.GONE);
+            aq.id(holder.postImage).image(imageUrl, true, true, 90, 0);
+             }else{
+            holder.postImage.setVisibility(View.GONE);
+        }
+
         if (items.get(position).getAttachments().size() > 0) {
 
             AttachmentType currentAttachment = items.get(position)

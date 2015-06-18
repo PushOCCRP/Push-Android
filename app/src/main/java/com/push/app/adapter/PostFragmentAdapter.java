@@ -1,5 +1,6 @@
 package com.push.app.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,14 +16,17 @@ public class PostFragmentAdapter extends FragmentPagerAdapter  {
     public static ArrayList<Post> postItems;
 
     private int mCount = postItems.size();
+    private Context mContext;
 
-    public PostFragmentAdapter(FragmentManager fm) {
+    public PostFragmentAdapter(Context mContext,FragmentManager fm) {
         super(fm);
+
+        this.mContext = mContext;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return DetailPost.newInstance(postItems.get(position % postItems.size()));
+        return DetailPost.newInstance(mContext,postItems.get(position % postItems.size()));
     }
 
     @Override

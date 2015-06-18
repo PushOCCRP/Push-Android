@@ -33,6 +33,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,8 +91,10 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     private EditText editSearch;
     private SharedPreferences sharedPreferences;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private TextView firstItemDescription;
+    private TextView firstItemHeadline;
+    private TextView firstItemDate;
     private FrameLayout mHomeLayout;
+    private View header;
 //    private LinearLayout mFirstItemDescLayout;
     
 
@@ -104,11 +107,11 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
          aq = new AQuery(this);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        initViews();
+       
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.activity_main_swipe_refresh_layout);
         mHomeLayout = (FrameLayout)findViewById(R.id.mHomeLayout);
 
-        mImageView = findViewById(R.id.image);
+        mImageView = findViewById(R.id.FirstItem);
         mToolbarView =(Toolbar) findViewById(R.id.toolbar);
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary)));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -122,6 +125,8 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
         mListView = (ObservableListView) findViewById(R.id.mList);
         mListView.setScrollViewCallbacks(this);
+
+        initViews();
         // Set padding view for ListView. This is the flexible space.
         View paddingView = new View(this);
         AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
@@ -144,8 +149,10 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             public void onRefresh() {
                 if(Online())
                 checkForNewContent(false);
-                else
-                    Toast.makeText(HomeActivity.this,"No Internet Connection",Toast.LENGTH_LONG).show();
+                else {
+                    Toast.makeText(HomeActivity.this, "No Internet Connection", Toast.LENGTH_LONG).show();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
 
@@ -157,10 +164,13 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     }
 
     private void initViews() {
-        firstItemDescription = new TextView(this);
-        firstItemDescription.setGravity(Gravity.CENTER);
-        firstItemDescription.setPadding(20, 20, 20, 20);
+        firstItemHeadline = (TextView)findViewById(R.id.firstPostHeadline);
+        firstItemDate = (TextView)findViewById(R.id.first_post_Date);
 
+
+
+        LayoutInflater inflater = getLayoutInflater();
+         header = inflater.inflate(R.layout.first_list_item, mListView, false);
 
 
     }
@@ -287,9 +297,8 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         }
 
         //Extract the first item from the list
-       firstItemDescription.setText(listPosts.get(0).getTitle());
-       mListView.addHeaderView(firstItemDescription);
-
+       firstItemHeadline.setText(listPosts.get(0).getTitle());
+//        firstItemDate.setText(listPosts.get(0).getPublishedDate());
         //remove it from the list
         listPosts.remove(0);
 
@@ -370,7 +379,11 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             case 0:
                 this.mHomeLayout.setVisibility(View.VISIBLE);
 //                fragment = new HomeFragment();
-                title = getString(R.string.title_home);
+                title = getResources().getString(R.string.app_name);
+
+                Fragment frag = fragmentManager.findFragmentByTag("Fragment");
+                if(frag != null)
+                    fragmentTransaction.remove(frag).commit();
                 break;
             case 1:
                 fragment = new DonatePage();
@@ -386,16 +399,18 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
         if (fragment != null) {
             mToolbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            fragmentTransaction.replace(R.id.container_body, fragment);
+            fragmentTransaction.replace(R.id.container_body, fragment,"Fragment");
             fragmentTransaction.commit();
             this.mHomeLayout.setVisibility(View.GONE);
 
-            // set the toolbar title
-            try {
-                getSupportActionBar().setTitle(title);
-            }catch (NullPointerException e){
-                e.printStackTrace();
-            }
+
+        }
+
+        // set the toolbar title
+        try {
+            getSupportActionBar().setTitle(title);
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
     }
 

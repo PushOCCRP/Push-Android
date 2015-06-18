@@ -5,7 +5,7 @@
     android:id="@+id/section_ripple"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    app:mrl_rippleBackground="#fafafa"
+    app:mrl_rippleBackground="#fff"
     app:mrl_rippleHover="true">
 
     <RelativeLayout
@@ -29,8 +29,8 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="72dp"
             android:layout_marginStart="72dp"
-            android:textSize="14sp"
-            android:textColor="#2196F3"
+
+            android:textColor="@android:color/black"
             android:alpha="0.87"
             android:layout_toLeftOf="@+id/section_notification"
             android:layout_toStartOf="@+id/section_notification"
