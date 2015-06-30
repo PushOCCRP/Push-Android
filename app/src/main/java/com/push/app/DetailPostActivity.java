@@ -37,13 +37,13 @@ public class DetailPostActivity extends ActionBarActivity {
         //initialise the actionBar
         initActionBar();
 
-        mAdapter = new PostFragmentAdapter(this,getSupportFragmentManager());
+        mAdapter = new PostFragmentAdapter(this, getSupportFragmentManager());
 
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         mPager.setOffscreenPageLimit(2);
         mIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
-        mIndicator.setViewPager(mPager,postPosition);
+        mIndicator.setViewPager(mPager, postPosition);
     }
 
     private void initActionBar() {

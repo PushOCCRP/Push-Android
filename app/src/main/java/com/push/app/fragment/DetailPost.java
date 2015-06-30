@@ -3,25 +3,21 @@ package com.push.app.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.nineoldandroids.view.ViewHelper;
 import com.push.app.ObservableList.ObservableScrollView;
+import com.push.app.ObservableList.ObservableScrollViewCallbacks;
 import com.push.app.ObservableList.ScrollState;
 import com.push.app.ObservableList.ScrollUtils;
 import com.push.app.R;
 import com.push.app.model.Post;
-import com.push.app.ObservableList.ObservableScrollViewCallbacks;
 
 public final class DetailPost extends Fragment implements ObservableScrollViewCallbacks{
     private static final String KEY_CONTENT = "TestFragment:Content";
@@ -48,7 +44,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private ObservableScrollView mScrollView;
     private int mParallaxImageHeight;
 
-    public static DetailPost newInstance(Context mContext,Post postItem) {
+    public static DetailPost newInstance(Context mContext, Post postItem) {
         DetailPost fragment = new DetailPost();
         fragment.mContext = mContext;
         fragment.postItem = postItem;

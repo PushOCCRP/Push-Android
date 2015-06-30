@@ -5,10 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.push.app.R;
 import com.push.app.fragment.DetailPost;
 import com.push.app.model.Post;
-import com.viewpagerindicator.IconPagerAdapter;
 
 import java.util.ArrayList;
 
@@ -26,7 +24,7 @@ public class PostFragmentAdapter extends FragmentPagerAdapter  {
 
     @Override
     public Fragment getItem(int position) {
-        return DetailPost.newInstance(mContext,postItems.get(position % postItems.size()));
+        return DetailPost.newInstance(mContext, postItems.get(position % postItems.size()));
     }
 
     @Override

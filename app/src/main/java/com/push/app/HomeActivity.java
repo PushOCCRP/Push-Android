@@ -47,6 +47,7 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.infobip.push.Notification;
 import com.nineoldandroids.view.ViewHelper;
 import com.push.app.ObservableList.BaseActivity;
 import com.push.app.ObservableList.ObservableListView;
@@ -59,6 +60,7 @@ import com.push.app.fragment.AboutPage;
 import com.push.app.fragment.DonatePage;
 import com.push.app.interfaces.OnFragmentInteractionListener;
 import com.push.app.model.Post;
+import com.push.app.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,7 +70,7 @@ import java.util.ArrayList;
 import static com.push.app.util.Contants.WORDPRESS_SERVER_URL;
 import static com.push.app.util.Contants.WORDPRES_SLIDER_MAX_POSTS;
 
-public class HomeActivity extends BaseActivity implements ObservableScrollViewCallbacks,FragmentDrawer.FragmentDrawerListener,OnFragmentInteractionListener {
+public class HomeActivity extends BaseActivity implements ObservableScrollViewCallbacks, FragmentDrawer.FragmentDrawerListener, OnFragmentInteractionListener {
 
     private View mImageView;
     private Toolbar mToolbarView;
@@ -94,9 +96,8 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     private TextView firstItemDate;
     private FrameLayout mHomeLayout;
     private View header;
-//    private LinearLayout mFirstItemDescLayout;
-    
-
+    //private LinearLayout mFirstItemDescLayout;
+    private boolean isNotification = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +107,8 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
          aq = new AQuery(this);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-       
+        isNotification = getIntent().getBooleanExtra("is_notification", false);
+
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.activity_main_swipe_refresh_layout);
         mHomeLayout = (FrameLayout)findViewById(R.id.mHomeLayout);
 
@@ -114,8 +116,6 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         mToolbarView =(Toolbar) findViewById(R.id.toolbar);
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary)));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-
 
         mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
 
@@ -141,8 +141,6 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         // mListBackgroundView makes ListView's background except header view.
         mListBackgroundView = findViewById(R.id.list_background);
 
-
-
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -167,20 +165,35 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
         LayoutInflater inflater = getLayoutInflater();
          header = inflater.inflate(R.layout.first_list_item, mListView, false);
-
-
     }
 
     private void displayFromCache() {
         //TODO
         //add code for loading cached posts here
+        //Download the notification content here
+        if(isNotification){
+            Utils.log("This is a notification");
+            WORDPRESS_FETCH_RECENT_POSTS_URL = String.format(WORDPRESS_FETCH_RECENT_POSTS_URL,WORDPRESS_SERVER_URL);
+            aq.progress(R.id.downloadProgress).ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
+            String extra = getIntent().getExtras().getString(Notification.DefaultNotificationHandler.INTENT_EXTRAS_KEY);
+            Utils.log("Extras -> " + extra);
+            try{
+                JSONObject extrasObject = new JSONObject(extra);
+                JSONObject extras = extrasObject.getJSONObject("payload").getJSONObject("extras");
+                Utils.log("URL -> " + extras.getString("url"));
+            }catch (Exception ex){
+                Utils.log("Error loading post -> " + ex.getMessage());
+            }
+        }else{
+            String cachedJSON = getCachedPosts("json");
+            if(cachedJSON != null){
+                loadFromCache(cachedJSON);
+                checkForNewContent(false);
+            }else{
+                checkForNewContent(true);
+            }
+        }
 
-        String cachedJSON = getCachedPosts("json");
-        if(cachedJSON !=null){
-            loadFromCache(cachedJSON);
-            checkForNewContent(false);
-        }else
-        checkForNewContent(true);
     }
 
     public void cachePosts(String key, String value) {
@@ -210,13 +223,11 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         if(Online()){
             WORDPRESS_FETCH_RECENT_POSTS_URL = String.format(WORDPRESS_FETCH_RECENT_POSTS_URL,WORDPRESS_SERVER_URL);
             //Download the news articles
-            if(refresh)
-            aq.progress(R.id.downloadProgress).ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
-            else
+            if(refresh){
+                aq.progress(R.id.downloadProgress).ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
+            }else{
                 aq.ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
-
-
-
+            }
         }else{
             Toast.makeText(this, "Check your internet connection", Toast.LENGTH_LONG).show();
         }
@@ -246,10 +257,10 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
                 //successful ajax call, show status code and json content
 //                Toast.makeText(aq.getContext(), status.getCode() + ":" + json.toString(), Toast.LENGTH_LONG).show();
-                cachePosts("json",json.toString());
+                cachePosts("json", json.toString());
 
                 JSONArray items = json.getJSONArray("posts");
-                recentPosts = new ArrayList<Post>();
+                recentPosts = new ArrayList<>();
                 for (int i = 0; i < items.length(); i++) {
                     recentPosts.add(new Post(items.getJSONObject(i)));
                 }
@@ -307,11 +318,15 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PostFragmentAdapter.postItems = recentPosts;
                 Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
-                i.putExtra("postPosition",position);
-                i.putExtra("postTitle",recentPosts.get(position).getTitle());
+                i.putExtra("postPosition", position);
+                i.putExtra("postTitle", recentPosts.get(position).getTitle());
                 startActivity(i);
             }
         });
+
+        if(isNotification){ //This is a way of displaying a test article from push - To be removed in production
+            mListView.performItemClick(mListAdapter.getView(0, null, null), 0, mListAdapter.getItemId(0));
+        }
     }
 
     /**
@@ -324,8 +339,7 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         // check that there is an active network
         if (info != null) {
             return info.isConnected();
-        }
-        else {
+        }else {
             return false;
         }
     }
