@@ -31,7 +31,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -158,9 +157,6 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
         //Display files from Cache
         displayFromCache();
-
-
-
     }
 
     private void initViews() {
