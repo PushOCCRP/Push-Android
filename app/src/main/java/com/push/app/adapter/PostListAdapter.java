@@ -3,9 +3,11 @@ package com.push.app.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -42,6 +44,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         RelativeLayout listNewsView;
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -65,32 +68,24 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         holder.postTitle.setTypeface(fontManager.getRobotoMedium());
         holder.postTitle.setText(items.get(position).getTitle());
 
-        if(position%2 ==0) {
-            holder.postImage.setVisibility(View.GONE);
-            aq.id(holder.postImage).image(imageUrl, true, true, 90, 0);
-             }else{
-            holder.postImage.setVisibility(View.GONE);
-        }
 
         if (items.get(position).getAttachments().size() > 0) {
 
             AttachmentType currentAttachment = items.get(position)
-                    .getAttachments().get(0).getMediumSize();
+                    .getAttachments().get(0).getThumbnailSize();
             if (currentAttachment != null) {
-					/*new FetchImageByUrl(image, mScreenWidth, true)
-							.execute(currentAttachment.getUrl());*/
 
-                holder.postImage.getLayoutParams().width = ImageUtil.widthForThumbs;
-                holder.postImage.getLayoutParams().height = (int) (ImageUtil.widthForThumbs / ImageUtil.aspectRationThumb);
 
-//                ImageLoader.getInstance().displayImage(
-//                        currentAttachment.getUrl(), image, mImageOptions);
+                    aq.id(holder.postImage).image(currentAttachment.getUrl());
 
-//                String imageUrl = "http://farm6.static.flickr.com/5035/5802797131_a729dac808_b.jpg";
-                Toast.makeText(aq.getContext(), "url:" + currentAttachment.getUrl(), Toast.LENGTH_LONG).show();
-                aq.id(holder.postImage).image(currentAttachment.getUrl(), true, true, 200, 0);
             }
 
+        }
+
+        if(position%2 == 0) {
+            holder.postImage.setVisibility(View.VISIBLE);
+        }else{
+            holder.postImage.setVisibility(View.GONE);
         }
 
         return view;

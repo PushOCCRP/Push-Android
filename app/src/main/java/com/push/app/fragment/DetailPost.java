@@ -1,13 +1,19 @@
 package com.push.app.fragment;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,20 +26,23 @@ import com.push.app.ObservableList.ObservableScrollView;
 import com.push.app.ObservableList.ScrollState;
 import com.push.app.ObservableList.ScrollUtils;
 import com.push.app.R;
+import com.push.app.model.AttachmentType;
 import com.push.app.model.Post;
 import com.push.app.ObservableList.ObservableScrollViewCallbacks;
+import com.push.app.util.ImageGetter;
+import com.push.app.util.ImageUtil;
 
 public final class DetailPost extends Fragment implements ObservableScrollViewCallbacks{
     private static final String KEY_CONTENT = "TestFragment:Content";
     private static final String KEY_TITLE = "TestFragment:Title";
-    private static final String KEY_DESCRIPTION = "TestFragment:Desc";
+    private static final String KEY_URL = "TestFragment:Desc";
     private static final String KEY_DATE = "TestFragment:Date";
 
     private Post postItem;
     private String postBody;
     private String postTitle;
     private long postDate;
-    private String postDescription;
+    private String postImageUrl = null;
     private View rootView;
     private TextView mPostTitle;
     private TextView mPostAuthor;
@@ -42,9 +51,10 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private ImageView mpostImage;
     private AQuery aq;
     private Context mContext;
+    private WebSettings webSettings;
+    private TextView mContent;
 
-    private View mImageView;
-    private View mToolbarView;
+    //    private View mImageView;
     private ObservableScrollView mScrollView;
     private int mParallaxImageHeight;
 
@@ -52,7 +62,19 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         DetailPost fragment = new DetailPost();
         fragment.mContext = mContext;
         fragment.postItem = postItem;
-        fragment.aq = new AQuery(mContext);
+        fragment.postBody = postItem.getContentString();
+        fragment.postTitle = postItem.getTitle();
+//        fragment.postDate = postItem.getPublishedDate();
+
+        if (postItem.getAttachments().size() > 0) {
+
+            AttachmentType currentAttachment = postItem
+                    .getAttachments().get(0).getMediumSize();
+            if (currentAttachment != null) {
+                fragment.postImageUrl = currentAttachment.getUrl();
+            }
+
+        }
         return fragment;
     }
 
@@ -62,12 +84,14 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+            aq = new AQuery(mContext);
+
         if ((savedInstanceState != null) && savedInstanceState.containsKey(KEY_CONTENT)) {
-            onScrollChanged(mScrollView.getCurrentScrollY(), false, false);
+//            onScrollChanged(mScrollView.getCurrentScrollY(), false, false);
             postBody = savedInstanceState.getString(KEY_CONTENT);
             postTitle = savedInstanceState.getString(KEY_TITLE);
             postDate = savedInstanceState.getLong(KEY_DATE);
-            postDescription = savedInstanceState.getString(KEY_DESCRIPTION);
+            postImageUrl = savedInstanceState.getString(KEY_URL);
 
         }
     }
@@ -78,16 +102,12 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         //Initialise views
         rootView = inflater.inflate(R.layout.fragment_detail_post, container,false);
         mPostAuthor = (TextView) rootView.findViewById(R.id.postAuthor);
-        mPostBody = (WebView)rootView.findViewById(R.id.postBody);
+        mContent = (TextView) rootView.findViewById(R.id.postContent);
 
-        mPostBody.getSettings().setJavaScriptEnabled(true);
         mPostTitle = (TextView)rootView.findViewById(R.id.postHeadline);
         mpostImage = (ImageView)rootView.findViewById(R.id.postImage);
 
 
-        mImageView = rootView.findViewById(R.id.postImage);
-        mToolbarView = rootView.findViewById(R.id.toolbar);
-        mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary)));
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mScrollView.setScrollViewCallbacks(this);
@@ -95,20 +115,26 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
 
 
-        //Set the values
-        mPostTitle.setText(postItem.getTitle());
-        mPostBody.loadData(postItem.getContentString(), "text/html", "UTF-8");
 
-//        aq.id(mpostImage).image(imageUrl, true, true, getResources().getDimension(R.dimen), 0);
+        //Set the values
+        mPostTitle.setText(postTitle);
+        mpostImage.setVisibility(View.GONE);
+        mContent.setText(Html.fromHtml(postBody, new ImageGetter(mContent, getActivity()), null));
+
+            if (postImageUrl != null)
+                aq.id(mpostImage).image(postImageUrl);
+
+
 
         return rootView;
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_CONTENT, postBody);
-        outState.putString(KEY_DESCRIPTION, postDescription);
+        outState.putString(KEY_URL, postImageUrl);
         outState.putString(KEY_TITLE, postTitle);
         outState.putLong(KEY_DATE, postDate);
 
@@ -117,10 +143,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-        int baseColor = getResources().getColor(R.color.colorPrimary);
-        float alpha = Math.min(1, (float) scrollY / mParallaxImageHeight);
-        mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
-        ViewHelper.setTranslationY(mImageView, scrollY / 2);
+        ViewHelper.setTranslationY(mpostImage, scrollY / 2);
     }
 
     @Override

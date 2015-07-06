@@ -50,6 +50,19 @@ public class Post implements Serializable {
     private String mid;
 
     /**
+     * The description for the story
+     */
+    private String except;
+
+    public String getExcept() {
+        return except;
+    }
+
+    public void setExcept(String except) {
+        this.except = except;
+    }
+
+    /**
      * The date that the Post was published
      */
     private Date mPublishedDate;
@@ -63,6 +76,8 @@ public class Post implements Serializable {
      * Title of the Post
      */
     private String mTitle;
+
+
 
     /**
      * URL of the Post
@@ -79,46 +94,48 @@ public class Post implements Serializable {
      * @throws Exception
      */
     public Post(JSONObject jsonObject) throws Exception {
-        this.mid = jsonObject.getString("id");
-        this.mTitle = Html.fromHtml(jsonObject.getString("title_plain"))
+        this.mid = jsonObject.getString("ID");
+        this.mTitle = Html.fromHtml(jsonObject.getString("title"))
+                .toString();
+        this.except = Html.fromHtml(jsonObject.getString("excerpt"))
                 .toString();
         String text = embedYoutubeVideos(jsonObject.getString("content"));
         this.mContent = text;
-
-        removeAdsense();
-        this.mStatus = jsonObject.getString("status");
-        this.mUrl = jsonObject.getString("url");
+//
+//        removeAdsense();
+//        this.mStatus = jsonObject.getString("status");
+        this.mUrl = jsonObject.getString("link");
         this.mPublishedDate = DateUtil.postsDatePublishedFormatter
-                .parse(jsonObject.getString("date"));
-
-        JSONArray categoriesJson = jsonObject.getJSONArray("categories");
-
-        mCategories = new ArrayList<Category>();
-
-        for (int i = 0; i < categoriesJson.length(); i++) {
-            mCategories.add(new Category(categoriesJson.getJSONObject(i)));
-        }
-
-        //JSONArray attachmentsJson = jsonObject.getJSONArray("attachments");
-
+                .parse(jsonObject.getString("date").replace("T"," "));
+//
+//        JSONArray categoriesJson = jsonObject.getJSONArray("categories");
+//
+//        mCategories = new ArrayList<Category>();
+//
+//        for (int i = 0; i < categoriesJson.length(); i++) {
+//            mCategories.add(new Category(categoriesJson.getJSONObject(i)));
+//        }
+//
+//        //JSONArray attachmentsJson = jsonObject.getJSONArray("attachments");
+//
         mAttachments = new ArrayList<Attachment>();
-
-		/*for (int i = 0; i < attachmentsJson.length(); i++) {
-
-			mAttachments.add(new Attachment(attachmentsJson.getJSONObject(i)));
-		}*/
-
-
-        addAttachmentFromThumbnailImages(jsonObject);
+//
+//		/*for (int i = 0; i < attachmentsJson.length(); i++) {
+//
+//			mAttachments.add(new Attachment(attachmentsJson.getJSONObject(i)));
+//		}*/
+//
+//
+//        addAttachmentFromThumbnailImages(jsonObject);
         addAttachmentFromAttachments(jsonObject);
-
-        for (Attachment attachment : mAttachments) {
-            if (attachment.getFullSize() == null && attachment.getLargeSize() == null && attachment.getMediumSize() == null && attachment.getNotSizedAttachment() == null) {
-                mAttachments.remove(attachment);
-            }
-        }
-
-        Log.d("Adding Post", "Title - " + mTitle);
+//
+//        for (Attachment attachment : mAttachments) {
+//            if (attachment.getFullSize() == null && attachment.getLargeSize() == null && attachment.getMediumSize() == null && attachment.getNotSizedAttachment() == null) {
+//                mAttachments.remove(attachment);
+//            }
+//        }
+//
+//        Log.d("Adding Post", "Title - " + mTitle);
 
     }
 
@@ -199,42 +216,19 @@ public class Post implements Serializable {
     }
 
 
-    public boolean isSliderPost() {
-        return getAttachments().size() > 0 ? true : false;
-    }
-
-    private void addAttachmentFromThumbnailImages(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("thumbnail_images")) {
-            JSONArray jsonArray = jsonObject.optJSONArray("thumbnail_images");
-            if (jsonArray != null) {
-                if (jsonArray.length() > 0) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        mAttachments.add(new Attachment(jsonArray.getJSONObject(i)));
-                    }
-                }
-            } else {
-                JSONObject image = jsonObject.optJSONObject("thumbnail_images");
-                if (image != null) {
-                    mAttachments.add(new Attachment(image));
-                }
-            }
-        }
-    }
-
     private void addAttachmentFromAttachments(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("attachments")) {
-            JSONArray attachmentsJson = jsonObject.getJSONArray("attachments");
-            for (int i = 0; i < attachmentsJson.length(); i++) {
-                JSONObject attachment = attachmentsJson
-                        .getJSONObject(i);
-                if (attachment.has("images") && attachment.optJSONArray("images") != null && attachment.optJSONArray("images").length() > 0) {
-                    mAttachments.add(new Attachment(attachmentsJson
-                            .getJSONObject(i)));
-                } else if (attachment.has("url") || attachment.has("full")) {
-                    mAttachments.add(new Attachment(attachmentsJson
-                            .getJSONObject(i)));
+
+        if (jsonObject.has("featured_image")) {
+
+
+//            JSONObject mAttachment = jsonObject.getJSONObject("featured_image");
+//
+                JSONObject attachment = jsonObject.getJSONObject("featured_image").getJSONObject("attachment_meta");
+
+//
+                if (attachment.has("sizes") && attachment.optJSONObject("sizes") != null && attachment.optJSONObject("sizes").length() > 0) {
+                  mAttachments.add(new Attachment(attachment));
                 }
-            }
         }
     }
 

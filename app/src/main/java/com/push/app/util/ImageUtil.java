@@ -21,8 +21,8 @@ public class ImageUtil {
     public static final double aspectRationSlider = 1.77;
     public static final double aspectRationThumb = 1.5;
 
-    public static int widthForSlider;
-    public static int widthForThumbs;
+    public static int widthForSlider = 500;
+    public static int widthForThumbs = 150;
 
     /**
      * Constant for the maximum size of image thumbnails.

@@ -1,5 +1,7 @@
 package com.push.app.model;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,10 +35,12 @@ public class Attachment implements Serializable {
      */
     private AttachmentType mMediumSize;
 
-    /**
-     * Attachment without specified size
-     */
-    private AttachmentType mNotSizedAttachment;
+    private AttachmentType mThumbnailSize;
+
+    public AttachmentType getThumbnailSize() {
+        return mThumbnailSize;
+    }
+
 
     /**
      * Class constructor
@@ -47,46 +51,42 @@ public class Attachment implements Serializable {
      *             exception to be thrown
      */
     public Attachment(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("images")) {
+        if (jsonObject.has("sizes")) {
 
-            JSONObject images = jsonObject.optJSONObject("images");
+            JSONObject images = jsonObject.optJSONObject("sizes");
+
             if (images != null) {
-                setFullSize(images);
+                setThumbnailSize(images);
                 setLargeSize(images);
                 setMediumSize(images);
             }
 
         } else {
-            setFullSize(jsonObject);
+            setThumbnailSize(jsonObject);
             setLargeSize(jsonObject);
             setMediumSize(jsonObject);
 
         }
 
-        setNonSizedAttachment(jsonObject);
     }
 
-    private void setNonSizedAttachment(JSONObject jsonObject) throws JSONException {
-        if (!jsonObject.has("full") && !jsonObject.has("large") && !jsonObject.has("medium") && jsonObject.has("url")) {
-            this.mNotSizedAttachment = new AttachmentType(jsonObject.getString("url"), 0, 0);
-        }
-    }
 
-    private void setFullSize(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("full")) {
-            String fullUrl = jsonObject.getJSONObject("full").getString("url");
-            int fullWidth = jsonObject.getJSONObject("full").getInt("width");
-            int fullHeight = jsonObject.getJSONObject("full").getInt("height");
 
-            this.mFullSize = new AttachmentType(fullUrl, fullWidth, fullHeight);
-        }
-    }
+//    private void setFullSize(JSONObject jsonObject) throws JSONException {
+//        if (jsonObject.has("full")) {
+//            String fullUrl = jsonObject.getJSONObject("full").getString("url");
+//            int fullWidth = jsonObject.getJSONObject("full").getInt("width");
+//            int fullHeight = jsonObject.getJSONObject("full").getInt("height");
+//
+//            this.mFullSize = new AttachmentType(fullUrl, fullWidth, fullHeight);
+//        }
+//    }
 
     private void setLargeSize(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("large")) {
-            String largeUrl = jsonObject.getJSONObject("large").getString("url");
-            int largeWidth = jsonObject.getJSONObject("large").getInt("width");
-            int largeHeight = jsonObject.getJSONObject("large").getInt("height");
+        if (jsonObject.has("app_thumbnail")) {
+            String largeUrl = jsonObject.getJSONObject("app_thumbnail").getString("url");
+            int largeWidth = jsonObject.getJSONObject("app_thumbnail").getInt("width");
+            int largeHeight = jsonObject.getJSONObject("app_thumbnail").getInt("height");
 
             this.mLargeSize = new AttachmentType(largeUrl, largeWidth, largeHeight);
         }
@@ -100,6 +100,18 @@ public class Attachment implements Serializable {
             int mediumHeight = jsonObject.getJSONObject("medium").getInt("height");
 
             this.mMediumSize = new AttachmentType(mediumUrl, mediumWidth,
+                    mediumHeight);
+        }
+    }
+
+    private void setThumbnailSize(JSONObject jsonObject) throws JSONException {
+        if (jsonObject.has("thumbnail")) {
+
+            String mediumUrl = jsonObject.getJSONObject("thumbnail").getString("url");
+            int mediumWidth = jsonObject.getJSONObject("thumbnail").getInt("width");
+            int mediumHeight = jsonObject.getJSONObject("thumbnail").getInt("height");
+
+            this.mThumbnailSize = new AttachmentType(mediumUrl, mediumWidth,
                     mediumHeight);
         }
     }
@@ -131,14 +143,10 @@ public class Attachment implements Serializable {
         return mMediumSize;
     }
 
-    /**
-     * Getter for the the Attachment without size
-     *
-     * @return Attachment without size
-     */
-    public AttachmentType getNotSizedAttachment() {
-        return mNotSizedAttachment;
-    }
+
+
+
+
 
     /**
      * Returns the best attachment by given width
@@ -155,9 +163,8 @@ public class Attachment implements Serializable {
             return getLargeSize();
         } else if (getMediumSize() != null){
             return mMediumSize;
-        } else {
-            return getNotSizedAttachment();
         }
 
+        return null;
     }
 }

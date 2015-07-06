@@ -8,7 +8,7 @@ public class Contants {
     /**
      * URL of your WordPress server
      */
-    public static final String WORDPRESS_SERVER_URL = "http://dmb-team.com/wp/";
+    public static final String WORDPRESS_SERVER_URL = "http://chano8.com/wp-json/posts";
     /**
      * Maximum number of posts for the slider in the MainActivity
      */

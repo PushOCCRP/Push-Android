@@ -31,6 +31,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,7 +61,9 @@ import com.push.app.adapter.PostListAdapter;
 import com.push.app.fragment.AboutPage;
 import com.push.app.fragment.DonatePage;
 import com.push.app.interfaces.OnFragmentInteractionListener;
+import com.push.app.model.AttachmentType;
 import com.push.app.model.Post;
+import com.push.app.util.ImageUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -83,7 +87,7 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     /**
      * URL to fetch Wordpress recent posts by given category
      */
-    private String WORDPRESS_FETCH_RECENT_POSTS_URL = "%s?json=get_recent_posts";
+//    private String WORDPRESS_FETCH_RECENT_POSTS_URL = "%swp-json/posts";
     private ArrayList<Post> recentPosts;
     private PostListAdapter mListAdapter;
     private MenuItem mSearchAction;
@@ -91,7 +95,8 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     private EditText editSearch;
     private SharedPreferences sharedPreferences;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private TextView firstItemHeadline;
+    private TextView firstItemHeadline,firstItemDescription;
+    private ImageView firstPostImage;
     private TextView firstItemDate;
     private FrameLayout mHomeLayout;
     private View header;
@@ -113,7 +118,6 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
         mImageView = findViewById(R.id.FirstItem);
         mToolbarView =(Toolbar) findViewById(R.id.toolbar);
-        mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary)));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
@@ -147,12 +151,9 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(Online())
+
                 checkForNewContent(false);
-                else {
-                    Toast.makeText(HomeActivity.this, "No Internet Connection", Toast.LENGTH_LONG).show();
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
+
             }
         });
 
@@ -165,7 +166,9 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
     private void initViews() {
         firstItemHeadline = (TextView)findViewById(R.id.firstPostHeadline);
+        firstItemDescription = (TextView)findViewById(R.id.postDescription);
         firstItemDate = (TextView)findViewById(R.id.first_post_Date);
+        firstPostImage = (ImageView) findViewById(R.id.firstPostImage);
 
 
 
@@ -212,25 +215,24 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     private void checkForNewContent(boolean refresh) {
 
         if(Online()){
-            WORDPRESS_FETCH_RECENT_POSTS_URL = String.format(WORDPRESS_FETCH_RECENT_POSTS_URL,WORDPRESS_SERVER_URL);
+            mSwipeRefreshLayout.setRefreshing(true);
             //Download the news articles
             if(refresh)
-            aq.progress(R.id.downloadProgress).ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
+            aq.progress(R.id.downloadProgress).ajax(WORDPRESS_SERVER_URL, JSONArray.class, this, "postDownloadCallBack");
             else
-                aq.ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
-
+                aq.ajax(WORDPRESS_SERVER_URL, JSONArray.class, this, "postDownloadCallBack");
 
 
         }else{
             Toast.makeText(this, "Check your internet connection", Toast.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
         }
 
     }
 
     private void loadFromCache(String jsonString){
         try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONArray items = json.getJSONArray("posts");
+            JSONArray items = new JSONArray(jsonString);
             recentPosts = new ArrayList<Post>();
             for (int i = 0; i < items.length(); i++) {
                 recentPosts.add(new Post(items.getJSONObject(i)));
@@ -244,24 +246,21 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         }
     }
 
-    public void postDownloadCallBack(String url,JSONObject json,AjaxStatus status){
-        if(json != null){
+    public void postDownloadCallBack(String url,JSONArray items,AjaxStatus status){
+        if(items != null){
             try {
+                    Log.d("THE ARRAY: ", items.toString());
 
                 //successful ajax call, show status code and json content
 //                Toast.makeText(aq.getContext(), status.getCode() + ":" + json.toString(), Toast.LENGTH_LONG).show();
-                cachePosts("json",json.toString());
+                cachePosts("json", items.toString());
 
-                JSONArray items = json.getJSONArray("posts");
+//                JSONArray items = json.getJSONArray("");
                 recentPosts = new ArrayList<Post>();
                 for (int i = 0; i < items.length(); i++) {
+                    Log.d("THE ONJECT: " , items.getJSONObject(i).toString());
                     recentPosts.add(new Post(items.getJSONObject(i)));
                 }
-
-//                showSlidingLoadingView();
-//                showNewsListLoading();
-
-
 
                 //Display the downloaded data
                 displayArticles(recentPosts);
@@ -272,7 +271,8 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         }else{
 
             //ajax error, show error code
-            Toast.makeText(aq.getContext(), "Error:" + status.getCode(), Toast.LENGTH_LONG).show();
+            Toast.makeText(aq.getContext(), "Error: Failed to retrieve posts", Toast.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
         }
 
     }
@@ -282,37 +282,43 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
      * Displays the downloaded articles in the list and also populates the slide show
      * @param recentPosts
      */
-    private void displayArticles(final ArrayList<Post> recentPosts) {
-        ArrayList<Post> sliderPosts = new ArrayList<Post>();
-        ArrayList<Post> listPosts = new ArrayList<>();
+    private void displayArticles( final ArrayList<Post> recentPosts) {
+        final ArrayList<Post> mPosts = new ArrayList<>();
+       mPosts.addAll(recentPosts);
+        PostFragmentAdapter.postItems = mPosts;
 
 
-        for (int i = 0; i < recentPosts.size(); i++) {
-            if (recentPosts.get(i).isSliderPost()
-                    && sliderPosts.size() < WORDPRES_SLIDER_MAX_POSTS) {
-                sliderPosts.add(recentPosts.get(i));
-            } else {
-                listPosts.add(recentPosts.get(i));
+        firstPostImage.setVisibility(View.GONE);
+        if (recentPosts.get(0).getAttachments().size() > 0) {
+
+            AttachmentType currentAttachment = recentPosts.get(0)
+                    .getAttachments().get(0).getMediumSize();
+            if (currentAttachment != null) {
+
+
+                aq.id(firstPostImage).image(currentAttachment.getUrl());
+
             }
-        }
 
-        //Extract the first item from the list
-       firstItemHeadline.setText(listPosts.get(0).getTitle());
+        }
+       firstItemHeadline.setText(recentPosts.get(0).getTitle());
+        firstItemDescription.setText(recentPosts.get(0).getExcept());
 //        firstItemDate.setText(listPosts.get(0).getPublishedDate());
         //remove it from the list
-        listPosts.remove(0);
+        recentPosts.remove(0);
 
-        this.mListAdapter = new PostListAdapter(this,R.layout.list_news_item,listPosts);
+        this.mListAdapter = new PostListAdapter(this,R.layout.list_news_item,recentPosts);
         this.mListView.setAdapter(mListAdapter);
         mSwipeRefreshLayout.setRefreshing(false);
+
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PostFragmentAdapter.postItems = recentPosts;
+
                 Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
                 i.putExtra("postPosition",position);
-                i.putExtra("postTitle",recentPosts.get(position).getTitle());
+                i.putExtra("postTitle",recentPosts.get(position % recentPosts.size()).getTitle());
                 startActivity(i);
             }
         });
@@ -348,9 +354,6 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-        int baseColor = getResources().getColor(R.color.colorPrimary);
-        float alpha = Math.min(1, (float) scrollY / mParallaxImageHeight);
-        mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
         ViewHelper.setTranslationY(mImageView, -scrollY / 2);
 
         // Translate list background
@@ -398,7 +401,6 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         }
 
         if (fragment != null) {
-            mToolbarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             fragmentTransaction.replace(R.id.container_body, fragment,"Fragment");
             fragmentTransaction.commit();
             this.mHomeLayout.setVisibility(View.GONE);
@@ -433,6 +435,8 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             return true;
         }else if(id==R.id.action_search){
             handleMenuSearch();
+        }else if(id==R.id.action_refresh_list){
+            checkForNewContent(true);
         }
 
         return super.onOptionsItemSelected(item);

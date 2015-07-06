@@ -50,7 +50,7 @@ public class DetailPostActivity extends ActionBarActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle("Details");
     }
 
     @Override
@@ -72,6 +72,8 @@ public class DetailPostActivity extends ActionBarActivity {
             return true;
         }else if(id==R.id.action_share){
             doShare();
+        }else if(id==android.R.id.home){
+            onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
