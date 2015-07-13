@@ -67,9 +67,10 @@ public class PostListAdapter extends ArrayAdapter<Post> {
 
         holder.postTitle.setTypeface(fontManager.getRobotoMedium());
         holder.postTitle.setText(items.get(position).getTitle());
+        holder.postImage.setImageResource(R.drawable.example);
 
-
-        if (items.get(position).getAttachments().size() > 0) {
+        //TODO Uncomment this for production
+        /*if (items.get(position).getAttachments().size() > 0) {
 
             AttachmentType currentAttachment = items.get(position)
                     .getAttachments().get(0).getThumbnailSize();
@@ -80,7 +81,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
 
             }
 
-        }
+        }*/
 
         if(position%2 == 0) {
             holder.postImage.setVisibility(View.VISIBLE);

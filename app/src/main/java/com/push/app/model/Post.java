@@ -86,6 +86,86 @@ public class Post implements Serializable {
 
     public Post(){}
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public List<Attachment> getmAttachments() {
+        return mAttachments;
+    }
+
+    public void setmAttachments(List<Attachment> mAttachments) {
+        this.mAttachments = mAttachments;
+    }
+
+    public List<Category> getmCategories() {
+        return mCategories;
+    }
+
+    public void setmCategories(List<Category> mCategories) {
+        this.mCategories = mCategories;
+    }
+
+    public String getmContent() {
+        return mContent;
+    }
+
+    public void setmContent(String mContent) {
+        this.mContent = mContent;
+    }
+
+    public String getMid() {
+        return mid;
+    }
+
+    public void setMid(String mid) {
+        this.mid = mid;
+    }
+
+    public Date getmPublishedDate() {
+        return mPublishedDate;
+    }
+
+    public void setmPublishedDate(Date mPublishedDate) {
+        this.mPublishedDate = mPublishedDate;
+    }
+
+    public String getmStatus() {
+        return mStatus;
+    }
+
+    public void setmStatus(String mStatus) {
+        this.mStatus = mStatus;
+    }
+
+    public String getmTitle() {
+        return mTitle;
+    }
+
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public String getmUrl() {
+        return mUrl;
+    }
+
+    public void setmUrl(String mUrl) {
+        this.mUrl = mUrl;
+    }
+
+    public Post(String mUrl, List<Attachment> mAttachments, List<Category> mCategories, String mContent, String mid, String except, Date mPublishedDate, String mStatus, String mTitle) {
+        this.mUrl = mUrl;
+        this.mAttachments = mAttachments;
+        this.mCategories = mCategories;
+        this.mContent = mContent;
+        this.mid = mid;
+        this.except = except;
+        this.mPublishedDate = mPublishedDate;
+        this.mStatus = mStatus;
+        this.mTitle = mTitle;
+    }
+
     /**
      * Class constructor
      *

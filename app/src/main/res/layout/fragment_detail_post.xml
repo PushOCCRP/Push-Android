@@ -19,7 +19,7 @@
 
     <ImageView
         android:id="@+id/postImage"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:src="@drawable/example"
         android:scaleType="centerCrop"

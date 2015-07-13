@@ -31,11 +31,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-<<<<<<< HEAD
-import android.util.Log;
-import android.view.Gravity;
-=======
->>>>>>> cc97c905ce4d4bfab2d0f005281c44f2c75e8dd5
+
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,11 +63,7 @@ import com.push.app.fragment.DonatePage;
 import com.push.app.interfaces.OnFragmentInteractionListener;
 import com.push.app.model.AttachmentType;
 import com.push.app.model.Post;
-<<<<<<< HEAD
-import com.push.app.util.ImageUtil;
-=======
 import com.push.app.util.Utils;
->>>>>>> cc97c905ce4d4bfab2d0f005281c44f2c75e8dd5
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -155,8 +147,8 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
-                checkForNewContent(false);
+                //TODO uncomment this
+//                checkForNewContent(false);
 
             }
         });
@@ -178,13 +170,13 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     }
 
     private void displayFromCache() {
-        //TODO
+
         //add code for loading cached posts here
         //Download the notification content here
         if(isNotification){
             Utils.log("This is a notification");
-            WORDPRESS_FETCH_RECENT_POSTS_URL = String.format(WORDPRESS_FETCH_RECENT_POSTS_URL,WORDPRESS_SERVER_URL);
-            aq.progress(R.id.downloadProgress).ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
+            //TODO Uncomment this
+//            aq.progress(R.id.downloadProgress).ajax(WORDPRESS_SERVER_URL, JSONObject.class, this, "postDownloadCallBack");
             String extra = getIntent().getExtras().getString(Notification.DefaultNotificationHandler.INTENT_EXTRAS_KEY);
             Utils.log("Extras -> " + extra);
             try{
@@ -200,7 +192,21 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
                 loadFromCache(cachedJSON);
                 checkForNewContent(false);
             }else{
-                checkForNewContent(true);
+                //TODO Uncomment this
+//                checkForNewContent(true);
+
+//Generating dummy data
+                ArrayList<Post> dummyPostsList = new ArrayList<>();
+                Post item = new Post();
+                for(int i = 0;i<20;i++){
+                    item.setmTitle("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
+                    item.setExcept("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum");
+                    item.setmContent("Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?");
+
+                    dummyPostsList.add(item);
+                }
+                //Display the downloaded data
+                displayArticles(dummyPostsList);
             }
         }
 
@@ -233,20 +239,14 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         if(Online()){
             mSwipeRefreshLayout.setRefreshing(true);
             //Download the news articles
-<<<<<<< HEAD
-            if(refresh)
-            aq.progress(R.id.downloadProgress).ajax(WORDPRESS_SERVER_URL, JSONArray.class, this, "postDownloadCallBack");
-            else
-                aq.ajax(WORDPRESS_SERVER_URL, JSONArray.class, this, "postDownloadCallBack");
 
-
-=======
-            if(refresh){
-                aq.progress(R.id.downloadProgress).ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
-            }else{
-                aq.ajax(WORDPRESS_FETCH_RECENT_POSTS_URL, JSONObject.class, this, "postDownloadCallBack");
+            if(refresh) {
+                //TODO Uncomment
+//            aq.progress(R.id.downloadProgress).ajax(WORDPRESS_SERVER_URL, JSONArray.class, this, "postDownloadCallBack");
+            }else {
+                //TODO Uncomment
+//                aq.ajax(WORDPRESS_SERVER_URL, JSONArray.class, this, "postDownloadCallBack");
             }
->>>>>>> cc97c905ce4d4bfab2d0f005281c44f2c75e8dd5
         }else{
             Toast.makeText(this, "Check your internet connection", Toast.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -273,23 +273,14 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     public void postDownloadCallBack(String url,JSONArray items,AjaxStatus status){
         if(items != null){
             try {
-                    Log.d("THE ARRAY: ", items.toString());
 
-                //successful ajax call, show status code and json content
-//                Toast.makeText(aq.getContext(), status.getCode() + ":" + json.toString(), Toast.LENGTH_LONG).show();
-<<<<<<< HEAD
+
                 cachePosts("json", items.toString());
 
-//                JSONArray items = json.getJSONArray("");
                 recentPosts = new ArrayList<Post>();
-=======
-                cachePosts("json", json.toString());
 
-                JSONArray items = json.getJSONArray("posts");
-                recentPosts = new ArrayList<>();
->>>>>>> cc97c905ce4d4bfab2d0f005281c44f2c75e8dd5
                 for (int i = 0; i < items.length(); i++) {
-                    Log.d("THE ONJECT: " , items.getJSONObject(i).toString());
+
                     recentPosts.add(new Post(items.getJSONObject(i)));
                 }
 
@@ -301,8 +292,9 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
         }else{
 
+            //TODO Uncomment
             //ajax error, show error code
-            Toast.makeText(aq.getContext(), "Error: Failed to retrieve posts", Toast.LENGTH_LONG).show();
+//            Toast.makeText(aq.getContext(), "Error: Failed to retrieve posts", Toast.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
         }
 
@@ -319,19 +311,21 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         PostFragmentAdapter.postItems = mPosts;
 
 
-        firstPostImage.setVisibility(View.GONE);
-        if (recentPosts.get(0).getAttachments().size() > 0) {
+//        firstPostImage.setVisibility(View.GONE);
+        //TODO Uncomment this
+       /* if (recentPosts.get(0).getAttachments().size() > 0) {
 
             AttachmentType currentAttachment = recentPosts.get(0)
                     .getAttachments().get(0).getMediumSize();
             if (currentAttachment != null) {
 
 
+
                 aq.id(firstPostImage).image(currentAttachment.getUrl());
 
             }
 
-        }
+        }*/
        firstItemHeadline.setText(recentPosts.get(0).getTitle());
         firstItemDescription.setText(recentPosts.get(0).getExcept());
 //        firstItemDate.setText(listPosts.get(0).getPublishedDate());
@@ -348,13 +342,10 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
-<<<<<<< HEAD
-                i.putExtra("postPosition",position);
-                i.putExtra("postTitle",recentPosts.get(position % recentPosts.size()).getTitle());
-=======
+
                 i.putExtra("postPosition", position);
                 i.putExtra("postTitle", recentPosts.get(position).getTitle());
->>>>>>> cc97c905ce4d4bfab2d0f005281c44f2c75e8dd5
+
                 startActivity(i);
             }
         });
