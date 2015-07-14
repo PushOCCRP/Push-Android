@@ -2,6 +2,7 @@ package com.push.app.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,12 +13,12 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.push.app.R;
 import com.push.app.interfaces.OnFragmentInteractionListener;
-import com.push.app.util.Utils;
 
 import java.text.DecimalFormat;
 
@@ -82,13 +83,15 @@ public class DonatePage extends Fragment {
 
         aq.id(R.id.btn_donate).clicked(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Utils.log("Donate button clicked");
+            public void onClick(View view){
                 String amount = aq.id(R.id.txt_amount).getText().toString().trim();
                 if(amount.length() == 0){
                     Toast.makeText(getActivity(), getActivity().getString(R.string.enter_valid_amount), Toast.LENGTH_LONG).show();
                     return;
                 }
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
                 DonateConfirmationDialog.newInstance(amount).show(getFragmentManager(), "confirm_donation");
             }
         });
