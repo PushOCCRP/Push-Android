@@ -6,7 +6,6 @@ import android.content.Intent;
 import com.infobip.push.Configuration;
 import com.infobip.push.Notification;
 import com.infobip.push.PushClient;
-import com.push.app.util.Utils;
 
 /**
  * Created by Zed on 6/30/2015.
@@ -15,7 +14,6 @@ public class PushApplication extends Application {
     Configuration pushConfig;
     @Override
     public void onCreate() {
-        Utils.log("Creating application");
         super.onCreate();
         //Initialize push
         pushConfig =
