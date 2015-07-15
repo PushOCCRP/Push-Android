@@ -63,6 +63,7 @@ import com.push.app.model.Post;
 import com.push.app.util.Utils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -125,8 +126,7 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         initViews();
         // Set padding view for ListView. This is the flexible space.
         View paddingView = new View(this);
-        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
-                mParallaxImageHeight);
+        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, mParallaxImageHeight);
         paddingView.setLayoutParams(lp);
 
         // This is required to disable header's list selector effect
@@ -146,6 +146,25 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
             }
         });
+
+        if(isNotification){
+            String extra = getIntent().getExtras().getString(Notification.DefaultNotificationHandler.INTENT_EXTRAS_KEY);
+            Utils.log("Extras -> " + extra);
+            try{
+                JSONObject extrasObject = new JSONObject(extra);
+                JSONObject extras = extrasObject.getJSONObject("payload").getJSONObject("extras");
+                JSONObject additionalInfo = extras.getJSONObject("additionalInfo");
+                Utils.log("Extras payload -> " + extras);
+                if(additionalInfo.has("action") && additionalInfo.getString("action").equalsIgnoreCase("donation")) {
+                    Utils.log("Displaying donation page");
+                    displayView(1);
+
+                    return;
+                }
+            }catch (JSONException ex){
+                Utils.log("Error loading post -> " + ex.getMessage());
+            }
+        }
 
         //Display files from Cache
         displayFromCache();
@@ -176,7 +195,7 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             try{
                 JSONObject extrasObject = new JSONObject(extra);
                 JSONObject extras = extrasObject.getJSONObject("payload").getJSONObject("extras");
-                Utils.log("URL -> " + extras.getString("url"));
+                Utils.log("Extras payload -> " + extras.getString("url"));
             }catch (Exception ex){
                 Utils.log("Error loading post -> " + ex.getMessage());
             }
@@ -451,8 +470,6 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             fragmentTransaction.replace(R.id.container_body, fragment,"Fragment");
             fragmentTransaction.commit();
             this.mHomeLayout.setVisibility(View.GONE);
-
-
         }
 
         // set the toolbar title
