@@ -28,16 +28,10 @@ public class Post implements Serializable {
      * UID version for serialization
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * List of Post Attachments
-     */
-    private List<Attachment> mAttachments;
-
-    /**
-     * List of Post Categories
-     */
-    private List<Category> mCategories;
+    private String[] imageUrls;
+    private String organisation;
+    private String language;
+    private String author;
 
     /**
      * Content of the Post
@@ -67,43 +61,39 @@ public class Post implements Serializable {
      */
     private Date mPublishedDate;
 
-    /**
-     * Status of the Post
-     */
-    private String mStatus;
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getOrganisation() {
+        return organisation;
+    }
+
+    public void setOrganisation(String organisation) {
+        this.organisation = organisation;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
     /**
      * Title of the Post
      */
     private String mTitle;
 
-
-
-    /**
-     * URL of the Post
-     */
-    private String mUrl;
-
     public Post(){}
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
-    }
-
-    public List<Attachment> getmAttachments() {
-        return mAttachments;
-    }
-
-    public void setmAttachments(List<Attachment> mAttachments) {
-        this.mAttachments = mAttachments;
-    }
-
-    public List<Category> getmCategories() {
-        return mCategories;
-    }
-
-    public void setmCategories(List<Category> mCategories) {
-        this.mCategories = mCategories;
     }
 
     public String getmContent() {
@@ -130,14 +120,6 @@ public class Post implements Serializable {
         this.mPublishedDate = mPublishedDate;
     }
 
-    public String getmStatus() {
-        return mStatus;
-    }
-
-    public void setmStatus(String mStatus) {
-        this.mStatus = mStatus;
-    }
-
     public String getmTitle() {
         return mTitle;
     }
@@ -146,24 +128,24 @@ public class Post implements Serializable {
         this.mTitle = mTitle;
     }
 
-    public String getmUrl() {
-        return mUrl;
-    }
-
-    public void setmUrl(String mUrl) {
-        this.mUrl = mUrl;
-    }
-
-    public Post(String mUrl, List<Attachment> mAttachments, List<Category> mCategories, String mContent, String mid, String except, Date mPublishedDate, String mStatus, String mTitle) {
-        this.mUrl = mUrl;
-        this.mAttachments = mAttachments;
-        this.mCategories = mCategories;
+    public Post( String author,String organisation,String language, List<Category> mCategories, String mContent, String mid, String except, Date mPublishedDate, String mTitle) {
         this.mContent = mContent;
         this.mid = mid;
         this.except = except;
         this.mPublishedDate = mPublishedDate;
-        this.mStatus = mStatus;
         this.mTitle = mTitle;
+        this.author = author;
+        this.organisation = organisation;
+        this.language = language;
+
+    }
+
+    public String[] getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(String[] imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     /**
@@ -175,66 +157,19 @@ public class Post implements Serializable {
      */
     public Post(JSONObject jsonObject) throws Exception {
         this.mid = jsonObject.getString("ID");
-        this.mTitle = Html.fromHtml(jsonObject.getString("title"))
+        this.mTitle = Html.fromHtml(jsonObject.getString("headline"))
                 .toString();
-        this.except = Html.fromHtml(jsonObject.getString("excerpt"))
+        this.except = Html.fromHtml(jsonObject.getString("description"))
                 .toString();
-        String text = embedYoutubeVideos(jsonObject.getString("content"));
-        this.mContent = text;
+        this.mContent = jsonObject.getString("body");
 //
 //        removeAdsense();
 //        this.mStatus = jsonObject.getString("status");
-        this.mUrl = jsonObject.getString("link");
         this.mPublishedDate = DateUtil.postsDatePublishedFormatter
-                .parse(jsonObject.getString("date").replace("T"," "));
-//
-//        JSONArray categoriesJson = jsonObject.getJSONArray("categories");
-//
-//        mCategories = new ArrayList<Category>();
-//
-//        for (int i = 0; i < categoriesJson.length(); i++) {
-//            mCategories.add(new Category(categoriesJson.getJSONObject(i)));
-//        }
-//
-//        //JSONArray attachmentsJson = jsonObject.getJSONArray("attachments");
-//
-        mAttachments = new ArrayList<Attachment>();
-//
-//		/*for (int i = 0; i < attachmentsJson.length(); i++) {
-//
-//			mAttachments.add(new Attachment(attachmentsJson.getJSONObject(i)));
-//		}*/
-//
-//
-//        addAttachmentFromThumbnailImages(jsonObject);
-        addAttachmentFromAttachments(jsonObject);
-//
-//        for (Attachment attachment : mAttachments) {
-//            if (attachment.getFullSize() == null && attachment.getLargeSize() == null && attachment.getMediumSize() == null && attachment.getNotSizedAttachment() == null) {
-//                mAttachments.remove(attachment);
-//            }
-//        }
-//
-//        Log.d("Adding Post", "Title - " + mTitle);
+                .parse(jsonObject.getString("publish_date"));
+        this.author = jsonObject.getString("author");
+//        this.imageUrls = jsonObject.get;
 
-    }
-
-    /**
-     * Getter of the Post Attachments
-     *
-     * @return Post Attachments
-     */
-    public List<Attachment> getAttachments() {
-        return mAttachments;
-    }
-
-    /**
-     * Getter of the Post Categories
-     *
-     * @return Post Categories
-     */
-    public List<Category> getCategories() {
-        return mCategories;
     }
 
     /**
@@ -268,14 +203,6 @@ public class Post implements Serializable {
         return mPublishedDate;
     }
 
-    /**
-     * Getter of the Post Status
-     *
-     * @return Post Status
-     */
-    public String getStatus() {
-        return mStatus;
-    }
 
     /**
      * Getter of the Post Title
@@ -284,66 +211,5 @@ public class Post implements Serializable {
      */
     public String getTitle() {
         return mTitle;
-    }
-
-    /**
-     * Getter of the Post URL
-     *
-     * @return Post URL
-     */
-    public String getUrl() {
-        return mUrl;
-    }
-
-
-    private void addAttachmentFromAttachments(JSONObject jsonObject) throws JSONException {
-
-        if (jsonObject.has("featured_image")) {
-
-
-//            JSONObject mAttachment = jsonObject.getJSONObject("featured_image");
-//
-                JSONObject attachment = jsonObject.getJSONObject("featured_image").getJSONObject("attachment_meta");
-
-//
-                if (attachment.has("sizes") && attachment.optJSONObject("sizes") != null && attachment.optJSONObject("sizes").length() > 0) {
-                  mAttachments.add(new Attachment(attachment));
-                }
-        }
-    }
-
-    private void removeAdsense()throws Exception{
-        String adSensePrefix = "(adsbygoogle";
-        String adSenseSuffix = ".push({});";
-        if(mContent.indexOf(adSensePrefix) > -1){
-            int startSuffixPosition = mContent.indexOf(adSensePrefix);
-            int endSuffixPosition = mContent.indexOf(adSenseSuffix, startSuffixPosition);
-
-            mContent = mContent.replace(mContent.substring(startSuffixPosition, endSuffixPosition + adSenseSuffix.length()), "");;
-
-        }
-    }
-
-    private String embedYoutubeVideos(String text)throws Exception{
-        String adSensePrefix = "<iframe";
-        String adSenseSuffix = "</iframe>";
-        String sourceStart = "src=\"";
-        String sourceEnd = "\"";
-        String source = "";
-
-        if(text.indexOf(adSensePrefix) > -1){
-            int startSuffixPosition = text.indexOf(adSensePrefix);
-            int endSuffixPosition = text.indexOf(adSenseSuffix, startSuffixPosition);
-            if(text.indexOf(sourceStart) > -1){
-                int sourceStartPosition = text.indexOf(sourceStart) + sourceStart.length();
-                int sourceEndPosition = text.indexOf(sourceEnd, sourceStartPosition) + sourceEnd.length();
-                source = text.substring(sourceStartPosition, sourceEndPosition - 1);
-                source = source.replaceFirst("//", "");
-                source = "<a href=\"http://" + source+ "\">"+ source + "</a>";
-            }
-
-            text = text.replace(text.substring(startSuffixPosition, endSuffixPosition + adSenseSuffix.length()), source);;
-        }
-        return text;
     }
 }
