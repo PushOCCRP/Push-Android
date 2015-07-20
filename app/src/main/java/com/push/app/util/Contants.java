@@ -8,7 +8,7 @@ public class Contants {
     /**
      * URL of your server
      */
-    public static final String SERVER_URL = "http://chano8.com/wp-json/posts";
-//    public static final String SERVER_URL = "http://push-backend.herokuapp.com/articles";
+//    public static final String SERVER_URL = "http://chano8.com/wp-json/posts";
+    public static final String SERVER_URL = "http://push-backend.herokuapp.com";
 
 }

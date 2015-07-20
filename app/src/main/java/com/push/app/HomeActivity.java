@@ -30,62 +30,59 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
+import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+import com.google.gson.Gson;
 import com.infobip.push.Notification;
-import com.nineoldandroids.view.ViewHelper;
-import com.push.app.ObservableList.BaseActivity;
-import com.push.app.ObservableList.ObservableListView;
-import com.push.app.ObservableList.ObservableScrollViewCallbacks;
-import com.push.app.ObservableList.ScrollState;
 import com.push.app.adapter.PostFragmentAdapter;
 import com.push.app.adapter.PostListAdapter;
 import com.push.app.fragment.AboutPage;
 import com.push.app.fragment.DonatePage;
 import com.push.app.interfaces.OnFragmentInteractionListener;
-import com.push.app.model.Post;
+import com.push.app.interfaces.RestApi;
+import com.push.app.model.Article;
+import com.push.app.model.ArticlePost;
 import com.push.app.util.Contants;
+import com.push.app.util.DateUtil;
 import com.push.app.util.Utils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
-public class HomeActivity extends BaseActivity implements ObservableScrollViewCallbacks, FragmentDrawer.FragmentDrawerListener, OnFragmentInteractionListener {
+import retrofit.Callback;
+import retrofit.RequestInterceptor;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
-    private View mImageView;
+public class HomeActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, OnFragmentInteractionListener {
+
     private Toolbar mToolbarView;
-    private View mListBackgroundView;
     private ObservableListView mListView;
-    private int mParallaxImageHeight;
-
-    private FragmentDrawer drawerFragment;
     private AQuery aq;
 
-    /**
-     * URL to fetch Wordpress recent posts by given category
-     */
-//    private String WORDPRESS_FETCH_RECENT_POSTS_URL = "%swp-json/posts";
-    private ArrayList<Post> recentPosts;
-    private PostListAdapter mListAdapter;
     private MenuItem mSearchAction;
     private boolean isSearchOpened = false;
     private EditText editSearch;
@@ -93,16 +90,20 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView firstItemHeadline,firstItemDescription;
     private ImageView firstPostImage;
-    private TextView firstItemDate;
-    private FrameLayout mHomeLayout;
-    private View header;
-    //private LinearLayout mFirstItemDescLayout;
+    private TextView firstItemDateandAuthor;
+    private FrameLayout mHomeLayout,mSearchView;
     private boolean isNotification = false;
+    private RestApi restAPI;
+    private InputMethodManager imm;
+    long lastLoadTime = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
+        lastLoadTime = sharedPreferences.getLong("lastLoadTime", 0);
 
          aq = new AQuery(this);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -111,33 +112,17 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.activity_main_swipe_refresh_layout);
         mHomeLayout = (FrameLayout)findViewById(R.id.mHomeLayout);
+        mSearchView = (FrameLayout)findViewById(R.id.mSearchView);
 
-        mImageView = findViewById(R.id.FirstItem);
         mToolbarView =(Toolbar) findViewById(R.id.toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         //Setup the drawer
         setUpDrawer();
 
         mListView = (ObservableListView) findViewById(R.id.mList);
-        mListView.setScrollViewCallbacks(this);
-
         initViews();
-        // Set padding view for ListView. This is the flexible space.
-        View paddingView = new View(this);
-        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, mParallaxImageHeight);
-        paddingView.setLayoutParams(lp);
-
-        // This is required to disable header's list selector effect
-        paddingView.setClickable(false);
-
-        mListView.addHeaderView(paddingView);
-//        setDummyData(mListView);
-
-        // mListBackgroundView makes ListView's background except header view.
-        mListBackgroundView = findViewById(R.id.list_background);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -166,30 +151,51 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             }
         }
 
+        //set up rest API
+        setUpRestApi();
+
         //Display files from Cache
         displayFromCache();
     }
 
+
+
+    private void setUpRestApi() {
+        RequestInterceptor requestInterceptor = new RequestInterceptor() {
+            @Override
+            public void intercept(RequestInterceptor.RequestFacade request) {
+                request.addHeader("Accept", "application/json; charset=utf-8");
+            }
+        };
+
+        //create an adapter for retrofit with base url
+        RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL)
+                .setRequestInterceptor(requestInterceptor)
+                .setEndpoint(Contants.SERVER_URL).build();
+        //creating a service for adapter with our GET class
+        restAPI = restAdapter.create(RestApi.class);
+    }
+
     private void initViews() {
-        firstItemHeadline = (TextView)findViewById(R.id.firstPostHeadline);
-        firstItemDescription = (TextView)findViewById(R.id.postDescription);
-        firstItemDate = (TextView)findViewById(R.id.first_post_Date);
-        firstPostImage = (ImageView) findViewById(R.id.firstPostImage);
+
+        LinearLayout firstItemView = (LinearLayout) getLayoutInflater().inflate(R.layout.first_item_view, null);
+        firstItemHeadline = (TextView) firstItemView.findViewById(R.id.firstPostHeadline);
+        firstItemDescription = (TextView) firstItemView.findViewById(R.id.postDescription);
+        firstItemDateandAuthor = (TextView) firstItemView.findViewById(R.id.first_post_Date);
+        firstPostImage = (ImageView) firstItemView. findViewById(R.id.firstPostImage);
+        // This is required to disable header's list selector effect
+        mListView.addHeaderView(firstItemView);
+        firstItemView.setClickable(false);
 
 
 
-        LayoutInflater inflater = getLayoutInflater();
-         header = inflater.inflate(R.layout.first_list_item, mListView, false);
     }
 
     private void displayFromCache() {
 
-        //add code for loading cached posts here
         //Download the notification content here
         if(isNotification){
             Utils.log("This is a notification");
-            //TODO Uncomment this
-//            aq.progress(R.id.downloadProgress).ajax(Contants.SERVER_URL, JSONObject.class, this, "postDownloadCallBack");
             String extra = getIntent().getExtras().getString(Notification.DefaultNotificationHandler.INTENT_EXTRAS_KEY);
             Utils.log("Extras -> " + extra);
             try{
@@ -200,68 +206,67 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
                 Utils.log("Error loading post -> " + ex.getMessage());
             }
 
-            String cachedJSON = getCachedPosts("json");
-            if(cachedJSON != null){
-                loadFromCache(cachedJSON);
+
+            ArticlePost cachedPOSTS = getCachedPosts();
+            if(cachedPOSTS != null && cachedPOSTS.getResults().size()>0){
+                displayArticles(cachedPOSTS);
+                if(loadNews()) //check whether our load time is due
                 checkForNewContent(false);
             }else{
                 checkForNewContent(true);
 
-//                //Generating dummy data
-//                ArrayList<Post> dummyPostsList = new ArrayList<>();
-//                Post item = new Post();
-//                for(int i = 0;i<20;i++){
-//                    item.setmTitle("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
-//                    item.setExcept("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum");
-//                    item.setmContent("Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?");
-//
-//                    dummyPostsList.add(item);
-//                }
-//                //Display the downloaded data
-//                displayArticles(dummyPostsList);
             }
         }else{
-            String cachedJSON = getCachedPosts("json");
-            if(cachedJSON != null){
-                loadFromCache(cachedJSON);
+
+            ArticlePost cachedPOSTS = getCachedPosts();
+            if(cachedPOSTS != null && cachedPOSTS.getResults().size()>0){
+                displayArticles(cachedPOSTS);
+                if(loadNews()) //check whether our load time is due
                 checkForNewContent(false);
             }else{
                 checkForNewContent(true);
-
-                //Generating dummy data
-//                ArrayList<Post> dummyPostsList = new ArrayList<>();
-//                Post item = new Post();
-//                for(int i = 0;i<20;i++){
-//                    item.setmTitle("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
-//                    item.setExcept("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum");
-//                    item.setmContent("Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?");
-//
-//                    dummyPostsList.add(item);
-//                }
-//                //Display the downloaded data
-//                displayArticles(dummyPostsList);
-            }
+        }
         }
 
     }
 
-    public void cachePosts(String key, String value) {
+    public void cachePosts( final ArticlePost articles) {
+        Log.d("AFTER CACHE",articles.getResults().size()+"");
         sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
         if (sharedPreferences != null) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(key, value);
-            editor.commit();
+            Gson gson = new Gson();
+            String json = gson.toJson(articles);
+            editor.putString("Articles", json);
+             editor.commit();
 
         }
+            }
+
+    public ArticlePost getCachedPosts() {
+        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
+        ArticlePost articlePost = new ArticlePost();
+        if (sharedPreferences != null) {
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString("Articles", "");
+            articlePost = gson.fromJson(json, ArticlePost.class);
+                  }
+
+
+        return articlePost;
     }
 
-    public String getCachedPosts(String key) {
-        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-        String res = null;
-        if (sharedPreferences != null) {
-            res = sharedPreferences.getString(key, null);
+    boolean loadNews(){
+        long difference = System.currentTimeMillis()
+                - (lastLoadTime); // the time since the last load
+        if (lastLoadTime == 0 || difference > (60 * 60 * 1000)) {
+        Log.d("TIME","Should Load");
+            return true; // trigger a load
+
+        }else {
+            Log.d("TIME","Should not Load");
+            return false;
         }
-        return res;
     }
 
     /**
@@ -270,13 +275,40 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
     private void checkForNewContent(boolean refresh) {
 
         if(Online()){
-            mSwipeRefreshLayout.setRefreshing(true);
-            //Download the news articles
-            Toast.makeText(this, "Downloading", Toast.LENGTH_LONG).show();
+
             if(refresh) {
-            aq.progress(R.id.downloadProgress).ajax(Contants.SERVER_URL, JSONObject.class, this, "postDownloadCallBack");
+                    findViewById(R.id.downloadProgress).setVisibility(View.VISIBLE);
+                restAPI.getArticles(new Callback<ArticlePost>() {
+                    @Override
+                    public void success(ArticlePost articlePost, Response response) {
+                        cachePosts(articlePost);
+                        displayArticles(articlePost);
+                        updateLastLoadTime();
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("ERROR", "Failed to parse JSON ", error);
+                    }
+                });
+
             }else {
-                aq.ajax(Contants.SERVER_URL, JSONArray.class, this, "postDownloadCallBack");
+
+                restAPI.getArticles(new Callback<ArticlePost>() {
+                    @Override
+                    public void success(ArticlePost articlePost, Response response) {
+                        cachePosts(articlePost);
+                        displayArticles(articlePost);
+                        updateLastLoadTime();
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e("ERROR", "Failed to parse JSON ", error);
+                    }
+                });
             }
         }else{
             Toast.makeText(this, "Check your internet connection", Toast.LENGTH_LONG).show();
@@ -285,99 +317,53 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
 
     }
 
-    private void loadFromCache(String jsonString){
-        try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONArray items = json.getJSONArray("results");
-            recentPosts = new ArrayList<Post>();
-            for (int i = 0; i < items.length(); i++) {
-                recentPosts.add(new Post(items.getJSONObject(i)));
-            }
-
-
-            //Display the downloaded data
-            displayArticles(recentPosts);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void postDownloadCallBack(String url,JSONObject json,AjaxStatus status){
-        //stop the refresh
-        mSwipeRefreshLayout.setRefreshing(false);
-
-
-        if(json != null){
-            Utils.log(json.toString());
-            try {
-                JSONArray jsonArray = json.getJSONArray("results");
-
-                cachePosts("json", json.toString());
-
-                recentPosts = new ArrayList<Post>();
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    recentPosts.add(new Post(jsonArray.getJSONObject(i)));
-                }
-
-                //Display the downloaded data
-                displayArticles(recentPosts);
-            }catch (Exception e){
-
-            }
-
-        }else{
-
-            //ajax error, show error code
-            Toast.makeText(aq.getContext(), "Error: Failed to retrieve posts "+status, Toast.LENGTH_LONG).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-
-    }
-
-
     /**
      * Displays the downloaded articles in the list and also populates the slide show
      * @param recentPosts
      */
-    private void displayArticles( final ArrayList<Post> recentPosts) {
-        final ArrayList<Post> mPosts = new ArrayList<>();
-       mPosts.addAll(recentPosts);
-        PostFragmentAdapter.postItems = mPosts;
+    private void displayArticles( final ArticlePost recentPosts)  {
+        try {
+//            firstItemView.setVisibility(View.VISIBLE);
+            findViewById(R.id.downloadProgress).setVisibility(View.GONE);
+            final ArrayList<Article> mPosts = new ArrayList<>();
+            mPosts.addAll(recentPosts.getResults());
+            PostFragmentAdapter.postItems = mPosts;
 
-
-//        firstPostImage.setVisibility(View.GONE);
-        if (recentPosts.get(0).getImageUrls().length > 0) {
-                aq.id(firstPostImage).image(recentPosts.get(0).getImageUrls()[0]);
-        }
-       firstItemHeadline.setText(recentPosts.get(0).getTitle());
-        firstItemDescription.setText(recentPosts.get(0).getExcept());
-//        firstItemDate.setText(listPosts.get(0).getPublishedDate());
-        //remove it from the list
-        recentPosts.remove(0);
-
-        this.mListAdapter = new PostListAdapter(this,R.layout.list_news_item,recentPosts);
-        this.mListView.setAdapter(mListAdapter);
-        mSwipeRefreshLayout.setRefreshing(false);
-
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
-
-                i.putExtra("postPosition", position);
-                i.putExtra("postTitle", recentPosts.get(position).getTitle());
-
-                startActivity(i);
+            if (recentPosts.getResults().get(0).getImageUrls().size() > 0) {
+                aq.id(firstPostImage).progress(R.id.image_progress).image(recentPosts.getResults().get(0).getImageUrls().get(0), true, true, 0, R.drawable.fallback,null, AQuery.FADE_IN);
             }
-        });
+            firstItemHeadline.setText(recentPosts.getResults().get(0).getHeadline());
+            firstItemDescription.setText(recentPosts.getResults().get(0).getDescription());
+            firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime()) + " by " + recentPosts.getResults().get(0).getAuthor());
+            //remove it from the list
+            recentPosts.getResults().remove(0);
 
-        if(isNotification){ //This is a way of displaying a test article from push - To be removed in production
-            Utils.log("Displaying test article = notification");
-            mListView.performItemClick(mListAdapter.getView(0, null, null), 0, mListAdapter.getItemId(0));
+
+            PostListAdapter mListAdapter = new PostListAdapter(this, R.layout.list_news_item, recentPosts.getResults());
+            this.mListView.setAdapter(mListAdapter);
+            mSwipeRefreshLayout.setRefreshing(false);
+
+
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
+
+                    i.putExtra("postPosition", position);
+                    i.putExtra("postTitle", mPosts.get(position).getHeadline());
+                    i.putExtra("description",mPosts.get(position).getDescription());
+
+                    startActivity(i);
+                }
+            });
+
+            if (isNotification) { //This is a way of displaying a test article from push - To be removed in production
+                Utils.log("Displaying test article = notification");
+                mListView.performItemClick(mListAdapter.getView(0, null, null), 0, mListAdapter.getItemId(0));
+            }
+        }catch (ParseException e){
+            e.printStackTrace();
         }
     }
 
@@ -395,37 +381,17 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             return false;
         }
     }
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        onScrollChanged(mListView.getCurrentScrollY(), false, false);
-    }
 
     private void setUpDrawer() {
-        drawerFragment = (FragmentDrawer)
+        FragmentDrawer drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbarView);
         drawerFragment.setDrawerListener(this);
     }
 
     @Override
-    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-        ViewHelper.setTranslationY(mImageView, -scrollY / 2);
-
-        // Translate list background
-        ViewHelper.setTranslationY(mListBackgroundView, Math.max(0, -scrollY + mParallaxImageHeight));
-    }
-
-    @Override
-    public void onDownMotionEvent() {
-    }
-
-    @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-    }
-
-    @Override
     public void onDrawerItemSelected(View view, int position) {
+
         displayView(position);
     }
 
@@ -437,7 +403,7 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         switch (position) {
             case 0:
                 this.mHomeLayout.setVisibility(View.VISIBLE);
-//                fragment = new HomeFragment();
+                this.mSearchView.setVisibility(View.GONE);
                 title = getResources().getString(R.string.app_name);
 
                 Fragment frag = fragmentManager.findFragmentByTag("Fragment");
@@ -459,11 +425,13 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         if (fragment != null) {
             fragmentTransaction.replace(R.id.container_body, fragment,"Fragment");
             fragmentTransaction.commit();
+            this.mSearchView.setVisibility(View.GONE);
             this.mHomeLayout.setVisibility(View.GONE);
         }
 
         // set the toolbar title
         try {
+           getSupportActionBar().setDisplayShowCustomEnabled(false); //disable the search TextView on the actionbar
             getSupportActionBar().setTitle(title);
         }catch (NullPointerException e){
             e.printStackTrace();
@@ -496,16 +464,32 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         return super.onOptionsItemSelected(item);
     }
 
+    void updateViews(boolean visibility){
+
+        if(visibility) {
+            this.mSearchView.setVisibility(View.VISIBLE);
+        }
+        else{
+            //hides the keyboard
+            imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
+            this.mSearchView.setVisibility(View.GONE);
+        }
+
+
+    }
+
     private void handleMenuSearch() {
+
+
         ActionBar action = getSupportActionBar(); //get the actionbar
-        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
         if(isSearchOpened){ //test if the search is open
+            updateViews(false);
 
             action.setDisplayShowCustomEnabled(false); //disable a custom view inside the actionbar
             action.setDisplayShowTitleEnabled(true); //show the title in the action bar
 
             //hides the keyboard
-
             imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
 
             //add the search icon in the action bar
@@ -514,35 +498,42 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
             isSearchOpened = false;
         } else { //open the search entry
 
+            updateViews(true);
+
+   if(((ObservableListView)findViewById(R.id.searchList)).getAdapter() !=null && !((ObservableListView)findViewById(R.id.searchList)).getAdapter().isEmpty())
+                ((TextView)findViewById(R.id.searchResults)).setText(getString(R.string.recent_results));
+
+
             action.setDisplayShowCustomEnabled(true); //enable it to display a
-            // custom view in the action bar.
             action.setCustomView(R.layout.search_bar);//add the custom view
             action.setDisplayShowTitleEnabled(false); //hide the title
-
             editSearch = (EditText)action.getCustomView().findViewById(R.id.edtSearch); //the text editor
+
+
 
             //this is a listener to do a search when the user clicks on search button
             editSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        doSearch();
+                        imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
+                        doSearch(editSearch.getText().toString());
+//                        editSearch.setText("");
                         return true;
                     }
-                    imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
+
                     return false;
                 }
             });
 
-            editSearch.requestFocus();
 
+
+            editSearch.requestFocus();
             //open the keyboard focused in the edtSearch
-//            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(editSearch, InputMethodManager.SHOW_IMPLICIT);
 
             //add the close icon
             mSearchAction.setIcon(getResources().getDrawable(R.mipmap.ic_action_cancel));
-
             isSearchOpened = true;
         }
     }
@@ -553,9 +544,48 @@ public class HomeActivity extends BaseActivity implements ObservableScrollViewCa
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void doSearch() {
+    private void doSearch(String searchString) {
+        findViewById(R.id.searchProgress).setVisibility(View.VISIBLE);
+        ((TextView)findViewById(R.id.searchResults)).setText(getString(R.string.searching));
 
-Toast.makeText(this,"Searching",Toast.LENGTH_LONG).show();
+        restAPI.searchArticles(searchString, 20150501, 20150505, 2, 5, new Callback<ArticlePost>() {
+            @Override
+            public void success(final ArticlePost articlePost, Response response) {
+                if (articlePost.getTotalResults() > 0) {
+                    findViewById(R.id.searchProgress).setVisibility(View.GONE);
+                    ((TextView)findViewById(R.id.searchResults)).setText(getString(R.string.search_results));
+                    PostListAdapter mSearchAdapter = new PostListAdapter(HomeActivity.this, R.layout.list_news_item, articlePost.getResults());
+                    ((ObservableListView)findViewById(R.id.searchList)).setAdapter(mSearchAdapter);
+                    ((ObservableListView)findViewById(R.id.searchList)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
+                            PostFragmentAdapter.postItems.clear();
+                            PostFragmentAdapter.postItems.add(articlePost.getResults().get(position));
+                            i.putExtra("postPosition", position);
+                            i.putExtra("postTitle", articlePost.getResults().get(position).getHeadline());
+                            i.putExtra("description", articlePost.getResults().get(position).getDescription());
+
+                            startActivity(i);
+                        }
+                    });
+                } else {
+                    Toast.makeText(HomeActivity.this, "No results to match your search", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e("SEARCH ERROR","Search Failed",error);
+                Toast.makeText(HomeActivity.this, "No results to display", Toast.LENGTH_LONG).show();
+                findViewById(R.id.searchProgress).setVisibility(View.GONE);
+                updateViews(true);
+            }
+        });
+
+
+
+
     }
 
     @Override
@@ -567,4 +597,18 @@ Toast.makeText(this,"Searching",Toast.LENGTH_LONG).show();
     public void onFragmentInteraction(String id) {
 
     }
+
+    void updateLastLoadTime() {
+        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
+        // store the new time in the preferences file
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        long time = System.currentTimeMillis(); // unix time of now
+        long refresh = (long) Math.floor(cal.getTimeInMillis()); // unix time of now
+
+//        editor.putLong("lastRefreshTime", refresh);
+        editor.putLong("lastLoadTime", time);
+        editor.commit();
+    }
+
 }

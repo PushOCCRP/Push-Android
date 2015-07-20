@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<com.push.app.ObservableList.ObservableScrollView
+<com.github.ksoichiro.android.observablescrollview.ObservableScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/scroll"
@@ -17,16 +17,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:background="@color/button_material_light"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/flexible_space_image_height">
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/image_progress"
+            android:layout_centerInParent="true"
+            />
+
     <ImageView
         android:id="@+id/postImage"
         android:visibility="visible"
         android:layout_width="match_parent"
-        android:src="@drawable/example"
         android:scaleType="centerCrop"
-        android:layout_height="240dp" />
+        android:layout_height="match_parent" />
+    </RelativeLayout>
 
     <View
         android:id="@+id/anchor"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:minHeight="240dp" />
@@ -124,6 +136,6 @@
     </LinearLayout>
 
 </RelativeLayout>
-</com.push.app.ObservableList.ObservableScrollView>
+</com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
 
 </FrameLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.push.app">
+    package="com.push.app" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -19,29 +19,29 @@
         android:protectionLevel="normal" />
 
     <application
+        android:name=".PushApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/MyMaterialTheme"
-        android:name="com.push.app.PushApplication">
+        >
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".DetailPostActivity"
-            android:theme="@style/MyMaterialTheme"
+            android:label="@string/title_activity_detail_post"
             android:parentActivityName=".HomeActivity"
-            android:label="@string/title_activity_detail_post" >
+            android:theme="@style/MyMaterialTheme" >
         </activity>
-
         <activity
             android:name=".NotificationHandler"
-            android:theme="@style/MyMaterialTheme"
+            android:label="@string/title_activity_detail_post"
             android:parentActivityName=".HomeActivity"
-            android:label="@string/title_activity_detail_post" >
+            android:theme="@style/MyMaterialTheme" >
         </activity>
-
         <activity
             android:name=".HomeActivity"
-            android:theme="@style/AppTheme.Toolbar"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.Toolbar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,23 +50,24 @@
         </activity>
 
         <!-- Push Notifications -->
-        <service android:name="com.infobip.push.PushActionService"/>
-        <service android:name="com.infobip.push.GcmService"/>
+        <service android:name="com.infobip.push.PushActionService" />
+        <service android:name="com.infobip.push.GcmService" />
 
-        <receiver android:name="com.infobip.push.GcmReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+        <receiver
+            android:name="com.infobip.push.GcmReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="com.push.app"/>
+                <category android:name="com.push.app" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.infobip.push.PushActionReceiver"/>
+        <receiver android:name="com.infobip.push.PushActionReceiver" />
         <receiver
             android:name="com.infobip.push.ConsistencyAlarmReceiver"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 

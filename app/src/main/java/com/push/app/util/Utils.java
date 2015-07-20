@@ -153,29 +153,7 @@ public class Utils {
         return inSampleSize;
     }
 
-    public static void recycleDrawable(Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            bitmapDrawable.getBitmap().recycle();
-        }
-    }
 
-    public static boolean isRTL() {
-        Locale defLocale = Locale.getDefault();
-        final int directionality = Character.getDirectionality(defLocale.getDisplayName().charAt(0));
-        return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
-                directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
-    }
 
-    public static void setAlpha(View v, float alpha) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            v.setAlpha(alpha);
-        } else {
-            AlphaAnimation animation = new AlphaAnimation(alpha, alpha);
-            animation.setDuration(0);
-            animation.setFillAfter(true);
-            v.startAnimation(animation);
-        }
-    }
 
 }

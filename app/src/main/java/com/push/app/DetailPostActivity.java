@@ -23,7 +23,7 @@ public class DetailPostActivity extends ActionBarActivity {
     private PostFragmentAdapter mAdapter;
     private int postPosition;
     private String mPostTitle;
-    private String mPostURL;
+    private String desc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,7 @@ public class DetailPostActivity extends ActionBarActivity {
         Bundle m = getIntent().getExtras();
         postPosition = m.getInt("postPosition");
         mPostTitle = m.getString("postTitle");
+        desc = m.getString("description");
 
         //initialise the actionBar
         initActionBar();
@@ -80,12 +81,14 @@ public class DetailPostActivity extends ActionBarActivity {
     }
 
     private void doShare() {
-        final Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TITLE, mPostTitle);
+        final Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        share.putExtra(Intent.EXTRA_SUBJECT, mPostTitle);
+        share.putExtra(Intent.EXTRA_SUBJECT, desc);
 
         try {
-            startActivity(Intent.createChooser(intent, "Select an action"));
+            startActivity(Intent.createChooser(share, "Select an action"));
         } catch (android.content.ActivityNotFoundException ex) {
             // (handle error)
         }

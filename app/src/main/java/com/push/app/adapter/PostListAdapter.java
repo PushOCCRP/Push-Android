@@ -1,38 +1,33 @@
 package com.push.app.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.push.app.R;
-import com.push.app.model.AttachmentType;
-import com.push.app.model.Post;
-import com.push.app.util.ImageUtil;
+import com.push.app.model.Article;
+import com.push.app.util.DateUtil;
 import com.push.app.util.TypefaceManager;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Bryan Lamtoo.
  */
-public class PostListAdapter extends ArrayAdapter<Post> {
+public class PostListAdapter extends ArrayAdapter<Article> {
 
-    private ArrayList<Post> items;
+    private List<Article> items;
     private AQuery aq;
 
-    String imageUrl = "http://farm6.static.flickr.com/5035/5802797131_a729dac808_b.jpg";
-
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyymmdd");
     private int layout;
     private LayoutInflater inflater;
     private TypefaceManager fontManager;
@@ -42,6 +37,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         ImageView postImage;
         TextView postDate;
         RelativeLayout listNewsView;
+
     }
 
 
@@ -66,27 +62,22 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         }
 
         holder.postTitle.setTypeface(fontManager.getRobotoMedium());
-        holder.postTitle.setText(items.get(position).getTitle());
-        holder.postImage.setImageResource(R.drawable.example);
+        holder.postTitle.setText(items.get(position).getHeadline());
 
-        //TODO Uncomment this for production
-        /*if (items.get(position).getAttachments().size() > 0) {
+        if(items.get(position).getImageUrls().size()>0)
+//            aq.id(holder.postImage).image(items.get(position).getImageUrls().get(0));
+            aq.id(holder.postImage).image(items.get(position).getImageUrls().get(0), true, true, 0, AQuery.FADE_IN);
 
-            AttachmentType currentAttachment = items.get(position)
-                    .getAttachments().get(0).getThumbnailSize();
-            if (currentAttachment != null) {
+//        if(position%2 == 0) {
+//            holder.postImage.setVisibility(View.VISIBLE);
+//        }else{
+//            holder.postImage.setVisibility(View.GONE);
+//        }
+        try {
+            Date date = sdf.parse(String.valueOf(items.get(position).getPublishDate()));
+            holder.postDate.setText(DateUtil.setTime(date.getTime()) + " by " + items.get(position).getAuthor());
+        }catch (Exception e){
 
-
-                    aq.id(holder.postImage).image(currentAttachment.getUrl());
-
-            }
-
-        }*/
-
-        if(position%2 == 0) {
-            holder.postImage.setVisibility(View.VISIBLE);
-        }else{
-            holder.postImage.setVisibility(View.GONE);
         }
 
         return view;
@@ -94,7 +85,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
 
 
 
-    public PostListAdapter(Context context, int layout,ArrayList<Post> items) {
+    public PostListAdapter(Context context, int layout,List<Article> items) {
         super(context, layout,items);
         this.items = items;
         this.layout = layout;
@@ -104,6 +95,8 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         // init Typeface
         fontManager = new TypefaceManager(context.getAssets());
     }
+
+
 
 
 }

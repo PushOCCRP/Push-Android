@@ -7,7 +7,7 @@ android {
         applicationId "com.push.app"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 2
+        versionCode 3
         versionName "2.0"
     }
     buildTypes {
@@ -38,26 +38,21 @@ dependencies {
     compile files('libs/android-query-full.0.26.8.jar')
     compile 'com.viewpagerindicator:library:2.4.1@aar'
     compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
-
+    compile 'com.github.ksoichiro:android-observablescrollview:1.5.2'
     // push library dependecies
     compile 'com.android.support:support-v13:22.0.0'
     compile 'com.google.android.gms:play-services:6.1.+'
-
     //Retrofit + Http Client
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-
     //library dependency
     //Gson (json) parser
     compile 'com.google.code.gson:gson:2.3.1'
-
     //ReactiveX + Android support
     compile 'io.reactivex:rxjava:1.0.10'
     compile 'io.reactivex:rxandroid:0.24.0'
-
     compile 'com.github.oxo42:stateless4j:2.5.0'
-
-    compile(name:'infobip-push-2.0.1', ext:'aar')
-//    compile project(':library')
+    compile(name: 'infobip-push-2.0.1', ext: 'aar')
+    //    compile project(':library')
 }

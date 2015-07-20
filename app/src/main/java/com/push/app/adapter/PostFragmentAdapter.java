@@ -6,12 +6,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.push.app.fragment.DetailPost;
-import com.push.app.model.Post;
+import com.push.app.model.Article;
 
 import java.util.ArrayList;
 
 public class PostFragmentAdapter extends FragmentPagerAdapter  {
-    public static ArrayList<Post> postItems;
+    public static ArrayList<Article> postItems;
 
     private int mCount = postItems.size();
     private Context mContext;
@@ -34,7 +34,7 @@ public class PostFragmentAdapter extends FragmentPagerAdapter  {
 
     @Override
     public CharSequence getPageTitle(int position) {
-      return PostFragmentAdapter.postItems.get(position % postItems.size()).getTitle();
+      return PostFragmentAdapter.postItems.get(position % postItems.size()).getHeadline();
     }
 
 
