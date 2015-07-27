@@ -69,6 +69,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Stack;
 import java.util.TimeZone;
 
 import retrofit.Callback;
@@ -82,7 +83,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private Toolbar mToolbarView;
     private ObservableListView mListView;
     private AQuery aq;
-
+    static boolean isSearchShown = false;
     private MenuItem mSearchAction;
     private boolean isSearchOpened = false;
     private EditText editSearch;
@@ -96,14 +97,17 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private RestApi restAPI;
     private InputMethodManager imm;
     long lastLoadTime = 0;
-
+    private Stack<Fragment> fragmentStack;
+    private boolean searchItemClicked;
+    private boolean firstRun = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        fragmentStack = new Stack<>();
         sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-        lastLoadTime = sharedPreferences.getLong("lastLoadTime", 0);
+
 
          aq = new AQuery(this);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -127,7 +131,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                checkForNewContent(false);
+                checkForNewContent();
 
             }
         });
@@ -151,14 +155,18 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         }
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         //set up rest API
         setUpRestApi();
-
+        lastLoadTime = sharedPreferences.getLong("lastLoadTime", 0);
         //Display files from Cache
         displayFromCache();
     }
-
-
 
     private void setUpRestApi() {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
@@ -207,48 +215,51 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
 
 
-            ArticlePost cachedPOSTS = getCachedPosts();
+            ArticlePost cachedPOSTS = getCachedPosts("Articles");
             if(cachedPOSTS != null && cachedPOSTS.getResults().size()>0){
                 displayArticles(cachedPOSTS);
                 if(loadNews()) //check whether our load time is due
-                checkForNewContent(false);
+                checkForNewContent();
             }else{
-                checkForNewContent(true);
+                firstRun = true;
+                checkForNewContent();
 
             }
         }else{
 
-            ArticlePost cachedPOSTS = getCachedPosts();
+            ArticlePost cachedPOSTS = getCachedPosts("Articles");
             if(cachedPOSTS != null && cachedPOSTS.getResults().size()>0){
                 displayArticles(cachedPOSTS);
                 if(loadNews()) //check whether our load time is due
-                checkForNewContent(false);
+                checkForNewContent();
             }else{
-                checkForNewContent(true);
+                firstRun = true;
+                checkForNewContent();
         }
         }
 
     }
 
-    public void cachePosts( final ArticlePost articles) {
-        Log.d("AFTER CACHE",articles.getResults().size()+"");
+    public void cachePosts(String key, final ArticlePost articles) {
         sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
         if (sharedPreferences != null) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             Gson gson = new Gson();
             String json = gson.toJson(articles);
-            editor.putString("Articles", json);
+            editor.putString(key, json);
              editor.commit();
 
         }
             }
 
-    public ArticlePost getCachedPosts() {
+
+
+    public ArticlePost getCachedPosts(String key) {
         sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
         ArticlePost articlePost = new ArticlePost();
         if (sharedPreferences != null) {
             Gson gson = new Gson();
-            String json = sharedPreferences.getString("Articles", "");
+            String json = sharedPreferences.getString(key, "");
             articlePost = gson.fromJson(json, ArticlePost.class);
                   }
 
@@ -260,11 +271,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         long difference = System.currentTimeMillis()
                 - (lastLoadTime); // the time since the last load
         if (lastLoadTime == 0 || difference > (60 * 60 * 1000)) {
-        Log.d("TIME","Should Load");
+        Log.d("TIME", "Should Load");
             return true; // trigger a load
 
         }else {
-            Log.d("TIME","Should not Load");
+            Log.d("TIME", "Should not Load");
             return false;
         }
     }
@@ -272,44 +283,37 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     /**
      * Load new posts
      */
-    private void checkForNewContent(boolean refresh) {
+    private void checkForNewContent() {
 
         if(Online()){
 
-            if(refresh) {
-                    findViewById(R.id.downloadProgress).setVisibility(View.VISIBLE);
+            if(firstRun)findViewById(R.id.downloadProgress).setVisibility(View.VISIBLE);
+            mSwipeRefreshLayout.setRefreshing(true);
                 restAPI.getArticles(new Callback<ArticlePost>() {
                     @Override
                     public void success(ArticlePost articlePost, Response response) {
-                        cachePosts(articlePost);
+                        cachePosts("Articles",articlePost);
                         displayArticles(articlePost);
                         updateLastLoadTime();
-
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        if(firstRun){
+                            findViewById(R.id.downloadProgress).setVisibility(View.GONE);
+                            firstRun = false;
+                        }
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        if(firstRun){
+                            findViewById(R.id.downloadProgress).setVisibility(View.GONE);
+                            firstRun = false;
+                        }
                         Log.e("ERROR", "Failed to parse JSON ", error);
                     }
                 });
 
-            }else {
 
-                restAPI.getArticles(new Callback<ArticlePost>() {
-                    @Override
-                    public void success(ArticlePost articlePost, Response response) {
-                        cachePosts(articlePost);
-                        displayArticles(articlePost);
-                        updateLastLoadTime();
-
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.e("ERROR", "Failed to parse JSON ", error);
-                    }
-                });
-            }
         }else{
             Toast.makeText(this, "Check your internet connection", Toast.LENGTH_LONG).show();
             mSwipeRefreshLayout.setRefreshing(false);
@@ -324,7 +328,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private void displayArticles( final ArticlePost recentPosts)  {
         try {
 //            firstItemView.setVisibility(View.VISIBLE);
-            findViewById(R.id.downloadProgress).setVisibility(View.GONE);
+
             final ArrayList<Article> mPosts = new ArrayList<>();
             mPosts.addAll(recentPosts.getResults());
             PostFragmentAdapter.postItems = mPosts;
@@ -358,10 +362,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 }
             });
 
-            if (isNotification) { //This is a way of displaying a test article from push - To be removed in production
-                Utils.log("Displaying test article = notification");
-                mListView.performItemClick(mListAdapter.getView(0, null, null), 0, mListAdapter.getItemId(0));
-            }
+            //TODO @Bryan  uncommented this. Causes detail to page to keep opening endlessly after notification when you press back key
+//            if (isNotification) { //This is a way of displaying a test article from push - To be removed in production
+//                Utils.log("Displaying test article = notification");
+//                mListView.performItemClick(mListAdapter.getView(0, null, null), 0, mListAdapter.getItemId(0));
+//            }
         }catch (ParseException e){
             e.printStackTrace();
         }
@@ -423,18 +428,41 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
 
         if (fragment != null) {
-            fragmentTransaction.replace(R.id.container_body, fragment,"Fragment");
+            fragmentTransaction.replace(R.id.container_body, fragment, "Fragment");
             fragmentTransaction.commit();
             this.mSearchView.setVisibility(View.GONE);
             this.mHomeLayout.setVisibility(View.GONE);
         }
 
         // set the toolbar title
+       setActionBarTitle(title);
+    }
+
+    void setActionBarTitle(String title){
         try {
-           getSupportActionBar().setDisplayShowCustomEnabled(false); //disable the search TextView on the actionbar
+            getSupportActionBar().setDisplayShowCustomEnabled(false); //disable the search TextView on the actionbar
             getSupportActionBar().setTitle(title);
         }catch (NullPointerException e){
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+
+            Fragment frag = getSupportFragmentManager().findFragmentByTag("Fragment");
+            if(frag != null) {
+                getSupportFragmentManager().beginTransaction().remove(frag).commit();
+                this.mHomeLayout.setVisibility(View.VISIBLE);
+                setActionBarTitle(getString(R.string.app_name));
+            }else if(sharedPreferences.getBoolean("searchClicked", false))
+                displaySearchResults(getCachedPosts("searchResults"));
+            else if(isSearchShown)
+                updateViews(false);
+
+         else {
+            super.onBackPressed();
         }
     }
 
@@ -452,20 +480,17 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }else if(id==R.id.action_search){
+        if(id==R.id.action_search){
             handleMenuSearch();
         }else if(id==R.id.action_refresh_list){
-            checkForNewContent(true);
+            checkForNewContent();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     void updateViews(boolean visibility){
-
+        isSearchShown = visibility;
         if(visibility) {
             this.mSearchView.setVisibility(View.VISIBLE);
         }
@@ -505,8 +530,15 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 
             action.setDisplayShowCustomEnabled(true); //enable it to display a
-            action.setCustomView(R.layout.search_bar);//add the custom view
+            View view = getLayoutInflater().inflate(R.layout.search_bar,
+                    null);
+            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+                    ActionBar.LayoutParams.MATCH_PARENT,
+                    ActionBar.LayoutParams.MATCH_PARENT);
+            action.setCustomView(view,layoutParams);//add the custom view
             action.setDisplayShowTitleEnabled(false); //hide the title
+            Toolbar parent = (Toolbar) view.getParent();
+            parent.setContentInsetsAbsolute(0, 0);
             editSearch = (EditText)action.getCustomView().findViewById(R.id.edtSearch); //the text editor
 
 
@@ -518,7 +550,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                         imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
                         doSearch(editSearch.getText().toString());
-//                        editSearch.setText("");
+                        editSearch.setText("");
                         return true;
                     }
 
@@ -552,23 +584,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
             @Override
             public void success(final ArticlePost articlePost, Response response) {
                 if (articlePost.getTotalResults() > 0) {
-                    findViewById(R.id.searchProgress).setVisibility(View.GONE);
-                    ((TextView)findViewById(R.id.searchResults)).setText(getString(R.string.search_results));
-                    PostListAdapter mSearchAdapter = new PostListAdapter(HomeActivity.this, R.layout.list_news_item, articlePost.getResults());
-                    ((ObservableListView)findViewById(R.id.searchList)).setAdapter(mSearchAdapter);
-                    ((ObservableListView)findViewById(R.id.searchList)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
-                            PostFragmentAdapter.postItems.clear();
-                            PostFragmentAdapter.postItems.add(articlePost.getResults().get(position));
-                            i.putExtra("postPosition", position);
-                            i.putExtra("postTitle", articlePost.getResults().get(position).getHeadline());
-                            i.putExtra("description", articlePost.getResults().get(position).getDescription());
-
-                            startActivity(i);
-                        }
-                    });
+                    displaySearchResults(articlePost);
                 } else {
                     Toast.makeText(HomeActivity.this, "No results to match your search", Toast.LENGTH_LONG).show();
                 }
@@ -588,6 +604,33 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     }
 
+    private void displaySearchResults(final ArticlePost articlePost) {
+        findViewById(R.id.searchProgress).setVisibility(View.GONE);
+        ((TextView)findViewById(R.id.searchResults)).setText(getString(R.string.search_results));
+        PostListAdapter mSearchAdapter = new PostListAdapter(HomeActivity.this, R.layout.list_news_item, articlePost.getResults());
+        ((ObservableListView)findViewById(R.id.searchList)).setAdapter(mSearchAdapter);
+        ((ObservableListView)findViewById(R.id.searchList)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
+                PostFragmentAdapter.postItems.clear();
+                PostFragmentAdapter.postItems.add(articlePost.getResults().get(position));
+                i.putExtra("postPosition", position);
+                i.putExtra("postTitle", articlePost.getResults().get(position).getHeadline());
+                i.putExtra("description", articlePost.getResults().get(position).getDescription());
+
+                // store the new time in the preferences file
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("searchClicked",searchItemClicked);
+                editor.commit();
+
+                cachePosts("searchResults",articlePost);//cache these results
+
+                startActivity(i);
+            }
+        });
+    }
+
     @Override
     public void onFragmentInteraction(Uri id) {
 
@@ -600,13 +643,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     void updateLastLoadTime() {
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
         // store the new time in the preferences file
         SharedPreferences.Editor editor = sharedPreferences.edit();
         long time = System.currentTimeMillis(); // unix time of now
-        long refresh = (long) Math.floor(cal.getTimeInMillis()); // unix time of now
-
-//        editor.putLong("lastRefreshTime", refresh);
         editor.putLong("lastLoadTime", time);
         editor.commit();
     }

@@ -7,7 +7,7 @@ android {
         applicationId "com.push.app"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 3
+        versionCode 4
         versionName "2.0"
     }
     buildTypes {

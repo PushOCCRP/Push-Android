@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context="com.push.app.DetailPostActivity">
      <item
         android:id="@+id/action_share"
-        android:title="@string/action_search"
+        android:title="@string/action_share"
         android:orderInCategory="100"
         android:icon="@mipmap/ic_share_white_48dp"
         app:showAsAction="ifRoom" />

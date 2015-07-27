@@ -26,10 +26,8 @@
         android:theme="@style/MyMaterialTheme"
         >
         <activity
-            android:windowSoftInputMode="adjustResize"
             android:name=".DetailPostActivity"
             android:label="@string/title_activity_detail_post"
-            android:parentActivityName=".HomeActivity"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity

@@ -117,7 +117,7 @@
     <orderEntry type="library" exported="" name="okio-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="android-shape-imageview-0.9.2" level="project" />
     <orderEntry type="library" exported="" name="stateless4j-2.5.0" level="project" />
-    <orderEntry type="library" exported="" name="okhttp-urlconnection-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.7" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-urlconnection-2.0.0" level="project" />
   </component>
 </module>
