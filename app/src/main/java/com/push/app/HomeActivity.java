@@ -98,7 +98,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private InputMethodManager imm;
     long lastLoadTime = 0;
     private Stack<Fragment> fragmentStack;
-    private boolean searchItemClicked;
+    private boolean searchItemClicked = false;
     private boolean firstRun = false;
 
     @Override
@@ -161,11 +161,20 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     @Override
     protected void onResume() {
         super.onResume();
+        lastLoadTime = sharedPreferences.getLong("lastLoadTime", 0);
         //set up rest API
         setUpRestApi();
-        lastLoadTime = sharedPreferences.getLong("lastLoadTime", 0);
-        //Display files from Cache
-        displayFromCache();
+
+          //Display files from Cache
+            displayFromCache();
+
+        if(sharedPreferences.getBoolean("searchClicked", false)) {
+            updateViews(true);
+            displaySearchResults(getCachedPosts("searchResults"));
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("searchClicked",false);
+            editor.commit();
+        }
     }
 
     private void setUpRestApi() {
@@ -440,8 +449,17 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     void setActionBarTitle(String title){
         try {
-            getSupportActionBar().setDisplayShowCustomEnabled(false); //disable the search TextView on the actionbar
             getSupportActionBar().setTitle(title);
+            getSupportActionBar().setDisplayShowCustomEnabled(false); //disable the search TextView on the actionbar
+            getSupportActionBar().setDisplayShowTitleEnabled(true); //show the title in the action bar
+
+            //hides the keyboard
+            imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
+
+            //add the search icon in the action bar
+            mSearchAction.setIcon(getResources().getDrawable(R.mipmap.ic_search_white));
+
+            isSearchOpened = false;
         }catch (NullPointerException e){
             e.printStackTrace();
         }
@@ -456,10 +474,10 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 getSupportFragmentManager().beginTransaction().remove(frag).commit();
                 this.mHomeLayout.setVisibility(View.VISIBLE);
                 setActionBarTitle(getString(R.string.app_name));
-            }else if(sharedPreferences.getBoolean("searchClicked", false))
-                displaySearchResults(getCachedPosts("searchResults"));
-            else if(isSearchShown)
+            }
+            else if(isSearchShown) {
                 updateViews(false);
+            }
 
          else {
             super.onBackPressed();
@@ -496,10 +514,26 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
         else{
             //hides the keyboard
+            if(null != editSearch )
             imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
             this.mSearchView.setVisibility(View.GONE);
+            showDefaultActionBAr();
+
         }
 
+
+    }
+
+    void showDefaultActionBAr(){
+        ActionBar action = getSupportActionBar(); //get the actionbar
+        action.setDisplayShowCustomEnabled(false); //disable a custom view inside the actionbar
+        action.setDisplayShowTitleEnabled(true); //show the title in the action bar
+
+
+        //add the search icon in the action bar
+        mSearchAction.setIcon(getResources().getDrawable(R.mipmap.ic_search_white));
+
+        isSearchOpened = false;
 
     }
 
@@ -511,16 +545,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if(isSearchOpened){ //test if the search is open
             updateViews(false);
 
-            action.setDisplayShowCustomEnabled(false); //disable a custom view inside the actionbar
-            action.setDisplayShowTitleEnabled(true); //show the title in the action bar
-
             //hides the keyboard
             imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
-
-            //add the search icon in the action bar
-            mSearchAction.setIcon(getResources().getDrawable(R.mipmap.ic_search_white));
-
-            isSearchOpened = false;
+            showDefaultActionBAr();
         } else { //open the search entry
 
             updateViews(true);
@@ -595,6 +622,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 Log.e("SEARCH ERROR","Search Failed",error);
                 Toast.makeText(HomeActivity.this, "No results to display", Toast.LENGTH_LONG).show();
                 findViewById(R.id.searchProgress).setVisibility(View.GONE);
+                ((TextView)findViewById(R.id.searchResults)).setText(getString(R.string.no_search_results));
                 updateViews(true);
             }
         });
@@ -621,7 +649,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
                 // store the new time in the preferences file
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("searchClicked",searchItemClicked);
+                editor.putBoolean("searchClicked",true);
                 editor.commit();
 
                 cachePosts("searchResults",articlePost);//cache these results
