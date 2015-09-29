@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -41,10 +42,12 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private String postDate;
     private String postAuthor;
     private View rootView;
+    private View mAnchor;
     private TextView mPostTitle;
     private TextView mPostAuthor;
     private TextView mPostDate;
     private TextView mPostDescription;
+    private ProgressBar mProgress;
     private WebView mPostBody;
     private ImageView mpostImage;
     private AQuery aq;
@@ -99,10 +102,11 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
         //Initialise views
         rootView = inflater.inflate(R.layout.fragment_detail_post, container,false);
+        mAnchor = (View) rootView.findViewById(R.id.anchor);
         mPostAuthor = (TextView) rootView.findViewById(R.id.postAuthor);
         mContent = (TextView) rootView.findViewById(R.id.postContent);
         mPostDate = (TextView)rootView.findViewById(R.id.post_Date);
-
+        mProgress = (ProgressBar)rootView.findViewById(R.id.image_progress);
         mPostTitle = (TextView)rootView.findViewById(R.id.postHeadline);
         mpostImage = (ImageView)rootView.findViewById(R.id.postImage);
 
@@ -116,19 +120,24 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         //Set the values
         mPostTitle.setText(postTitle);
         mpostImage.setVisibility(View.GONE);
-        mContent.setText(Html.fromHtml(postBody, new ImageGetter(mContent, getActivity()), null));
+        if(postBody != null && postBody.length() > 0){
+            mContent.setText(Html.fromHtml(postBody, new ImageGetter(mContent, getActivity()), null));
+        }
         mPostDate.setText(postDate + " by " + postAuthor);
 //        mPostAuthor.setText(postAuthor);
 
 
-            if (postImageUrl != null)
-                if(postImageUrl.size()>1) {
+            if (postImageUrl != null) {
+                if (postImageUrl.size() > 1) {
                     aq.id(mpostImage).progress(R.id.image_progress).image(postImageUrl.get(1), true, true, 0, R.drawable.fallback, null, AQuery.FADE_IN);
-                }
-        else {
+                } else if(postImageUrl.size() == 1) {
                     aq.id(mpostImage).progress(R.id.image_progress).image(postImageUrl.get(0), true, true, 0, R.drawable.fallback, null, AQuery.FADE_IN);
+                } else {
+                    //If there are no images hide the anchor and loader
+                    mProgress.setVisibility(View.GONE);
+                    mAnchor.setVisibility(View.GONE);
                 }
-
+            }
 
         return rootView;
     }
