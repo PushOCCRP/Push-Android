@@ -301,11 +301,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 restAPI.getArticles(new Callback<ArticlePost>() {
                     @Override
                     public void success(ArticlePost articlePost, Response response) {
-                        cachePosts("Articles",articlePost);
+                        cachePosts("Articles", articlePost);
                         displayArticles(articlePost);
                         updateLastLoadTime();
                         mSwipeRefreshLayout.setRefreshing(false);
-                        if(firstRun){
+                        if (firstRun) {
                             findViewById(R.id.downloadProgress).setVisibility(View.GONE);
                             firstRun = false;
                         }
@@ -314,7 +314,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     @Override
                     public void failure(RetrofitError error) {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        if(firstRun){
+                        if (firstRun) {
                             findViewById(R.id.downloadProgress).setVisibility(View.GONE);
                             firstRun = false;
                         }
@@ -552,8 +552,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
             updateViews(true);
 
-   if(((ObservableListView)findViewById(R.id.searchList)).getAdapter() !=null && !((ObservableListView)findViewById(R.id.searchList)).getAdapter().isEmpty())
-                ((TextView)findViewById(R.id.searchResults)).setText(getString(R.string.recent_results));
+            if(((ObservableListView)findViewById(R.id.searchList)).getAdapter() !=null && !((ObservableListView)findViewById(R.id.searchList)).getAdapter().isEmpty()) {
+                ((TextView) findViewById(R.id.searchResults)).setText(getString(R.string.recent_results));
+            }
 
 
             action.setDisplayShowCustomEnabled(true); //enable it to display a
