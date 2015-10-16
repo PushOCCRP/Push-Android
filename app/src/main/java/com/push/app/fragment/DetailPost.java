@@ -56,7 +56,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private TextView mContent;
     ArrayList<String> postImageUrl = new ArrayList<>();
 
-    //    private View mImageView;
+    //private View mImageView;
     private ObservableScrollView mScrollView;
     private int mParallaxImageHeight;
 
@@ -121,10 +121,10 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         mPostTitle.setText(postTitle);
         mpostImage.setVisibility(View.GONE);
         if(postBody != null && postBody.length() > 0){
-            mContent.setText(Html.fromHtml(postBody, new ImageGetter(mContent, getActivity()), null));
+            mContent.setText(Html.fromHtml(postBody));
         }
         mPostDate.setText(postDate + " by " + postAuthor);
-//        mPostAuthor.setText(postAuthor);
+        mPostAuthor.setText(postAuthor);
 
 
             if (postImageUrl != null) {
@@ -157,7 +157,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-        ViewHelper.setTranslationY(mpostImage, scrollY / 2);
+        //ViewHelper.setTranslationY(mpostImage, scrollY / 2);
     }
 
     @Override

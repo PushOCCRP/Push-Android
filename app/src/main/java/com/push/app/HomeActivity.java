@@ -627,10 +627,6 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 updateViews(true);
             }
         });
-
-
-
-
     }
 
     private void displaySearchResults(final ArticlePost articlePost) {
