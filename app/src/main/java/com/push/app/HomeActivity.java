@@ -44,6 +44,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -165,8 +166,8 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         //set up rest API
         setUpRestApi();
 
-          //Display files from Cache
-            displayFromCache();
+        //Display files from Cache
+        displayFromCache();
 
         if(sharedPreferences.getBoolean("searchClicked", false)) {
             updateViews(true);
@@ -199,7 +200,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         firstItemHeadline = (TextView) firstItemView.findViewById(R.id.firstPostHeadline);
         firstItemDescription = (TextView) firstItemView.findViewById(R.id.postDescription);
         firstItemDateandAuthor = (TextView) firstItemView.findViewById(R.id.first_post_Date);
-        firstPostImage = (ImageView) firstItemView. findViewById(R.id.firstPostImage);
+        firstPostImage = (ImageView) firstItemView.findViewById(R.id.firstPostImage);
         // This is required to disable header's list selector effect
         mListView.addHeaderView(firstItemView);
         firstItemView.setClickable(false);
@@ -301,6 +302,26 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 restAPI.getArticles(new Callback<ArticlePost>() {
                     @Override
                     public void success(ArticlePost articlePost, Response response) {
+                        //Rearrange the posts so that the first article has an image
+                        //We want this to be the same order everywhere so we do it here
+                        //If there's none, then we hide the image box
+                        Article intendedTopArticle = null;
+                        for(Article article : articlePost.getResults()){
+                            if(article.getImageUrls().size() > 0){
+                                intendedTopArticle = article;
+                                break;
+                            }
+                        }
+
+                        RelativeLayout mainImageHolder = (RelativeLayout) mHomeLayout.findViewById(R.id.mainImageHolder);
+                        if(intendedTopArticle == null){
+                            mainImageHolder.setVisibility(RelativeLayout.GONE);
+                        } else {
+                            mainImageHolder.setVisibility(RelativeLayout.VISIBLE);
+                            articlePost.getResults().remove(intendedTopArticle);
+                            articlePost.getResults().add(0, intendedTopArticle);
+                        }
+
                         cachePosts("Articles", articlePost);
                         displayArticles(articlePost);
                         updateLastLoadTime();
@@ -337,7 +358,6 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private void displayArticles( final ArticlePost recentPosts)  {
         try {
 //            firstItemView.setVisibility(View.VISIBLE);
-
             final ArrayList<Article> mPosts = new ArrayList<>();
             mPosts.addAll(recentPosts.getResults());
             PostFragmentAdapter.postItems = mPosts;
@@ -365,11 +385,12 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
                     i.putExtra("postPosition", position);
                     i.putExtra("postTitle", mPosts.get(position).getHeadline());
-                    i.putExtra("description",mPosts.get(position).getDescription());
+                    i.putExtra("description", mPosts.get(position).getDescription());
 
                     startActivity(i);
                 }
             });
+
 
             //TODO @Bryan  uncommented this. Causes detail to page to keep opening endlessly after notification when you press back key
 //            if (isNotification) { //This is a way of displaying a test article from push - To be removed in production
