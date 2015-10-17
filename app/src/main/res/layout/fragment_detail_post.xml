@@ -52,20 +52,20 @@
         android:background="@android:color/white"
         android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:textAllCaps="true"
-        android:background="@drawable/capsule_shape"
-        android:textColor="@android:color/white"
-        android:text="@string/news_category"/>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:paddingRight="20dp"-->
+        <!--android:paddingTop="5dp"-->
+        <!--android:paddingBottom="5dp"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:background="@drawable/capsule_shape"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:text="@string/news_category"/>-->
 
     <LinearLayout
         android:orientation="vertical"
@@ -98,11 +98,16 @@
 
         <TextView
             android:id="@+id/postHeadline"
-            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
             android:textSize="22dp"
+            android:lineSpacingExtra="5dp"
+            android:layout_width="match_parent"
             android:layout_marginTop="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:textStyle="bold"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.02"/>
 
         <TextView
             android:id="@+id/postAuthor"
@@ -118,11 +123,16 @@
 
         <TextView
             android:id="@+id/postContent"
-            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:lineSpacingExtra="5dp"
+            android:layout_width="330dp"
             android:padding="5dp"
             android:autoLink="email|web"
             android:layout_marginTop="20dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="serif"
+            android:textColorLink="@color/colorPrimaryDark"/>
 
     <WebView
         android:id="@+id/postBody"

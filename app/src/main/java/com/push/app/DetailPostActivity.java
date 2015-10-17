@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.push.app.adapter.PostFragmentAdapter;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -43,8 +44,13 @@ public class DetailPostActivity extends ActionBarActivity {
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         mPager.setOffscreenPageLimit(2);
-        mIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
+        int pageCount = mPager.getAdapter().getCount();
+        mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager, postPosition);
+        if(pageCount == 1) {
+            View mIndicatorView = (View)mIndicator;
+            mIndicatorView.setVisibility(View.GONE);
+        }
     }
 
     private void initActionBar() {

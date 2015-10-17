@@ -123,7 +123,13 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         if(postBody != null && postBody.length() > 0){
             mContent.setText(Html.fromHtml(postBody));
         }
-        mPostDate.setText(postDate + " by " + postAuthor);
+
+        if(postAuthor.length() > 0) {
+            mPostDate.setText(postDate + " by " + postAuthor);
+        } else {
+            mPostDate.setText(postDate);
+        }
+
         mPostAuthor.setText(postAuthor);
 
 

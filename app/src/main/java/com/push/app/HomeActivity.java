@@ -312,15 +312,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                                 break;
                             }
                         }
+                        articlePost.getResults().remove(intendedTopArticle);
+                        articlePost.getResults().add(0, intendedTopArticle);
 
-                        RelativeLayout mainImageHolder = (RelativeLayout) mHomeLayout.findViewById(R.id.mainImageHolder);
-                        if(intendedTopArticle == null){
-                            mainImageHolder.setVisibility(RelativeLayout.GONE);
-                        } else {
-                            mainImageHolder.setVisibility(RelativeLayout.VISIBLE);
-                            articlePost.getResults().remove(intendedTopArticle);
-                            articlePost.getResults().add(0, intendedTopArticle);
-                        }
 
                         cachePosts("Articles", articlePost);
                         displayArticles(articlePost);
@@ -362,12 +356,23 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
             mPosts.addAll(recentPosts.getResults());
             PostFragmentAdapter.postItems = mPosts;
 
+            RelativeLayout mainImageHolder = (RelativeLayout) mHomeLayout.findViewById(R.id.mainImageHolder);
+
             if (recentPosts.getResults().get(0).getImageUrls().size() > 0) {
+                mainImageHolder.setVisibility(RelativeLayout.VISIBLE);
                 aq.id(firstPostImage).progress(R.id.image_progress).image(recentPosts.getResults().get(0).getImageUrls().get(0), true, true, 0, R.drawable.fallback,null, AQuery.FADE_IN);
+            } else {
+                mainImageHolder.setVisibility(RelativeLayout.GONE);
             }
+
             firstItemHeadline.setText(recentPosts.getResults().get(0).getHeadline());
             firstItemDescription.setText(recentPosts.getResults().get(0).getDescription());
-            firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime()) + " by " + recentPosts.getResults().get(0).getAuthor());
+
+            if(recentPosts.getResults().get(0).getAuthor().length() > 0) {
+                firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime()) + " by " + recentPosts.getResults().get(0).getAuthor());
+            } else {
+                firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime()));
+            }
             //remove it from the list
             recentPosts.getResults().remove(0);
 
