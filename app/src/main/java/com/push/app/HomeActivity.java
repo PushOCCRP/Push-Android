@@ -40,6 +40,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -54,7 +55,6 @@ import com.google.gson.Gson;
 import com.infobip.push.Notification;
 import com.push.app.adapter.PostFragmentAdapter;
 import com.push.app.adapter.PostListAdapter;
-import com.push.app.fragment.AboutPage;
 import com.push.app.fragment.DonatePage;
 import com.push.app.interfaces.OnFragmentInteractionListener;
 import com.push.app.interfaces.RestApi;
@@ -86,6 +86,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private AQuery aq;
     static boolean isSearchShown = false;
     private MenuItem mSearchAction;
+    private MenuItem mAboutAction;
     private boolean isSearchOpened = false;
     private EditText editSearch;
     private SharedPreferences sharedPreferences;
@@ -124,7 +125,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         //Setup the drawer
-        setUpDrawer();
+        //setUpDrawer();
 
         mListView = (ObservableListView) findViewById(R.id.mList);
         initViews();
@@ -455,8 +456,8 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 title = getString(R.string.title_item_one);
                 break;
             case 2:
-                fragment = new AboutPage();
-                title = getString(R.string.title_item_two);
+                Intent i = new Intent(HomeActivity.this, AboutActivity.class);
+                startActivity(i);
                 break;
             default:
                 break;
@@ -524,10 +525,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(id==R.id.action_search){
+        if(id==R.id.action_search) {
             handleMenuSearch();
-        }else if(id==R.id.action_refresh_list){
-            checkForNewContent();
+        }else if(id==R.id.action_about){
+            Intent i = new Intent(HomeActivity.this, AboutActivity.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
@@ -537,6 +539,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         isSearchShown = visibility;
         if(visibility) {
             this.mSearchView.setVisibility(View.VISIBLE);
+            this.mAboutAction.setVisible(false);
         }
         else{
             //hides the keyboard
@@ -558,7 +561,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         //add the search icon in the action bar
         mSearchAction.setIcon(getResources().getDrawable(R.mipmap.ic_search_white));
-
+        mAboutAction.setVisible(true);
         isSearchOpened = false;
 
     }
@@ -627,6 +630,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         mSearchAction = menu.findItem(R.id.action_search);
+        mAboutAction = menu.findItem(R.id.action_about);
         return super.onPrepareOptionsMenu(menu);
     }
 

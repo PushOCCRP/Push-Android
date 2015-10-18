@@ -41,6 +41,7 @@
     <string name="nothing"></string>
     <string name="clock">clock</string>
     <string name="timePlaceholder">40 mins ago John Smith</string>
+    <string name="title_about">About</string>
     <string name="donate_description">Help us grow and give you faster news updates. Your donation goes towards purchasing better equipment for a seamleass broadcast.</string>
     <string name="amount_label">Amount</string>
     <string name="donate_confirmation_prompt">Do you want to donate</string>
@@ -50,6 +51,7 @@
     <string name="news_category">Local</string>
     <string name="title_activity_search_results">Search Results</string>
     <string name="menu_search">Search</string>
+    <string name="menu_about">About</string>
     <string name="search_box_hint">type here</string>
     <string name="search_results">Search Results</string>
     <string name="searching">Searching...</string>

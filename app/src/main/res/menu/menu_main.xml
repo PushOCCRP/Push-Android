@@ -1,15 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
     <item
         android:id="@+id/action_search"
         android:title="@string/action_search"
         android:orderInCategory="100"
         android:icon="@mipmap/ic_search_white"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_about"
+        android:title="@string/menu_about"
+        android:orderInCategory="100"
+        android:icon="@mipmap/about"
+        app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/action_refresh_list" android:title="@string/action_refresh"
-        android:orderInCategory="90" app:showAsAction="never" />
+    <!--<item-->
+        <!--android:id="@+id/action_refresh_list"-->
+        <!--android:title="@string/action_refresh"-->
+        <!--android:orderInCategory="90"-->
+        <!--app:showAsAction="never" />-->
 
 </menu>
