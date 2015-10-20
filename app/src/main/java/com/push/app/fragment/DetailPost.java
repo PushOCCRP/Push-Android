@@ -75,7 +75,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
         try {
             Date date = DateUtil.postsDatePublishedFormatter.parse(String.valueOf(postItem.getPublishDate()));
-            fragment.postDate = DateUtil.setTime(date.getTime());
+            fragment.postDate = DateUtil.setTime(date.getTime(), false);
         }catch (Exception e){
 
         }

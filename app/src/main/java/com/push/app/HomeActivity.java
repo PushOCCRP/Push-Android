@@ -372,9 +372,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
             firstItemDescription.setText(recentPosts.getResults().get(0).getDescription());
 
             if(recentPosts.getResults().get(0).getAuthor().length() > 0) {
-                firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime()) + " by " + recentPosts.getResults().get(0).getAuthor());
+                firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true) + " by " + recentPosts.getResults().get(0).getAuthor());
             } else {
-                firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime()));
+                firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true));
             }
             //remove it from the list
             recentPosts.getResults().remove(0);

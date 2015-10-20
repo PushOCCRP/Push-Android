@@ -27,7 +27,7 @@ public class PostListAdapter extends ArrayAdapter<Article> {
     private List<Article> items;
     private AQuery aq;
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyymmdd");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     private int layout;
     private LayoutInflater inflater;
     private TypefaceManager fontManager;
@@ -76,9 +76,9 @@ public class PostListAdapter extends ArrayAdapter<Article> {
         try {
             Date date = sdf.parse(String.valueOf(items.get(position).getPublishDate()));
             if(items.get(position).getAuthor().length() > 0) {
-                holder.postDate.setText(DateUtil.setTime(date.getTime()) + " by " + items.get(position).getAuthor());
+                holder.postDate.setText(DateUtil.setTime(date.getTime(), true) + " by " + items.get(position).getAuthor());
             } else {
-                holder.postDate.setText(DateUtil.setTime(date.getTime()));
+                holder.postDate.setText(DateUtil.setTime(date.getTime(), true));
             }
 
         }catch (Exception e){
