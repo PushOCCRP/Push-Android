@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        >
+
+        <com.github.siyamed.shapeimageview.RoundedImageView
+            android:id="@+id/post_Image"
+            android:visibility="gone"
+            android:layout_width="@dimen/thumbnail_image_size"
+            android:layout_height="@dimen/thumbnail_image_size"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            app:siRadius="6dp"
+            app:siBorderWidth="0dp"
+            app:siBorderColor="@color/act_main_cell_subtitle_text_color"
+            android:layout_marginRight="16dp"
+            app:siSquare="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_Name"
+            android:layout_toRightOf="@+id/post_Image"
+            android:layout_alignParentTop="true"
+            android:textSize="16sp"
+            android:letterSpacing="0.02"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/post_Image"
+            android:layout_below="@+id/post_Name">
+
+            <TextView
+                android:id="@+id/post_Date"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_width="wrap_content"
+                android:textColor="@color/act_main_cell_subtitle_text_color"
+                android:text="@string/timePlaceholder"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_Description"
+            android:textSize="14sp"
+            android:maxLines="3"
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/post_Image"
+            android:layout_below="@+id/post_Name"
+            />
+
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,79 @@
+<LinearLayout
+    android:id="@+id/FirstItem"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/button_material_light"
+        android:layout_height="@dimen/flexible_space_image_height"
+        android:id="@+id/mainImageHolder"
+        >
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/image_progress"
+            android:layout_centerInParent="true"
+            />
+
+
+        <ImageView
+            android:id="@+id/firstPostImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:scaleType="centerCrop"
+            />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/firstPostHeadline"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:letterSpacing="0.02"
+        android:layout_width="match_parent"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/postDescription"
+        android:layout_width="match_parent"
+        android:textColor="@color/act_main_cell_subtitle_text_color"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:layout_marginTop="2dp"
+        android:fontFamily="serif"
+        android:textColorLink="@color/colorPrimaryDark"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/first_post_Date"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_width="wrap_content"
+            android:text="@string/timePlaceholder"
+            android:layout_height="wrap_content"
+            android:textColorLink="@color/colorPrimaryDark"/>
+
+    </LinearLayout>
+</LinearLayout>
