@@ -79,16 +79,11 @@
             android:orientation="horizontal"
             android:gravity="center">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:src="@mipmap/ic_action_time"
-                android:layout_height="24dp"
-                android:contentDescription="@string/clock" />
-
             <TextView
                 android:id="@+id/post_Date"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
+                android:layout_marginTop="5dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:layout_width="wrap_content"
                 android:textColor="@color/act_main_cell_subtitle_text_color"
                 android:text="@string/timePlaceholder"
@@ -102,7 +97,7 @@
             android:textSize="22dp"
             android:lineSpacingExtra="5dp"
             android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:textStyle="bold"
@@ -127,7 +122,6 @@
             android:lineSpacingExtra="5dp"
             android:layout_width="330dp"
             android:padding="5dp"
-            android:autoLink="email|web"
             android:layout_marginTop="20dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

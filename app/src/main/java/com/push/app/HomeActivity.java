@@ -122,8 +122,10 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         mToolbarView =(Toolbar) findViewById(R.id.toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.logo);
+        getSupportActionBar().setTitle("");
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
         //Setup the drawer
         //setUpDrawer();
 
@@ -440,12 +442,10 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = null;
-        String title = getString(R.string.app_name);
         switch (position) {
             case 0:
                 this.mHomeLayout.setVisibility(View.VISIBLE);
                 this.mSearchView.setVisibility(View.GONE);
-                title = getResources().getString(R.string.app_name);
 
                 Fragment frag = fragmentManager.findFragmentByTag("Fragment");
                 if(frag != null)
@@ -453,7 +453,6 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 break;
             case 1:
                 fragment = new DonatePage();
-                title = getString(R.string.title_item_one);
                 break;
             case 2:
                 Intent i = new Intent(HomeActivity.this, AboutActivity.class);
@@ -471,15 +470,15 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
 
         // set the toolbar title
-       setActionBarTitle(title);
+       //setActionBarTitle(title);
     }
 
-    void setActionBarTitle(String title){
+    /*void setActionBarTitle(String title){
         try {
-            getSupportActionBar().setTitle(title);
-            getSupportActionBar().setDisplayShowCustomEnabled(false); //disable the search TextView on the actionbar
-            getSupportActionBar().setDisplayShowTitleEnabled(true); //show the title in the action bar
 
+            getSupportActionBar().setDisplayShowCustomEnabled(false); //disable the search TextView on the actionbar
+            getSupportActionBar().setDisplayShowTitleEnabled(false); //show the title in the action bar
+            getSupportActionBar().setTitle("");
             //hides the keyboard
             imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
 
@@ -491,7 +490,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
             e.printStackTrace();
         }
     }
-
+*/
     @Override
     public void onBackPressed() {
 
@@ -500,7 +499,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
             if(frag != null) {
                 getSupportFragmentManager().beginTransaction().remove(frag).commit();
                 this.mHomeLayout.setVisibility(View.VISIBLE);
-                setActionBarTitle(getString(R.string.app_name));
+                //setActionBarTitle(getString(R.string.app_name));
             }
             else if(isSearchShown) {
                 updateViews(false);
@@ -540,24 +539,22 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if(visibility) {
             this.mSearchView.setVisibility(View.VISIBLE);
             this.mAboutAction.setVisible(false);
+            getSupportActionBar().setLogo(null);
         }
         else{
             //hides the keyboard
             if(null != editSearch )
             imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
             this.mSearchView.setVisibility(View.GONE);
-            showDefaultActionBAr();
-
+            showDefaultActionBar();
         }
-
-
     }
 
-    void showDefaultActionBAr(){
+    void showDefaultActionBar(){
         ActionBar action = getSupportActionBar(); //get the actionbar
         action.setDisplayShowCustomEnabled(false); //disable a custom view inside the actionbar
-        action.setDisplayShowTitleEnabled(true); //show the title in the action bar
-
+        action.setDisplayShowTitleEnabled(false); //don't show the title in the action bar
+        action.setLogo(R.mipmap.logo);
 
         //add the search icon in the action bar
         mSearchAction.setIcon(getResources().getDrawable(R.mipmap.ic_search_white));
@@ -576,7 +573,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
             //hides the keyboard
             imm.hideSoftInputFromWindow(editSearch.getWindowToken(), 0);
-            showDefaultActionBAr();
+            showDefaultActionBar();
         } else { //open the search entry
 
             updateViews(true);

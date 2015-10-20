@@ -17,7 +17,7 @@ public class DateUtil {
     /**
      * Date format for the posts in the main page.
      */
-    public static final String POST_DATE_MAIN_LIST_ITEM = "dd.MM.yyyy";
+    public static final String POST_DATE_MAIN_LIST_ITEM = "LLLL dd, yyyy";
 
 
     /**

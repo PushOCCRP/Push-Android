@@ -48,12 +48,6 @@
                 android:layout_toRightOf="@+id/post_Image"
                 android:layout_below="@+id/post_Name">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:src="@mipmap/ic_action_time"
-                    android:layout_height="24dp"
-                    android:contentDescription="@string/clock" />
-
                 <TextView
                     android:id="@+id/post_Date"
                     android:paddingLeft="5dp"

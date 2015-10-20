@@ -10,5 +10,6 @@ public class Contants {
      */
 //    public static final String SERVER_URL = "http://chano8.com/wp-json/posts";
     public static final String SERVER_URL = "http://push-backend.herokuapp.com";
+//    public static final String SERVER_URL = "http://push-137690.nitrousapp.com:3000";
 
 }

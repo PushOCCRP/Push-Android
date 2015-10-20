@@ -29,6 +29,10 @@ import com.push.app.util.ImageGetter;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
+
+import android.text.util.Linkify;
+import android.text.method.LinkMovementMethod;
 
 public final class DetailPost extends Fragment implements ObservableScrollViewCallbacks {
     private static final String KEY_CONTENT = "TestFragment:Content";
@@ -36,6 +40,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private static final String KEY_URL = "TestFragment:Desc";
     private static final String KEY_DATE = "TestFragment:Date";
     private static final String KEY_AUTHOR = "TestFragment:Author";
+    static final String REGEX = "(?!<a[^>]*?>)(http[^\\s]+)(?![^<]*?</a>)";
 
     private String postBody;
     private String postTitle;
@@ -92,8 +97,6 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
             postDate = savedInstanceState.getString(KEY_DATE);
             postImageUrl = savedInstanceState.getStringArrayList(KEY_URL);
             postAuthor = savedInstanceState.getString(KEY_AUTHOR);
-
-
         }
     }
 
@@ -120,8 +123,12 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         //Set the values
         mPostTitle.setText(postTitle);
         mpostImage.setVisibility(View.GONE);
-        if(postBody != null && postBody.length() > 0){
+        if(postBody != null && postBody.length() > 0 ){
+            mContent.setMovementMethod(LinkMovementMethod.getInstance());
             mContent.setText(Html.fromHtml(postBody));
+            // Match any set of characters starting with `http` but not in `<a></a>` tag
+            Linkify.addLinks(mContent, Pattern.compile(REGEX), "https://");
+            Linkify.addLinks(mContent, Pattern.compile(REGEX), "http://");
         }
 
         if(postAuthor.length() > 0) {
