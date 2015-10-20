@@ -14,6 +14,7 @@
     <dimen name="share_dialog_home_bottom_pading">2dp</dimen>
     <dimen name="parallax_image_height">400dp</dimen>
     <dimen name="flexible_space_image_height">240dp</dimen>
+    <dimen name="flexible_space_image_height_large">340dp</dimen>
     <dimen name="statusMargin">0dp</dimen>
     <dimen name="userSpace">164dp</dimen>
     <dimen name="photoMarginTop">16dp</dimen>

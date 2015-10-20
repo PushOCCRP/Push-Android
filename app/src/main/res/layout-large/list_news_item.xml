@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         >
@@ -25,7 +27,7 @@
             app:siRadius="6dp"
             app:siBorderWidth="0dp"
             app:siBorderColor="@color/act_main_cell_subtitle_text_color"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="25dp"
             app:siSquare="true"/>
 
         <TextView

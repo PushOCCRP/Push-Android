@@ -1,6 +1,7 @@
 package com.push.app.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -29,6 +30,7 @@ import com.push.app.util.ImageGetter;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import android.text.util.Linkify;
@@ -46,6 +48,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private String postTitle;
     private String postDate;
     private String postAuthor;
+    private String postPhotoCaption;
     private View rootView;
     private View mAnchor;
     private TextView mPostTitle;
@@ -55,6 +58,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private ProgressBar mProgress;
     private WebView mPostBody;
     private ImageView mpostImage;
+    private TextView mPhotoCaption;
     private AQuery aq;
     private Context mContext;
     private WebSettings webSettings;
@@ -72,6 +76,11 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         fragment.postTitle = postItem.getHeadline();
         fragment.postImageUrl.addAll(postItem.getImageUrls());
         fragment.postAuthor = postItem.getAuthor();
+
+        List<String> captions = postItem.getCaptions();
+        if(captions.size() > 0) {
+            fragment.postPhotoCaption = captions.get(0);
+        }
 
         try {
             Date date = DateUtil.postsDatePublishedFormatter.parse(String.valueOf(postItem.getPublishDate()));
@@ -112,7 +121,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         mProgress = (ProgressBar)rootView.findViewById(R.id.image_progress);
         mPostTitle = (TextView)rootView.findViewById(R.id.postHeadline);
         mpostImage = (ImageView)rootView.findViewById(R.id.postImage);
-
+        mPhotoCaption = (TextView)rootView.findViewById(R.id.photoCaption);
 
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
@@ -151,6 +160,13 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
                     mAnchor.setVisibility(View.GONE);
                 }
             }
+
+        if(postPhotoCaption != null){
+            mPhotoCaption.setTextColor(Color.LTGRAY);
+            mPhotoCaption.setText(postPhotoCaption);
+        } else {
+            mPhotoCaption.setVisibility(View.GONE);
+        }
 
         return rootView;
     }

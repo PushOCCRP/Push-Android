@@ -32,6 +32,9 @@ public class Article implements Serializable{
     @SerializedName("image_urls")
     @Expose
     private List<String> imageUrls = new ArrayList<String>();
+    @SerializedName("captions")
+    @Expose
+    private List<String> captions = new ArrayList<String>();
 
     /**
      *
@@ -193,6 +196,24 @@ public class Article implements Serializable{
      */
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
+    }
+
+    /**
+     *
+     * @return
+     * The image captions
+     */
+    public List<String> getCaptions() {
+        return captions;
+    }
+
+    /**
+     *
+     * @param captions
+     * The image captions
+     */
+    public void setCaptions(List<String> captions) {
+        this.captions = captions;
     }
 
 }
