@@ -24,18 +24,15 @@
     <FrameLayout
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:backgroundTint="#FFFFFF"
+        >
 
         <FrameLayout
             android:id="@+id/mHomeLayout"
-
             android:layout_marginTop="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-
-
 
             <View
                 android:id="@+id/list_background"
@@ -59,7 +56,8 @@
                     android:layout_marginTop="10dp"
                     android:id="@+id/mList"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    />
 
             </android.support.v4.widget.SwipeRefreshLayout>
 

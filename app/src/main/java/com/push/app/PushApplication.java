@@ -11,6 +11,8 @@ import com.infobip.push.PushClient;
  * Created by Zed on 6/30/2015.
  */
 public class PushApplication extends Application {
+
+
     Configuration pushConfig;
     @Override
     public void onCreate() {
