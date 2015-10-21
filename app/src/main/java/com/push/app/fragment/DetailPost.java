@@ -1,22 +1,33 @@
 package com.push.app.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import android.text.Html;
 
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -149,17 +160,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         mPostAuthor.setText(postAuthor);
 
 
-            if (postImageUrl != null) {
-                if (postImageUrl.size() > 1) {
-                    aq.id(mpostImage).progress(R.id.image_progress).image(postImageUrl.get(1), true, true, 0, R.drawable.fallback, null, AQuery.FADE_IN);
-                } else if(postImageUrl.size() == 1) {
-                    aq.id(mpostImage).progress(R.id.image_progress).image(postImageUrl.get(0), true, true, 0, R.drawable.fallback, null, AQuery.FADE_IN);
-                } else {
-                    //If there are no images hide the anchor and loader
-                    mProgress.setVisibility(View.GONE);
-                    mAnchor.setVisibility(View.GONE);
-                }
-            }
+
 
         if(postPhotoCaption != null){
             mPhotoCaption.setTextColor(Color.LTGRAY);
@@ -171,6 +172,55 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (postImageUrl != null) {
+            if (postImageUrl.size() > 0) {
+
+                //aq.id(mpostImage).progress(R.id.image_progress).image(postImageUrl.get(0), true, true, 0, R.drawable.fallback, null, AQuery.FADE_IN);
+                aq.id(mpostImage).progress(R.id.image_progress).image(postImageUrl.get(0), true, true, 0, R.drawable.fallback, new BitmapAjaxCallback() {
+
+                            @Override
+                            public void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
+                                iv.setVisibility(View.VISIBLE);
+                                RelativeLayout parentLayout = (RelativeLayout)iv.getParent();
+                                RelativeLayout parentParentLayout = (RelativeLayout)parentLayout.getParent();
+                                View anchor = (View) parentParentLayout.findViewById(R.id.anchor);
+
+                                WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                                Display display = wm.getDefaultDisplay();
+                                Point size = new Point();
+                                display.getSize(size);
+
+                                int imageWidth = dpToPx(bm.getWidth());
+                                int imageHeight = dpToPx(bm.getHeight());
+
+
+                                // Here we do the ratio math
+                                // Get the new width of the image when in the view
+                                float ratio = (float)size.x / (float)imageWidth;
+                                int newHeight = Math.round(imageHeight * ratio);
+
+                                if(newHeight > size.x){
+                                    newHeight = size.x;
+                                }
+
+                                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(size.x, newHeight);
+                                parentLayout.setLayoutParams(layoutParams);
+                                anchor.setLayoutParams(layoutParams);
+                                iv.setImageBitmap(bm);
+                            }
+                        }
+                );
+
+            } else {
+                //If there are no images hide the anchor and loader
+                mProgress.setVisibility(View.GONE);
+                mAnchor.setVisibility(View.GONE);
+            }
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -179,7 +229,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         outState.putStringArrayList(KEY_URL, postImageUrl);
         outState.putString(KEY_TITLE, postTitle);
         outState.putString(KEY_DATE, postDate);
-        outState.putString(KEY_AUTHOR,postAuthor);
+        outState.putString(KEY_AUTHOR, postAuthor);
 
     }
 
@@ -196,4 +246,12 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
     }
+
+
+    private int dpToPx(int dp) {
+        float density = getActivity().getResources().getDisplayMetrics().density;
+        float pixel = dp * density;
+        return Math.round(pixel);
+    }
 }
+

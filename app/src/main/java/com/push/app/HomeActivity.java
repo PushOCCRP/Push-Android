@@ -20,7 +20,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -34,10 +37,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -51,6 +56,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
+import com.androidquery.callback.BitmapAjaxCallback;
+import com.androidquery.callback.ImageOptions;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.google.gson.Gson;
 import com.infobip.push.Notification;
@@ -155,6 +163,38 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     displayView(1);
 
                     return;
+                } else if(additionalInfo.has("article_id")) {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    if(restAPI == null){
+                        setUpRestApi();
+                    }
+
+                    restAPI.getArticle(additionalInfo.getString("article_id"), new Callback<ArticlePost>() {
+                        @Override
+                        public void success(ArticlePost articlePost, Response response) {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                            Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
+
+                            PostFragmentAdapter.postItems.clear();
+                            PostFragmentAdapter.postItems.add(articlePost.getResults().get(0));
+
+                            i.putExtra("postPosition", 0);
+                            i.putExtra("postTitle", articlePost.getResults().get(0).getHeadline());
+                            i.putExtra("description", articlePost.getResults().get(0).getDescription());
+
+
+                            cachePosts("searchResults", articlePost);//cache these results
+
+                            startActivity(i);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                            Log.e("ERROR", "Failed to parse JSON ", error);
+                        }
+
+                    });
                 }
             }catch (JSONException ex){
                 Utils.log("Error loading post -> " + ex.getMessage());
@@ -311,8 +351,8 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                         //We want this to be the same order everywhere so we do it here
                         //If there's none, then we hide the image box
                         Article intendedTopArticle = null;
-                        for(Article article : articlePost.getResults()){
-                            if(article.getImageUrls().size() > 0){
+                        for (Article article : articlePost.getResults()) {
+                            if (article.getImageUrls().size() > 0) {
                                 intendedTopArticle = article;
                                 break;
                             }
@@ -365,7 +405,59 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
             if (recentPosts.getResults().get(0).getImageUrls().size() > 0) {
                 mainImageHolder.setVisibility(RelativeLayout.VISIBLE);
-                aq.id(firstPostImage).progress(R.id.image_progress).image(recentPosts.getResults().get(0).getImageUrls().get(0), true, true, 0, R.drawable.fallback,null, AQuery.FADE_IN);
+
+
+                aq.id(firstPostImage).progress(R.id.image_progress).image(recentPosts.getResults().get(0).getImageUrls().get(0), true, true, 0, R.drawable.fallback, null, AQuery.FADE_IN);
+
+                // Should probably use a canvas here?
+                /*aq.id(firstPostImage).progress(R.id.image_progress).image(recentPosts.getResults().get(0).getImageUrls().get(0), true, true, 0, R.drawable.fallback, new BitmapAjaxCallback() {
+
+                    @Override
+                    public void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
+                        iv.setVisibility(View.VISIBLE);
+                        RelativeLayout parentLayout = (RelativeLayout)iv.getParent();
+
+                        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+                        Display display = wm.getDefaultDisplay();
+                        Point size = new Point();
+                        display.getSize(size);
+
+                        int imageWidth = dpToPx(bm.getWidth());
+                        int imageHeight = dpToPx(bm.getHeight());
+
+
+                        // Here we do the ratio math
+                        // Get the new width of the image when in the view
+
+                        float ratio = (float)size.x / (float)imageWidth;
+                        // If ratio is less than 1 the original image is larger than the view
+
+                            // Get the new height from the ratio.
+                            int newHeight = Math.round(imageHeight * ratio);
+
+                            if (size.x > bm.getWidth()) {
+                                size.x = bm.getWidth();
+                            }
+
+                            // If the image is taller than wider, then make it square
+                            if (newHeight > size.x) {
+                                newHeight = size.x;
+                            }
+
+                            if (imageWidth < imageHeight) {
+                                //bm = Bitmap.createBitmap(bm, 0, 0, size.x, newHeight);
+                            }
+
+
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(size.x, newHeight);
+                            parentLayout.setLayoutParams(layoutParams);
+
+                        iv.setImageBitmap(bm);
+
+                    }
+                }
+                );
+*/
             } else {
                 mainImageHolder.setVisibility(RelativeLayout.GONE);
             }
@@ -650,10 +742,10 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("SEARCH ERROR","Search Failed",error);
+                Log.e("SEARCH ERROR", "Search Failed", error);
                 Toast.makeText(HomeActivity.this, "No results to display", Toast.LENGTH_LONG).show();
                 findViewById(R.id.searchProgress).setVisibility(View.GONE);
-                ((TextView)findViewById(R.id.searchResults)).setText(getString(R.string.no_search_results));
+                ((TextView) findViewById(R.id.searchResults)).setText(getString(R.string.no_search_results));
                 updateViews(true);
             }
         });
@@ -676,10 +768,10 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
                 // store the new time in the preferences file
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("searchClicked",true);
+                editor.putBoolean("searchClicked", true);
                 editor.commit();
 
-                cachePosts("searchResults",articlePost);//cache these results
+                cachePosts("searchResults", articlePost);//cache these results
 
                 startActivity(i);
             }
@@ -704,5 +796,12 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         editor.putLong("lastLoadTime", time);
         editor.commit();
     }
+
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        float pixel = dp * density;
+        return Math.round(pixel);
+    }
+
 
 }
