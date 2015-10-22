@@ -16,7 +16,7 @@
 
             <com.github.siyamed.shapeimageview.RoundedImageView
                 android:id="@+id/post_Image"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="@dimen/thumbnail_image_size"
                 android:layout_height="@dimen/thumbnail_image_size"
                 android:layout_alignParentLeft="true"
