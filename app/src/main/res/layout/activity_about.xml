@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    tools:context="com.push.app.DetailPostActivity">
+    tools:context="com.push.occrp.DetailPostActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -19,7 +19,7 @@
             app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
             app:theme="@style/Toolbar" />
 
-        <fragment android:name="com.push.app.fragment.AboutFragment"
+        <fragment android:name="com.push.occrp.fragment.AboutFragment"
             android:id="@+id/about_fragment"
             android:layout_weight="1"
             android:layout_width="match_parent"

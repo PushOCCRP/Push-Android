@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.push.app" >
+    package="com.push.occrp" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.push.app.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.push.occrp.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -15,33 +15,33 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission
-        android:name="com.push.app.permission.C2D_MESSAGE"
+        android:name="com.push.occrp.permission.C2D_MESSAGE"
         android:protectionLevel="normal" />
 
     <application
-        android:name=".PushApplication"
+        android:name="com.push.occrp.PushApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/MyMaterialTheme" >
         <activity
-            android:name=".AboutActivity"
+            android:name="com.push.occrp.AboutActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name=".DetailPostActivity"
+            android:name="com.push.occrp.DetailPostActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name=".NotificationHandler"
+            android:name="com.push.occrp.NotificationHandler"
             android:label="@string/title_activity_detail_post"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName="com.push.occrp.HomeActivity"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name="com.push.occrp.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Toolbar" >
             <intent-filter>
@@ -61,7 +61,7 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="com.push.app" />
+                <category android:name="com.push.occrp" />
             </intent-filter>
         </receiver>
         <receiver android:name="com.infobip.push.PushActionReceiver" />

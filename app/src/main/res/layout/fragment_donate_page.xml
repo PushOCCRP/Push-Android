@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context="com.push.app.fragment.DonatePage">
+    tools:context="com.push.occrp.fragment.DonatePage">
 
     <TextView
         android:layout_width="wrap_content"
