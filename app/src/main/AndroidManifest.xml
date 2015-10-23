@@ -77,6 +77,9 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <!-- Push notifications -->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="e8e3bbc2256c70be95a43e59ef78a0e1b312db75" />
     </application>
 
 </manifest>
