@@ -390,6 +390,9 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 //            firstItemView.setVisibility(View.VISIBLE);
             final ArrayList<Article> mPosts = new ArrayList<>();
             mPosts.addAll(recentPosts.getResults());
+
+            // There's a bug where mPosts might be null if there's a bad connection or something
+            // In which case PostFragmentAdapter will f
             PostFragmentAdapter.postItems = mPosts;
 
             RelativeLayout mainImageHolder = (RelativeLayout) mHomeLayout.findViewById(R.id.mainImageHolder);

@@ -13,13 +13,18 @@ import java.util.ArrayList;
 public class PostFragmentAdapter extends FragmentPagerAdapter  {
     public static ArrayList<Article> postItems;
 
-    private int mCount = postItems.size();
+    private int mCount;
     private Context mContext;
 
     public PostFragmentAdapter(Context mContext,FragmentManager fm) {
         super(fm);
 
         this.mContext = mContext;
+
+        if(postItems != null){
+           mCount = postItems.size();
+        }
+
     }
 
     @Override
