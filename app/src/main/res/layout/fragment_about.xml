@@ -11,7 +11,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:text="@string/hello_blank_fragment"
-            android:padding="10dp"
+            android:padding="20dp"
             android:textSize="14dp"
             android:fontFamily="serif"
             android:id="@+id/about_text"

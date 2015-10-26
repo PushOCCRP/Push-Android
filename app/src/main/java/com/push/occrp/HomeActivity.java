@@ -50,6 +50,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.SearchEvent;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.google.gson.Gson;
 import com.infobip.push.Notification;
@@ -79,7 +82,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class HomeActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, OnFragmentInteractionListener {
+public class HomeActivity extends AppCompatActivity implements OnFragmentInteractionListener {
+//public class HomeActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, OnFragmentInteractionListener {
 
     private Toolbar mToolbarView;
     private ObservableListView mListView;
@@ -231,7 +235,6 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
     }
 
     private void initViews() {
-
         LinearLayout firstItemView = (LinearLayout) getLayoutInflater().inflate(R.layout.first_item_view, null);
         firstItemHeadline = (TextView) firstItemView.findViewById(R.id.firstPostHeadline);
         firstItemDescription = (TextView) firstItemView.findViewById(R.id.postDescription);
@@ -240,9 +243,6 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         // This is required to disable header's list selector effect
         mListView.addHeaderView(firstItemView);
         firstItemView.setClickable(false);
-
-
-
     }
 
     private void displayFromCache() {
@@ -481,16 +481,16 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                         i.putExtra("description", mPosts.get(position).getDescription());
 
                         startActivity(i);
+                        Answers.getInstance().logContentView(new ContentViewEvent()
+                                .putContentName(mPosts.get(position).getHeadline())
+                                .putContentType("Article Opened")
+                                .putContentId(Integer.toString(mPosts.get(position).getId())));
                     }
+
                 }
+
             });
 
-
-            //TODO @Bryan  uncommented this. Causes detail to page to keep opening endlessly after notification when you press back key
-//            if (isNotification) { //This is a way of displaying a test article from push - To be removed in production
-//                Utils.log("Displaying test article = notification");
-//                mListView.performItemClick(mListAdapter.getView(0, null, null), 0, mListAdapter.getItemId(0));
-//            }
         }catch (ParseException e){
             e.printStackTrace();
         }
@@ -511,18 +511,22 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         }
     }
 
-    private void setUpDrawer() {
+    /*private void setUpDrawer() {
         FragmentDrawer drawerFragment = (FragmentDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbarView);
         drawerFragment.setDrawerListener(this);
     }
+    */
+    /*
+    Disablilng drawer, so this will just fix this crash
 
     @Override
     public void onDrawerItemSelected(View view, int position) {
-
-        displayView(position);
+        return;
+        //displayView(position);
     }
+    */
 
     private void displayView(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -624,7 +628,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
         isSearchShown = visibility;
         if(visibility) {
             this.mSearchView.setVisibility(View.VISIBLE);
-            this.mAboutAction.setVisible(false);
+            if(this.mAboutAction != null) {
+                this.mAboutAction.setVisible(false);
+            }
             getSupportActionBar().setLogo(null);
         }
         else{
@@ -707,6 +713,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
             //add the close icon
             mSearchAction.setIcon(getResources().getDrawable(R.mipmap.ic_action_cancel));
             isSearchOpened = true;
+            Answers.getInstance().logContentView(new ContentViewEvent()
+                    .putContentType("Search Opened"));
+
         }
     }
 
@@ -740,6 +749,10 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 updateViews(true);
             }
         });
+
+        Answers.getInstance().logSearch(new SearchEvent()
+                .putQuery(searchString));
+
     }
 
     private void displaySearchResults(final ArticlePost articlePost) {
@@ -756,6 +769,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 i.putExtra("postPosition", position);
                 i.putExtra("postTitle", articlePost.getResults().get(position).getHeadline());
                 i.putExtra("description", articlePost.getResults().get(position).getDescription());
+
+                Answers.getInstance().logContentView(new ContentViewEvent()
+                        .putContentName(articlePost.getResults().get(position).getHeadline())
+                        .putContentType("Search Result Opened")
+                        .putContentId(Integer.toString(articlePost.getResults().get(position).getId())));
 
                 // store the new time in the preferences file
                 SharedPreferences.Editor editor = sharedPreferences.edit();
