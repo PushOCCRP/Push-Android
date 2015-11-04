@@ -64,7 +64,9 @@ public class PostListAdapter extends ArrayAdapter<Article> {
         holder.postTitle.setTypeface(fontManager.getRobotoMedium());
         holder.postTitle.setText(items.get(position).getHeadline());
 
-        if(items.get(position).getImageUrls().size()>0)
+        if(items.get(position).getImageUrls().size()>0) {
+            holder.postImage.setVisibility(View.VISIBLE);
+
 //            aq.id(holder.postImage).image(items.get(position).getImageUrls().get(0));
             aq.id(holder.postImage).image(items.get(position).getImageUrls().get(0), true, true, 0, AQuery.FADE_IN);
 
@@ -73,6 +75,9 @@ public class PostListAdapter extends ArrayAdapter<Article> {
 //        }else{
 //            holder.postImage.setVisibility(View.GONE);
 //        }
+        } else {
+            holder.postImage.setVisibility(View.INVISIBLE);
+        }
         try {
             Date date = sdf.parse(String.valueOf(items.get(position).getPublishDate()));
             if(items.get(position).getAuthor().length() > 0) {

@@ -23,10 +23,10 @@
             android:layout_height="@dimen/thumbnail_image_size"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
             app:siRadius="6dp"
             app:siBorderWidth="0dp"
             app:siBorderColor="@color/act_main_cell_subtitle_text_color"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="25dp"
             app:siSquare="true"/>
 

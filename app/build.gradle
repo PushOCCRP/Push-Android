@@ -17,8 +17,8 @@ android {
         applicationId "com.push.occrp"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 5
-        versionName "3.0"
+        versionCode 6
+        versionName "3.0.1"
     }
     buildTypes {
         release {

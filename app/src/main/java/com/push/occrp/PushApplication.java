@@ -27,7 +27,13 @@ public class PushApplication extends Application {
                         .applicationSecret("vrhmh2mw54mitzz")
                         .projectNumber("473631741147")
                         .production(false).build();
-
+        /*pushConfig =
+                Configuration.customConfiguration(this)
+                        .applicationId("pykzgrffppzx")
+                        .applicationSecret("gfzywlo6rdt8g4d")
+                        .projectNumber("772215886083")
+                        .production(false).build();
+*/
         PushClient.configure(this, pushConfig);
 
         Notification.DefaultNotificationHandler.smallIconResource(R.mipmap.ic_launcher);
@@ -35,6 +41,7 @@ public class PushApplication extends Application {
         Intent i = new Intent(this, HomeActivity.class);
         i.putExtra("is_notification", true);
         Notification.DefaultNotificationHandler.onNotificationClickIntent(i, Notification.DefaultNotificationHandler.NotificationType.plain);
+        Notification.DefaultNotificationHandler.onNotificationClickIntent(i, Notification.DefaultNotificationHandler.NotificationType.media);
 
         PushClient.start();
     }
