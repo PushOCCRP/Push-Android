@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ProgressBar;
@@ -53,6 +54,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private String postDate;
     private String postAuthor;
     private String postPhotoCaption;
+
     private View rootView;
     private View mAnchor;
     private TextView mPostTitle;
@@ -63,11 +65,14 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private WebView mPostBody;
     private ImageView mpostImage;
     private TextView mPhotoCaption;
+    private Button mVideoPlayButton;
+
     private AQuery aq;
     private Context mContext;
     private WebSettings webSettings;
     private TextView mContent;
     ArrayList<String> postImageUrl = new ArrayList<>();
+    ArrayList<String> postVideoIds = new ArrayList<>();
 
     //private View mImageView;
     private ObservableScrollView mScrollView;
@@ -78,10 +83,17 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         fragment.mContext = mContext;
         fragment.postBody = postItem.getBody();
         fragment.postTitle = postItem.getHeadline();
+
         List<HashMap<String, String>> images = postItem.getImages();
         if(images.size() > 0) {
             fragment.postImageUrl.add(images.get(0).get("url"));
         }
+
+        List<HashMap<String, String>> videos = postItem.getVideos();
+        if(videos.size() > 0){
+            fragment.postVideoIds.add(videos.get(0).get("youtube_id"));
+        }
+
         fragment.postAuthor = postItem.getAuthor();
 
         List<String> captions = postItem.getCaptions();
@@ -129,7 +141,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         mPostTitle = (TextView)rootView.findViewById(R.id.postHeadline);
         mpostImage = (ImageView)rootView.findViewById(R.id.postImage);
         mPhotoCaption = (TextView)rootView.findViewById(R.id.photoCaption);
-
+        mVideoPlayButton = (Button)rootView.findViewById(R.id.videoButton);
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mScrollView.setScrollViewCallbacks(this);
@@ -163,6 +175,10 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
             mPhotoCaption.setText(postPhotoCaption);
         } else {
             mPhotoCaption.setVisibility(View.GONE);
+        }
+
+        if(postVideoIds == null || postVideoIds.size() < 1){
+            mVideoPlayButton.setVisibility(View.GONE);
         }
 
         return rootView;

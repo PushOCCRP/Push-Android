@@ -65,6 +65,7 @@ import com.push.meydan.model.Article;
 import com.push.meydan.model.ArticlePost;
 import com.push.meydan.util.Contants;
 import com.push.meydan.util.DateUtil;
+import com.push.meydan.util.Language;
 import com.push.meydan.util.Utils;
 
 import org.json.JSONException;
@@ -73,6 +74,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Stack;
 import java.util.TimeZone;
 
@@ -334,8 +336,17 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         if(Online()){
 
             if(firstRun)findViewById(com.push.meydan.R.id.downloadProgress).setVisibility(View.VISIBLE);
+
+            //Get the language currently set, defaults to Azerbaijari ("az")
+            Locale locale = Language.getLanguage(getApplicationContext());
+
+            String language = "az";
+            if(locale != null) {
+                language = locale.getLanguage();
+            }
+
             mSwipeRefreshLayout.setRefreshing(true);
-                restAPI.getArticles(new Callback<ArticlePost>() {
+                restAPI.getArticles(language, new Callback<ArticlePost>() {
                     @Override
                     public void success(ArticlePost articlePost, Response response) {
                         //Rearrange the posts so that the first article has an image
