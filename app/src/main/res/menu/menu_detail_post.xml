@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context="com.push.occrp.DetailPostActivity">
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".DetailPostActivity">
      <item
         android:id="@+id/action_share"
         android:title="@string/action_share"

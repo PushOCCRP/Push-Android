@@ -14,6 +14,11 @@
         android:orderInCategory="100"
         android:icon="@mipmap/about"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_language"
+        android:title="AД"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
 
     <!--<item-->
         <!--android:id="@+id/action_refresh_list"-->

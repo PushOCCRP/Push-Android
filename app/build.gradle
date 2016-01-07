@@ -14,7 +14,7 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
     defaultConfig {
-        applicationId "com.push.occrp"
+        applicationId "com.push.meydan"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 7

@@ -58,4 +58,13 @@
     <string name="recent_results">Recent Search Results</string>
     <string name="action_share">Share</string>
     <string name="no_search_results">No results to display</string>
+
+    <string name="choose_language">Choose Language</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="player_error">Error initializing YouTube player</string>
+    <string name="seek_to">Jump To</string>
+    <string name="seek_to_hint">Seconds</string>
+
 </resources>
