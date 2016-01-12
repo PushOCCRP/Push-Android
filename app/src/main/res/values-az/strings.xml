@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OCCRP</string>
-    <string name="menu_search">Search12121</string>
+    <string name="app_name">Meydan TV</string>
 
+    <string name="action_settings">Parametrlər</string>
+    <string name="action_refresh">Yenilə</string>
+    <string name="action_search">Axtar</string>
+    <string name="drawer_open">Aç</string>
+    <string name="drawer_close">Bağla</string>
+
+    <string name="nav_item_home">Əsas Səhifə</string>
+    <string name="nav_item_donate">Dəstək ol</string>
+    <string name="nav_item_about">Haqqında</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/nav_item_donate</item>
+        <item>@string/nav_item_about</item>
+    </string-array>
+
+
+    <string name="title_home">Əsas Səhifə</string>
+    <string name="title_item_one">Dəstək ol</string>
+    <string name="title_item_two">Haqqında</string>
+    <string name="main_screen_cel_date_string">Tarix</string>
+    <string name="share_via">Paylaşıldı</string>
+
+    <string name="hello_blank_fragment">Meydan TV tətbiqetməsi haqqında</string>
+    <string name="title_activity_detail_post">Aktivlik barədə ətraflı</string>
+
+    <string name="hello_world">Salam dünya!</string>
+    <string name="title_activity_home">Əsas səhifə aktivliyi</string>
+
+    <string name="nothing"></string>
+    <string name="clock">saat</string>
+    <string name="timePlaceholder">40 dəqiqə əvvəl John Smith</string>
+    <string name="title_about">Haqqında</string>
+    <string name="donate_description">Bizim daha da inkişaf etməyimiz və sizə daha yaxşı xidmət göstərməyimiz üçün dəstəyiniz və yardımlarınızı əsirgəməyin.</string>
+    <string name="amount_label">Məbləğ</string>
+    <string name="donate_confirmation_prompt">Dəstək olmaq istəyirsiniz?</string>
+    <string name="donate_button_label">Yardım</string>
+    <string name="enter_valid_amount">Xahiş edirik, göndərəcəyiniz məbləği yazın</string>
+    <string name="thankyou_for_the_donation">Dəstəyiniz üçün təşəkkür edirik!</string>
+    <string name="news_category">Bölmə</string>
+    <string name="title_activity_search_results">Axtarış nəticəsi</string>
+    <string name="menu_search">Axtar</string>
+    <string name="menu_about">Haqqında</string>
+    <string name="search_box_hint">bura yazın...</string>
+    <string name="search_results">Axtarış nəticəsi</string>
+    <string name="searching">Axtarılır...</string>
+    <string name="recent_results">Son axtarış nəticəsi</string>
+    <string name="action_share">Paylaş</string>
+    <string name="no_search_results">Heç bir nəticə tapılmadı</string>
 </resources>

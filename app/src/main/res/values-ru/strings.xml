@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OCCRP</string>
-    <string name="menu_search">Search323432</string>
+    <string name="app_name">Meydan TV</string>
 
+    <string name="action_settings">Настройки</string>
+    <string name="action_refresh">Обновление</string>
+    <string name="action_search">Поиск</string>
+    <string name="drawer_open">Открыть</string>
+    <string name="drawer_close">Закрыть</string>
+
+    <string name="nav_item_home">Главное</string>
+    <string name="nav_item_donate">Помоги сайту</string>
+    <string name="nav_item_about">О проекте</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/nav_item_donate</item>
+        <item>@string/nav_item_about</item>
+    </string-array>
+
+
+    <string name="title_home">Главное</string>
+    <string name="title_item_one">Помоги сайту</string>
+    <string name="title_item_two">О проекте</string>
+    <string name="main_screen_cel_date_string">Время</string>
+    <string name="share_via">Поделиться через</string>
+
+    <string name="hello_blank_fragment">О мобильном приложении Мейдан ТВ</string>
+    <string name="title_activity_detail_post">Деталь истории</string>
+
+    <string name="hello_world">Привет мир!</string>
+    <string name="title_activity_home">Активность домашней страницы</string>
+
+    <string name="nothing"></string>
+    <string name="clock">Часы</string>
+    <string name="timePlaceholder">40 минут назад John Smith</string>
+    <string name="title_about">О проекте</string>
+    <string name="donate_description">Помогите нам расти и оперативно обеспечивать вас новостями. Ваши пожертвования будут направлены на покупку оборудования и оплату работы наших журналистов.</string>
+    <string name="amount_label">Сумма</string>
+    <string name="donate_confirmation_prompt">Вы хотите помочь сайту?</string>
+    <string name="donate_button_label">Помоги сайту</string>
+    <string name="enter_valid_amount">Поддержать на сумму</string>
+    <string name="thankyou_for_the_donation">Спасибо за Вашу поддержку!</string>
+    <string name="news_category">Категория</string>
+    <string name="title_activity_search_results">Результаты поиска</string>
+    <string name="menu_search">Поиск</string>
+    <string name="menu_about">О проекте</string>
+    <string name="search_box_hint">пишите здесь</string>
+    <string name="search_results">Результаты поиска</string>
+    <string name="searching">Выполняется поиск...</string>
+    <string name="recent_results">Последние результаты поиска</string>
+    <string name="action_share">Поделиться</string>
+    <string name="no_search_results">Поиск не найден</string>
 </resources>

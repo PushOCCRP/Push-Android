@@ -4,6 +4,10 @@ package com.push.meydan.util;
  * @author Bryan Lamtoo.
  */
 
+import android.content.Context;
+
+import com.push.meydan.R;
+
 import java.text.SimpleDateFormat;
 
 /**
@@ -48,7 +52,8 @@ public class DateUtil {
     public static final SimpleDateFormat postsDatePublishedFormatter = new SimpleDateFormat(
             POSTS_DATE_PUBLISHED_FORMAT);
 
-   public static String setTime(long time, boolean colloquial){
+    //Yes, you have to pass in context here, so we can get the strings file. Android is dumb
+   public static String setTime(Context context, long time, boolean colloquial){
         String status = "";
 
         if(time != 0){
@@ -59,15 +64,15 @@ public class DateUtil {
                 if (difference < (1000 * 60 * 60) && difference > 0) {
                     //if within 1 hour, display minutes
                     int minutesAgo = (int) Math.floor((difference / 1000) / 60);
-                    status += (minutesAgo == 0) ? "just now" : ((minutesAgo == 1) ? minutesAgo + " minutes ago" : minutesAgo + " minutes ago");
+                    status += (minutesAgo == 0) ? context.getResources().getString(R.string.just_now) : ((minutesAgo == 1) ? minutesAgo + " " +  context.getResources().getString(R.string.minutes_ago) : minutesAgo + " " + context.getResources().getString(R.string.minutes_ago));
                 } else {
                     //if we are within 24 hours, display hours
                     if (difference < (1000 * 60 * 60 * 24) && difference > 0) {
                         int hoursAgo = (int) Math.floor(((difference / 1000) / 60) / 60);
-                        status += (hoursAgo == 1) ? hoursAgo + " hours ago" : hoursAgo + " hours ago";
+                        status += (hoursAgo == 1) ? hoursAgo + " " + context.getResources().getString(R.string.hours_ago) : hoursAgo + " " + context.getResources().getString(R.string.hours_ago);
                     } else if (difference > 0) {//if we are within 2 days, display yesterday
                         int hold = 1000 * 60 * 60;
-                        status += difference < (hold * 48) ? "Yesterday" : difference < (hold * 72) ? "3 days ago" :
+                        status += difference < (hold * 48) ? context.getResources().getString(R.string.yesterday) : difference < (hold * 72) ? context.getResources().getString(R.string.three_day_ago) :
                                 DateUtil.postDateMainListItemFormat.format(time);
                     }
                 }

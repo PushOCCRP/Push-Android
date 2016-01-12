@@ -81,9 +81,9 @@ public class PostListAdapter extends ArrayAdapter<Article> {
         try {
             Date date = sdf.parse(String.valueOf(items.get(position).getPublishDate()));
             if(items.get(position).getAuthor().length() > 0) {
-                holder.postDate.setText(DateUtil.setTime(date.getTime(), true) + " by " + items.get(position).getAuthor());
+                holder.postDate.setText(DateUtil.setTime(getContext(), date.getTime(), true) + " by " + items.get(position).getAuthor());
             } else {
-                holder.postDate.setText(DateUtil.setTime(date.getTime(), true));
+                holder.postDate.setText(DateUtil.setTime(getContext(), date.getTime(), true));
             }
 
         }catch (Exception e){

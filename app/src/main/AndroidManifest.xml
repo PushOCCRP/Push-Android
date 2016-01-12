@@ -32,8 +32,15 @@
         <activity
             android:name="com.push.meydan.DetailPostActivity"
             android:label="@string/title_activity_detail_post"
-            android:theme="@style/MyMaterialTheme" >
+            android:theme="@style/MyMaterialTheme"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation">
         </activity>
+        <activity
+            android:name="com.push.meydan.YouTubeActivity"
+            android:label="YouTube Player"
+            android:theme="@style/MyMaterialTheme"
+            />
         <activity
             android:name="com.push.meydan.NotificationHandler"
             android:label="@string/title_activity_detail_post"

@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 
 import com.push.meydan.R;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -20,6 +21,20 @@ public class Language {
 
     private static String preferenceName = "LanguagePreference";
     private static String languageKey = "defaultLanguage";
+
+    private static ArrayList<LanguageListener> listeners;
+
+    public static void addListener(LanguageListener listener) {
+        if(listeners == null) {
+            listeners = new ArrayList<>();
+        }
+
+        if(listeners.contains(listener)){
+            return;
+        }
+
+        listeners.add(listener);
+    }
 
     // Adopted from http://stackoverflow.com/a/33145518
     public static Set<String> getAppLanguages(Context ctx) {
@@ -78,6 +93,30 @@ public class Language {
         SharedPreferences preferences = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(languageKey, locale.getLanguage());
+
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        context.getResources().updateConfiguration(config,
+                context.getResources().getDisplayMetrics());
+
         editor.commit();
+
+        callListeners();
+    }
+
+    public static void setDeviceToSavedLanguage(Context context) {
+        Locale locale = getLanguage(context);
+        setLanguage(context, locale);
+    }
+
+    private static void callListeners() {
+        if(listeners == null){
+            return;
+        }
+
+        for(LanguageListener listener : listeners){
+            listener.languageChanged();
+        }
     }
 }

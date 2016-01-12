@@ -66,6 +66,7 @@ import com.push.meydan.model.ArticlePost;
 import com.push.meydan.util.Contants;
 import com.push.meydan.util.DateUtil;
 import com.push.meydan.util.Language;
+import com.push.meydan.util.LanguageListener;
 import com.push.meydan.util.Utils;
 
 import org.json.JSONException;
@@ -84,8 +85,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class HomeActivity extends AppCompatActivity implements OnFragmentInteractionListener {
-//public class HomeActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener, OnFragmentInteractionListener {
+public class HomeActivity extends AppCompatActivity implements OnFragmentInteractionListener, LanguageListener {
 
     private Toolbar mToolbarView;
     private ObservableListView mListView;
@@ -109,7 +109,10 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     private boolean searchItemClicked = false;
     private boolean firstRun = false;
 
+
     @Override
+
+    // Whoa, this is messed up. Needs some serious refactoring.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.push.meydan.R.layout.activity_home);
@@ -117,7 +120,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
 
 
-         aq = new AQuery(this);
+        aq = new AQuery(this);
         setSupportActionBar((Toolbar) findViewById(com.push.meydan.R.id.toolbar));
 
         isNotification = getIntent().getBooleanExtra("is_notification", false);
@@ -134,6 +137,9 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         //Setup the drawer
         //setUpDrawer();
+
+        //Register for language changes
+        Language.addListener(this);
 
         mListView = (ObservableListView) findViewById(com.push.meydan.R.id.mList);
         initViews();
@@ -231,7 +237,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         //create an adapter for retrofit with base url
         RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(requestInterceptor)
-                .setEndpoint(Contants.SERVER_URL).build();
+                .setEndpoint(getResources().getString(R.string.server_url)).build();
         //creating a service for adapter with our GET class
         restAPI = restAdapter.create(RestApi.class);
     }
@@ -326,6 +332,12 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             Log.d("TIME", "Should not Load");
             return false;
         }
+    }
+
+    // Language Listener for if the language changes
+    @Override
+    public void languageChanged() {
+        checkForNewContent();
     }
 
     /**
@@ -474,9 +486,9 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             firstItemDescription.setText(recentPosts.getResults().get(0).getDescription());
 
             if(recentPosts.getResults().get(0).getAuthor().length() > 0) {
-                firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true) + " by " + recentPosts.getResults().get(0).getAuthor());
+                firstItemDateandAuthor.setText(DateUtil.setTime(getApplicationContext(), DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true) + " " + getResources().getString(R.string.by) + " " + recentPosts.getResults().get(0).getAuthor());
             } else {
-                firstItemDateandAuthor.setText(DateUtil.setTime(DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true));
+                firstItemDateandAuthor.setText(DateUtil.setTime(getApplicationContext(), DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true));
             }
             //remove it from the list
             recentPosts.getResults().remove(0);
@@ -753,7 +765,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         restAPI.searchArticles(searchString, 20150501, 20150505, 2, 5, new Callback<ArticlePost>() {
             @Override
             public void success(final ArticlePost articlePost, Response response) {
-                if (articlePost.getTotalResults() > 0) {
+                if (articlePost.getResults().size() > 0) {
                     displaySearchResults(articlePost);
                 } else {
                     Toast.makeText(HomeActivity.this, "No results to match your search", Toast.LENGTH_LONG).show();

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OCCRP</string>
+    <string name="app_name">Meydan TV</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
@@ -67,4 +67,11 @@
     <string name="seek_to">Jump To</string>
     <string name="seek_to_hint">Seconds</string>
     <string name="video_button">VIDEOQ!!!@!@!</string>
+
+    <string name="by">by</string>
+    <string name="hours_ago">hours ago</string>
+    <string name="just_now">just now</string>
+    <string name="minutes_ago">minutes ago</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="three_day_ago">3 days ago</string>
 </resources>

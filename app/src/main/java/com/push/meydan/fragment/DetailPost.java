@@ -1,6 +1,7 @@
 package com.push.meydan.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -28,6 +29,7 @@ import com.androidquery.callback.BitmapAjaxCallback;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.push.meydan.YouTubeActivity;
 import com.push.meydan.util.DateUtil;
 import com.push.meydan.R;
 import com.push.meydan.model.Article;
@@ -103,7 +105,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
         try {
             Date date = DateUtil.postsDatePublishedFormatter.parse(String.valueOf(postItem.getPublishDate()));
-            fragment.postDate = DateUtil.setTime(date.getTime(), false);
+            fragment.postDate = DateUtil.setTime(mContext, date.getTime(), false);
         }catch (Exception e){
 
         }
@@ -179,10 +181,19 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
         if(postVideoIds == null || postVideoIds.size() < 1){
             mVideoPlayButton.setVisibility(View.GONE);
+        } else {
+            mVideoPlayButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openVideo();
+                    view.setVisibility(View.VISIBLE);
+                }
+            });
         }
 
         return rootView;
     }
+
 
     @Override
     public void onStart() {
@@ -245,6 +256,15 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
     }
 
+    public void openVideo(){
+        if(postVideoIds.size() < 1){
+            return;
+        }
+
+        Intent i = new Intent(getActivity(), YouTubeActivity.class);
+        i.putExtra("videoId", postVideoIds.get(0));
+        startActivity(i);
+    }
 
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {

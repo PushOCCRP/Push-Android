@@ -7,6 +7,10 @@ import com.crashlytics.android.Crashlytics;
 import com.infobip.push.Configuration;
 import com.infobip.push.Notification;
 import com.infobip.push.PushClient;
+import com.push.meydan.util.Language;
+
+import java.util.Locale;
+
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -42,6 +46,8 @@ public class PushApplication extends Application {
         i.putExtra("is_notification", true);
         Notification.DefaultNotificationHandler.onNotificationClickIntent(i, Notification.DefaultNotificationHandler.NotificationType.plain);
         Notification.DefaultNotificationHandler.onNotificationClickIntent(i, Notification.DefaultNotificationHandler.NotificationType.media);
+
+        Language.setDeviceToSavedLanguage(getApplicationContext());
 
         PushClient.start();
     }
