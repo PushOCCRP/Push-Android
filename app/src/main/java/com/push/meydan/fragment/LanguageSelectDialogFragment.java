@@ -52,7 +52,7 @@ public class LanguageSelectDialogFragment extends DialogFragment {
             }
 
             Locale locale = Language.languageForTag(languageSequence.toString());
-            fullLanguageArrayList.add(locale.getDisplayLanguage());
+            fullLanguageArrayList.add(locale.getDisplayLanguage(locale));
         }
 
         // More massaging

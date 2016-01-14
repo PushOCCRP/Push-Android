@@ -52,4 +52,17 @@
     <string name="recent_results">Последние результаты поиска</string>
     <string name="action_share">Поделиться</string>
     <string name="no_search_results">Поиск не найден</string>
+
+    <string name="player_error">Ошибка инициализации плеера YouTube</string>
+    <string name="seek_to">Перейти к</string>
+    <string name="seek_to_hint">Секунд</string>
+
+    <string name="by">от</string>
+    <string name="hours_ago">несколько часов назад</string>
+    <string name="just_now">прямо сейчас</string>
+    <string name="minutes_ago">минут назад</string>
+    <string name="yesterday">Вчера</string>
+    <string name="three_day_ago">3 дня назад</string>
+    <string name="language">язык</string>
+
 </resources>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="act_main_bg">#e5e5e5</color>
-    <color name="colorPrimary">#9c1a1e</color>
+    <color name="colorPrimary">#FEFEFA</color>
     <color name="colorPrimaryDark">#430b0d</color>
-    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="textColorPrimary">#333333</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#ff4046</color>

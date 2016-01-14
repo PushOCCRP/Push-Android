@@ -16,8 +16,9 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_language"
-        android:title="AД"
+        android:title="@string/language"
         android:orderInCategory="100"
+        android:icon="@mipmap/ic_language"
         app:showAsAction="ifRoom" />
 
     <!--<item-->

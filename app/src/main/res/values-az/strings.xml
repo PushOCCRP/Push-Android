@@ -52,4 +52,18 @@
     <string name="recent_results">Son axtarış nəticəsi</string>
     <string name="action_share">Paylaş</string>
     <string name="no_search_results">Heç bir nəticə tapılmadı</string>
+
+    <string name="player_error">Youtube videosu yüklənərkən xəta yarandı</string>
+    <string name="seek_to">Keçmək</string>
+    <string name="seek_to_hint">Saniyələr</string>
+
+    <string name="by">Müəllif</string>
+    <string name="hours_ago">bir neçə saat öncə</string>
+    <string name="just_now">hal-hazırda</string>
+    <string name="minutes_ago">dəqiqə öncə</string>
+    <string name="yesterday">Dünən</string>
+    <string name="three_day_ago">3 gün öncə</string>
+    <string name="language">Dil</string>
+
+
 </resources>

@@ -22,7 +22,8 @@ public class AboutActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(com.push.meydan.R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("About");
+        getSupportActionBar().setTitle(R.string.nav_item_about);
+
     }
 
     @Override

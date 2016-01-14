@@ -74,4 +74,6 @@
     <string name="minutes_ago">minutes ago</string>
     <string name="yesterday">Yesterday</string>
     <string name="three_day_ago">3 days ago</string>
+
+    <string name="language">Language</string>
 </resources>

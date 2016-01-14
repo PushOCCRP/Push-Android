@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ProgressBar;
@@ -67,7 +68,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private WebView mPostBody;
     private ImageView mpostImage;
     private TextView mPhotoCaption;
-    private Button mVideoPlayButton;
+    private ImageButton mVideoPlayButton;
 
     private AQuery aq;
     private Context mContext;
@@ -143,7 +144,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         mPostTitle = (TextView)rootView.findViewById(R.id.postHeadline);
         mpostImage = (ImageView)rootView.findViewById(R.id.postImage);
         mPhotoCaption = (TextView)rootView.findViewById(R.id.photoCaption);
-        mVideoPlayButton = (Button)rootView.findViewById(R.id.videoButton);
+        mVideoPlayButton = (ImageButton)rootView.findViewById(R.id.videoButton);
 
         mScrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll);
         mScrollView.setScrollViewCallbacks(this);

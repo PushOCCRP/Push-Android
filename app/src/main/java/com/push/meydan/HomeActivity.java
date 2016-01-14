@@ -85,6 +85,11 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
+
+
+
 public class HomeActivity extends AppCompatActivity implements OnFragmentInteractionListener, LanguageListener {
 
     private Toolbar mToolbarView;
@@ -210,6 +215,10 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     @Override
     protected void onResume() {
         super.onResume();
+
+        checkForCrashes();
+        checkForUpdates();
+
         lastLoadTime = sharedPreferences.getLong("lastLoadTime", 0);
         //set up rest API
         setUpRestApi();
@@ -225,6 +234,16 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             editor.commit();
         }
     }
+
+    private void checkForCrashes() {
+        CrashManager.register(this, getResources().getString(R.string.hockey_key));
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this, getResources().getString(R.string.hockey_key));
+    }
+
 
     private void setUpRestApi() {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {

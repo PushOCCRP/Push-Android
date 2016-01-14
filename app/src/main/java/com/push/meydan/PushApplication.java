@@ -27,9 +27,9 @@ public class PushApplication extends Application {
         //Initialize push
         pushConfig =
                 Configuration.customConfiguration(this)
-                        .applicationId("vid29hw7lict")
-                        .applicationSecret("1bhs7bisy7ptc2a")
-                        .projectNumber("754262668085")
+                        .applicationId(getResources().getString(R.string.infobip_application_id))
+                        .applicationSecret(getResources().getString(R.string.infobip_application_secret))
+                        .projectNumber(getResources().getString(R.string.app_number))
                         .production(false).build();
         /*pushConfig =
                 Configuration.customConfiguration(this)

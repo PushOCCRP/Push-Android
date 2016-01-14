@@ -18,8 +18,8 @@ android {
         applicationId "com.push.meydan"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 7
-        versionName "3.0.2"
+        versionCode 9
+        versionName "0.9.1"
     }
     buildTypes {
         release {

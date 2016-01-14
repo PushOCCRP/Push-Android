@@ -55,6 +55,7 @@ public class DetailPostActivity extends ActionBarActivity {
 
     private void initActionBar() {
         mToolbar = (Toolbar) findViewById(com.push.meydan.R.id.toolbar);
+        mToolbar.setTitleTextColor(R.color.primary_dark_material_dark);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(null);
