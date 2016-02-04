@@ -35,7 +35,7 @@ public class YouTubeFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(youTubePlayerFragment, "player").commit();
 
-        youTubePlayerFragment.initialize("AIzaSyBRqkTW9BDXCT6UdCtqudWgxqgNjhcXRl8", new YouTubePlayer.OnInitializedListener(){
+        youTubePlayerFragment.initialize(getActivity().getApplicationContext().getString(R.string.youtube_key), new YouTubePlayer.OnInitializedListener(){
 
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {

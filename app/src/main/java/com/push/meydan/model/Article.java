@@ -42,6 +42,9 @@ public class Article implements Serializable{
     @SerializedName("captions")
     @Expose
     private List<String> captions = new ArrayList<String>();
+    @SerializedName("url")
+    @Expose
+    private String url;
 
     /**
      *
@@ -260,6 +263,24 @@ public class Article implements Serializable{
      */
     public void setCaptions(List<String> captions) {
         this.captions = captions;
+    }
+
+    /**
+     *
+     * @return
+     * The url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     *
+     * @param url
+     * The url
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 }

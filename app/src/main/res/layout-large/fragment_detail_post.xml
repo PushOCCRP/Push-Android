@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"/>
 
-                <Button
+                <ImageButton
                     android:id="@+id/videoButton"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"

@@ -53,6 +53,10 @@
     <string name="action_share">Paylaş</string>
     <string name="no_search_results">Heç bir nəticə tapılmadı</string>
 
+    <string name="choose_language">Dil Seçin</string>
+    <string name="ok">Oldu</string>
+    <string name="cancel">Əğv Etmək</string>
+
     <string name="player_error">Youtube videosu yüklənərkən xəta yarandı</string>
     <string name="seek_to">Keçmək</string>
     <string name="seek_to_hint">Saniyələr</string>
@@ -65,5 +69,6 @@
     <string name="three_day_ago">3 gün öncə</string>
     <string name="language">Dil</string>
 
+    <string name="back">Geri</string>
 
 </resources>

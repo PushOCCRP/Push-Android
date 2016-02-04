@@ -110,6 +110,24 @@ public class Language {
         setLanguage(context, locale);
     }
 
+    public static String bylineSeperator(Context context) {
+        Locale locale = getLanguage(context);
+        String langauge = locale.getLanguage();
+
+        String seperator = null;
+        if(langauge.equals("en")){
+            seperator = " by ";
+        } else if(langauge.equals("az")) {
+            seperator = ", ";
+        } else if(langauge.equals("ru")) {
+            seperator = ", ";
+        } else {
+            seperator = " ";
+        }
+
+        return seperator;
+    }
+
     private static void callListeners() {
         if(listeners == null){
             return;

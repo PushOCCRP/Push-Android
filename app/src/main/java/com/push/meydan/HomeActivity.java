@@ -432,7 +432,12 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
      */
     private void displayArticles( final ArticlePost recentPosts)  {
         try {
-//            firstItemView.setVisibility(View.VISIBLE);
+
+            // If recentPosts is empty, just return
+            if(recentPosts.getResults().size() < 1){
+                return;
+            }
+
             final ArrayList<Article> mPosts = new ArrayList<>();
             mPosts.addAll(recentPosts.getResults());
 
@@ -448,55 +453,6 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
                 aq.id(firstPostImage).progress(com.push.meydan.R.id.image_progress).image(recentPosts.getResults().get(0).getImages().get(0).get("url"), true, true, 0, com.push.meydan.R.drawable.fallback, null, AQuery.FADE_IN);
 
-                // Should probably use a canvas here?
-                /*aq.id(firstPostImage).progress(R.id.image_progress).image(recentPosts.getResults().get(0).getImageUrls().get(0), true, true, 0, R.drawable.fallback, new BitmapAjaxCallback() {
-
-                    @Override
-                    public void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
-                        iv.setVisibility(View.VISIBLE);
-                        RelativeLayout parentLayout = (RelativeLayout)iv.getParent();
-
-                        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-                        Display display = wm.getDefaultDisplay();
-                        Point size = new Point();
-                        display.getSize(size);
-
-                        int imageWidth = dpToPx(bm.getWidth());
-                        int imageHeight = dpToPx(bm.getHeight());
-
-
-                        // Here we do the ratio math
-                        // Get the new width of the image when in the view
-
-                        float ratio = (float)size.x / (float)imageWidth;
-                        // If ratio is less than 1 the original image is larger than the view
-
-                            // Get the new height from the ratio.
-                            int newHeight = Math.round(imageHeight * ratio);
-
-                            if (size.x > bm.getWidth()) {
-                                size.x = bm.getWidth();
-                            }
-
-                            // If the image is taller than wider, then make it square
-                            if (newHeight > size.x) {
-                                newHeight = size.x;
-                            }
-
-                            if (imageWidth < imageHeight) {
-                                //bm = Bitmap.createBitmap(bm, 0, 0, size.x, newHeight);
-                            }
-
-
-                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(size.x, newHeight);
-                            parentLayout.setLayoutParams(layoutParams);
-
-                        iv.setImageBitmap(bm);
-
-                    }
-                }
-                );
-*/
             } else {
                 mainImageHolder.setVisibility(RelativeLayout.GONE);
             }
@@ -505,7 +461,8 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             firstItemDescription.setText(recentPosts.getResults().get(0).getDescription());
 
             if(recentPosts.getResults().get(0).getAuthor().length() > 0) {
-                firstItemDateandAuthor.setText(DateUtil.setTime(getApplicationContext(), DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true) + " " + getResources().getString(R.string.by) + " " + recentPosts.getResults().get(0).getAuthor());
+                String seperator = Language.bylineSeperator(getApplicationContext());
+                firstItemDateandAuthor.setText(DateUtil.setTime(getApplicationContext(), DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true) + seperator + recentPosts.getResults().get(0).getAuthor());
             } else {
                 firstItemDateandAuthor.setText(DateUtil.setTime(getApplicationContext(), DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true));
             }
@@ -558,23 +515,6 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             return false;
         }
     }
-
-    /*private void setUpDrawer() {
-        FragmentDrawer drawerFragment = (FragmentDrawer)
-                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbarView);
-        drawerFragment.setDrawerListener(this);
-    }
-    */
-    /*
-    Disablilng drawer, so this will just fix this crash
-
-    @Override
-    public void onDrawerItemSelected(View view, int position) {
-        return;
-        //displayView(position);
-    }
-    */
 
     private void displayView(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();

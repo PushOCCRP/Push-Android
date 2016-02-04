@@ -53,6 +53,10 @@
     <string name="action_share">Поделиться</string>
     <string name="no_search_results">Поиск не найден</string>
 
+    <string name="choose_language">Выберите язык</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
+
     <string name="player_error">Ошибка инициализации плеера YouTube</string>
     <string name="seek_to">Перейти к</string>
     <string name="seek_to_hint">Секунд</string>
@@ -64,5 +68,7 @@
     <string name="yesterday">Вчера</string>
     <string name="three_day_ago">3 дня назад</string>
     <string name="language">язык</string>
+
+    <string name="back">назад</string>
 
 </resources>

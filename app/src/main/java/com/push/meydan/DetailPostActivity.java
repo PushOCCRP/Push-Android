@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.push.meydan.adapter.PostFragmentAdapter;
+import com.push.meydan.fragment.DetailPost;
+import com.push.meydan.model.Article;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
@@ -88,11 +90,15 @@ public class DetailPostActivity extends ActionBarActivity {
     }
 
     private void doShare() {
+
+        DetailPost post = (DetailPost)mAdapter.getItem(postPosition);
+        Article article = post.postItem;
+
         final Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         share.putExtra(Intent.EXTRA_SUBJECT, mPostTitle);
-        share.putExtra(Intent.EXTRA_SUBJECT, desc);
+        share.putExtra(Intent.EXTRA_TEXT, article.getUrl());
 
         try {
             startActivity(Intent.createChooser(share, "Select an action"));

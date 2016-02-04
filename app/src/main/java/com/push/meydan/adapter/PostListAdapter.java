@@ -13,6 +13,7 @@ import com.androidquery.AQuery;
 import com.push.meydan.util.DateUtil;
 import com.push.meydan.R;
 import com.push.meydan.model.Article;
+import com.push.meydan.util.Language;
 import com.push.meydan.util.TypefaceManager;
 
 import java.text.SimpleDateFormat;
@@ -81,7 +82,9 @@ public class PostListAdapter extends ArrayAdapter<Article> {
         try {
             Date date = sdf.parse(String.valueOf(items.get(position).getPublishDate()));
             if(items.get(position).getAuthor().length() > 0) {
-                holder.postDate.setText(DateUtil.setTime(getContext(), date.getTime(), true) + " by " + items.get(position).getAuthor());
+                String seperator = Language.bylineSeperator(this.getContext());
+                String text = DateUtil.setTime(getContext(), date.getTime(), true) + seperator + items.get(position).getAuthor();
+                holder.postDate.setText(text);
             } else {
                 holder.postDate.setText(DateUtil.setTime(getContext(), date.getTime(), true));
             }

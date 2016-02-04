@@ -37,8 +37,10 @@ public class DateUtil {
     /**
      *<code>SimpleDateFormat</code> for the posts in the main page.
      */
-    public static final SimpleDateFormat postDateMainListItemFormat = new SimpleDateFormat(
-            POST_DATE_MAIN_LIST_ITEM);
+    public static final SimpleDateFormat postDateMainListItemFormat(Context context) {
+        return new SimpleDateFormat(
+                POST_DATE_MAIN_LIST_ITEM, Language.getLanguage(context));
+    }
 
     /**
      * <code>SimpleDateFormat</code> for the post in the single post page.
@@ -73,11 +75,11 @@ public class DateUtil {
                     } else if (difference > 0) {//if we are within 2 days, display yesterday
                         int hold = 1000 * 60 * 60;
                         status += difference < (hold * 48) ? context.getResources().getString(R.string.yesterday) : difference < (hold * 72) ? context.getResources().getString(R.string.three_day_ago) :
-                                DateUtil.postDateMainListItemFormat.format(time);
+                                DateUtil.postDateMainListItemFormat(context).format(time);
                     }
                 }
             } else {
-                status = DateUtil.postDateMainListItemFormat.format(time);
+                status = DateUtil.postDateMainListItemFormat(context).format(time);
             }
         }else return "";
         return status;

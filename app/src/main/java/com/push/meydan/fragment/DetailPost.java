@@ -34,6 +34,7 @@ import com.push.meydan.YouTubeActivity;
 import com.push.meydan.util.DateUtil;
 import com.push.meydan.R;
 import com.push.meydan.model.Article;
+import com.push.meydan.util.Language;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,6 +71,8 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     private TextView mPhotoCaption;
     private ImageButton mVideoPlayButton;
 
+    public Article postItem;
+
     private AQuery aq;
     private Context mContext;
     private WebSettings webSettings;
@@ -83,6 +86,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
     public static DetailPost newInstance(Context mContext, Article postItem) {
         DetailPost fragment = new DetailPost();
+        fragment.postItem = postItem;
         fragment.mContext = mContext;
         fragment.postBody = postItem.getBody();
         fragment.postTitle = postItem.getHeadline();
@@ -119,7 +123,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-            aq = new AQuery(mContext);
+        aq = new AQuery(mContext);
 
         if ((savedInstanceState != null) && savedInstanceState.containsKey(KEY_CONTENT)) {
 //            onScrollChanged(mScrollView.getCurrentScrollY(), false, false);
@@ -163,7 +167,8 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         }
 
         if(postAuthor.length() > 0) {
-            mPostDate.setText(postDate + " by " + postAuthor);
+            String seperator = Language.bylineSeperator(this.getActivity().getApplicationContext());
+            mPostDate.setText(postDate + seperator + postAuthor);
         } else {
             mPostDate.setText(postDate);
         }
