@@ -63,6 +63,7 @@ import com.push.meydan.interfaces.OnFragmentInteractionListener;
 import com.push.meydan.interfaces.RestApi;
 import com.push.meydan.model.Article;
 import com.push.meydan.model.ArticlePost;
+import com.push.meydan.util.AnalyticsManager;
 import com.push.meydan.util.Contants;
 import com.push.meydan.util.DateUtil;
 import com.push.meydan.util.Language;
@@ -486,12 +487,9 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                         i.putExtra("description", mPosts.get(position).getDescription());
 
                         startActivity(i);
-                        Answers.getInstance().logContentView(new ContentViewEvent()
-                                .putContentName(mPosts.get(position).getHeadline())
-                                .putContentType("Article Opened")
-                                .putContentId(Integer.toString(mPosts.get(position).getId())));
+                        AnalyticsManager.logContentView(mPosts.get(position).getHeadline(),
+                                "Article Opened", Integer.toString(mPosts.get(position).getId()));
                     }
-
                 }
 
             });
@@ -704,9 +702,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             //add the close icon
             mSearchAction.setIcon(getResources().getDrawable(com.push.meydan.R.mipmap.ic_action_cancel));
             isSearchOpened = true;
-            Answers.getInstance().logContentView(new ContentViewEvent()
-                    .putContentType("Search Opened"));
-
+            AnalyticsManager.logContentView("Search Opened");
         }
     }
 
@@ -741,8 +737,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             }
         });
 
-        Answers.getInstance().logSearch(new SearchEvent()
-                .putQuery(searchString));
+        AnalyticsManager.logSearch(searchString);
 
     }
 
@@ -761,10 +756,8 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                 i.putExtra("postTitle", articlePost.getResults().get(position).getHeadline());
                 i.putExtra("description", articlePost.getResults().get(position).getDescription());
 
-                Answers.getInstance().logContentView(new ContentViewEvent()
-                        .putContentName(articlePost.getResults().get(position).getHeadline())
-                        .putContentType("Search Result Opened")
-                        .putContentId(Integer.toString(articlePost.getResults().get(position).getId())));
+                AnalyticsManager.logContentView(articlePost.getResults().get(position).getHeadline(),
+                        "Search Result Opened", Integer.toString(articlePost.getResults().get(position).getId()));
 
                 // store the new time in the preferences file
                 SharedPreferences.Editor editor = sharedPreferences.edit();

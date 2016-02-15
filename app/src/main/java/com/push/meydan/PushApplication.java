@@ -7,6 +7,7 @@ import com.crashlytics.android.Crashlytics;
 import com.infobip.push.Configuration;
 import com.infobip.push.Notification;
 import com.infobip.push.PushClient;
+import com.push.meydan.util.AnalyticsManager;
 import com.push.meydan.util.Language;
 
 import java.util.Locale;
@@ -23,7 +24,8 @@ public class PushApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        AnalyticsManager.getAnalyticsManager().setAnalyticsManager(AnalyticsManager.AnalyticType.FABRIC, this);
+
         //Initialize push
         pushConfig =
                 Configuration.customConfiguration(this)

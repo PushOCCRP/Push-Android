@@ -66,7 +66,7 @@
     <string name="player_error">Error initializing YouTube player</string>
     <string name="seek_to">Jump To</string>
     <string name="seek_to_hint">Seconds</string>
-    <string name="video_button">VIDEOQ!!!@!@!</string>
+    <string name="video_button">VIDEO</string>
 
     <string name="by">by</string>
     <string name="hours_ago">hours ago</string>

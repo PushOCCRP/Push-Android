@@ -5,15 +5,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 
 import com.push.meydan.adapter.PostFragmentAdapter;
 import com.push.meydan.fragment.DetailPost;
 import com.push.meydan.model.Article;
+import com.push.meydan.util.AnalyticsManager;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
+
+import java.util.logging.Logger;
 
 
 public class DetailPostActivity extends ActionBarActivity {
@@ -53,6 +58,8 @@ public class DetailPostActivity extends ActionBarActivity {
             View mIndicatorView = (View)mIndicator;
             mIndicatorView.setVisibility(View.GONE);
         }
+
+
     }
 
     private void initActionBar() {
@@ -106,6 +113,4 @@ public class DetailPostActivity extends ActionBarActivity {
             // (handle error)
         }
     }
-
-
 }

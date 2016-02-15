@@ -31,6 +31,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.push.meydan.YouTubeActivity;
+import com.push.meydan.util.AnalyticsManager;
 import com.push.meydan.util.DateUtil;
 import com.push.meydan.R;
 import com.push.meydan.model.Article;
@@ -252,6 +253,16 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            AnalyticsManager.startTimerForContentView(this, this.postTitle);
+        } else {
+            AnalyticsManager.endTimerForContentView(this, this.postTitle);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_CONTENT, postBody);
@@ -259,7 +270,6 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         outState.putString(KEY_TITLE, postTitle);
         outState.putString(KEY_DATE, postDate);
         outState.putString(KEY_AUTHOR, postAuthor);
-
     }
 
     public void openVideo(){
