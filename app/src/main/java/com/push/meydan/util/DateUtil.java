@@ -61,8 +61,7 @@ public class DateUtil {
         if(time != 0){
             //set the text to show date and time //find out time since last load in milliseconds
             long difference = System.currentTimeMillis() - (time); //the time since the last load
-
-            if(colloquial) {
+            if(colloquial && Language.dateShouldBeColloquial(context)) {
                 if (difference < (1000 * 60 * 60) && difference > 0) {
                     //if within 1 hour, display minutes
                     int minutesAgo = (int) Math.floor((difference / 1000) / 60);

@@ -443,7 +443,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             mPosts.addAll(recentPosts.getResults());
 
             // There's a bug where mPosts might be null if there's a bad connection or something
-            // In which case PostFragmentAdapter will f
+            // In which case PostFragmentAdapter will fail
             PostFragmentAdapter.postItems = mPosts;
 
             RelativeLayout mainImageHolder = (RelativeLayout) mHomeLayout.findViewById(com.push.meydan.R.id.mainImageHolder);
@@ -461,10 +461,11 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             firstItemHeadline.setText(recentPosts.getResults().get(0).getHeadline());
             firstItemDescription.setText(recentPosts.getResults().get(0).getDescription());
 
-            if(recentPosts.getResults().get(0).getAuthor().length() > 0) {
+            if(recentPosts.getResults().get(0).getAuthor() != null && recentPosts.getResults().get(0).getAuthor().length() > 0) {
                 String seperator = Language.bylineSeperator(getApplicationContext());
                 firstItemDateandAuthor.setText(DateUtil.setTime(getApplicationContext(), DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true) + seperator + recentPosts.getResults().get(0).getAuthor());
             } else {
+                // Hardcoding like this isn't great....
                 firstItemDateandAuthor.setText(DateUtil.setTime(getApplicationContext(), DateUtil.postsDatePublishedFormatter.parse(String.valueOf(recentPosts.getResults().get(0).getPublishDate())).getTime(), true));
             }
             //remove it from the list

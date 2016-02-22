@@ -111,23 +111,38 @@ public class Language {
     }
 
     public static String bylineSeperator(Context context) {
-        Locale locale = getLanguage(context);
-        String langauge = locale.getLanguage();
+        String language = getLanguageString(context);
 
-        String seperator = null;
-        if(langauge.equals("en")){
-            seperator = " by ";
-        } else if(langauge.equals("az")) {
-            seperator = ", ";
-        } else if(langauge.equals("ru")) {
-            seperator = ", ";
+        String separator;
+        if(language.equals("en")){
+            separator = " by ";
+        } else if(language.equals("az")) {
+            separator = ", ";
+        } else if(language.equals("ru")) {
+            separator = ", ";
         } else {
-            seperator = " ";
+            separator = " ";
         }
 
-        return seperator;
+        return separator;
     }
 
+    public static Boolean dateShouldBeColloquial(Context context) {
+        Locale locale = getLanguage(context);
+        String language = locale.getLanguage();
+
+        if(language.equals("az")){
+            return false;
+        }
+
+        return true;
+    }
+
+    private static String getLanguageString(Context context){
+        Locale locale = getLanguage(context);
+        String langauge = locale.getLanguage();
+        return langauge;
+    }
     private static void callListeners() {
         if(listeners == null){
             return;
