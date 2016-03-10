@@ -102,6 +102,9 @@ public class Language {
 
         editor.commit();
 
+        //Sets the language to report if there's a crash
+        AnalyticsManager.getAnalyticsManager().setLanguage(locale.getDisplayLanguage());
+
         callListeners();
     }
 
@@ -144,6 +147,7 @@ public class Language {
         return langauge;
     }
     private static void callListeners() {
+
         if(listeners == null){
             return;
         }

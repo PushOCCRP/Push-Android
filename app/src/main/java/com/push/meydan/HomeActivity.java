@@ -25,6 +25,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -125,6 +126,14 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         fragmentStack = new Stack<>();
         sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
 
+        boolean appcrashed=false;
+        boolean didUserLeft=loadSavedPreferences();
+        appcrashed=!didUserLeft;
+        if(appcrashed) {
+            clearCachedPosts();
+        }
+        savePreferences(false);
+
 
         aq = new AQuery(this);
         setSupportActionBar((Toolbar) findViewById(com.push.meydan.R.id.toolbar));
@@ -159,22 +168,22 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             }
         });
 
-        if(isNotification){
+        if(isNotification) {
             String extra = getIntent().getExtras().getString(Notification.DefaultNotificationHandler.INTENT_EXTRAS_KEY);
             Utils.log("Extras -> " + extra);
-            try{
+            try {
                 JSONObject extrasObject = new JSONObject(extra);
                 JSONObject extras = extrasObject.getJSONObject("payload").getJSONObject("extras");
                 JSONObject additionalInfo = extras.getJSONObject("additionalInfo");
                 Utils.log("Extras payload -> " + extras);
-                if(additionalInfo.has("action") && additionalInfo.getString("action").equalsIgnoreCase("donation")) {
+                if (additionalInfo.has("action") && additionalInfo.getString("action").equalsIgnoreCase("donation")) {
                     Utils.log("Displaying donation page");
                     displayView(1);
 
                     return;
-                } else if(additionalInfo.has("article_id")) {
+                } else if (additionalInfo.has("article_id")) {
                     mSwipeRefreshLayout.setRefreshing(true);
-                    if(restAPI == null){
+                    if (restAPI == null) {
                         setUpRestApi();
                     }
 
@@ -205,20 +214,36 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
                     });
                 }
-            }catch (JSONException ex){
+            } catch (JSONException ex) {
                 Utils.log("Error loading post -> " + ex.getMessage());
             }
         }
-
-
     }
+
+    public boolean loadSavedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        boolean didUserLeft = sharedPreferences.getBoolean("didUserLeft", true);
+        return didUserLeft;
+    }
+
+    public void savePreferences(boolean value) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("didUserLeft", value);
+        editor.commit();
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        savePreferences(false);
         checkForCrashes();
         checkForUpdates();
+
 
         lastLoadTime = sharedPreferences.getLong("lastLoadTime", 0);
         //set up rest API
@@ -234,7 +259,29 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             editor.putBoolean("searchClicked",false);
             editor.commit();
         }
+        //throw new RuntimeException("This is a crash");
+
     }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        savePreferences(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();  // Always call the superclass method first
+        savePreferences(true);
+    }
+
+
+    @Override
+    public void onUserLeaveHint(){
+        super.onUserLeaveHint();
+        savePreferences(true);
+    }
+
 
     private void checkForCrashes() {
         CrashManager.register(this, getResources().getString(R.string.hockey_key));
@@ -242,7 +289,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
     private void checkForUpdates() {
         // Remove this for store builds!
-        UpdateManager.register(this, getResources().getString(R.string.hockey_key));
+        // UpdateManager.register(this, getResources().getString(R.string.hockey_key));
     }
 
 
@@ -321,12 +368,19 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             Gson gson = new Gson();
             String json = gson.toJson(articles);
             editor.putString(key, json);
-             editor.commit();
+            editor.commit();
 
         }
-            }
+    }
 
-
+    public void clearCachedPosts() {
+        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
+        if (sharedPreferences != null) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.commit();
+        }
+    }
 
     public ArticlePost getCachedPosts(String key) {
         sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
@@ -335,7 +389,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             Gson gson = new Gson();
             String json = sharedPreferences.getString(key, "");
             articlePost = gson.fromJson(json, ArticlePost.class);
-                  }
+        }
 
 
         return articlePost;
@@ -392,7 +446,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                             }
                         }
 
-                        if(intendedTopArticle != null) {
+                        if (intendedTopArticle != null) {
                             articlePost.getResults().remove(intendedTopArticle);
                             articlePost.getResults().add(0, intendedTopArticle);
                         }
@@ -415,6 +469,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                             findViewById(com.push.meydan.R.id.downloadProgress).setVisibility(View.GONE);
                             firstRun = false;
                         }
+                        AnalyticsManager.logError(error.getLocalizedMessage());
                         Log.e("ERROR", "Failed to parse JSON ", error);
                     }
                 });
@@ -751,7 +806,12 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
-                PostFragmentAdapter.postItems.clear();
+                if(PostFragmentAdapter.postItems != null) {
+                    PostFragmentAdapter.postItems.clear();
+                } else {
+                    PostFragmentAdapter.postItems = new ArrayList<>();
+                }
+
                 PostFragmentAdapter.postItems.add(articlePost.getResults().get(position));
                 i.putExtra("postPosition", position);
                 i.putExtra("postTitle", articlePost.getResults().get(position).getHeadline());

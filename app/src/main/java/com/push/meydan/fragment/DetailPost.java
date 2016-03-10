@@ -167,7 +167,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
             Linkify.addLinks(mContent, Pattern.compile(REGEX), "http://");
         }
 
-        if(postAuthor.length() > 0) {
+        if(postAuthor != null && postAuthor.length() > 0) {
             String seperator = Language.bylineSeperator(this.getActivity().getApplicationContext());
             mPostDate.setText(postDate + seperator + postAuthor);
         } else {

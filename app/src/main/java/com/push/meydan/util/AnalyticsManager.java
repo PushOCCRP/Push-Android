@@ -56,6 +56,15 @@ public class AnalyticsManager {
         return this.analyticType;
     }
 
+    public void setLanguage(String language){
+        switch (getAnalyticsManager().analyticType) {
+            case FABRIC:
+                Crashlytics.setString("language", language);
+                break;
+            case GOOGLE_ANALYTICS:
+                break;
+        }
+    }
 
     public static void logContentView(String contentName){
         logContentView(contentName, null, null);
@@ -171,6 +180,22 @@ public class AnalyticsManager {
                     //Do nothing
             }
             timeTrackers.remove(identifier);
+        }
+    }
+
+    public static void logError(String errorMessage) {
+        if(!analyticsCorrectlySetUp()){
+            return;
+        }
+        switch (getAnalyticsManager().analyticType) {
+            case FABRIC:
+                Answers.getInstance().logCustom(new CustomEvent(errorMessage));
+                break;
+            case GOOGLE_ANALYTICS:
+                //Not implemented
+                break;
+            default:
+                //Do nothing
         }
     }
 
