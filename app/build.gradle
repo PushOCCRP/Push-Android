@@ -16,11 +16,11 @@ android {
     compileSdkVersion 23
     buildToolsVersion "22.0.1"
     defaultConfig {
-        applicationId "com.push.meydan"
+        applicationId "com.push.risemd"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 13
-        versionName "1.0.3"
+        versionCode 1
+        versionName "1.0.0"
     }
     buildTypes {
         release {
@@ -81,9 +81,11 @@ dependencies {
     compile 'com.github.oxo42:stateless4j:2.5.0'
     compile(name: 'infobip-push-2.0.1', ext: 'aar')
     //    compile project(':library')
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.android.volley:volley:1.0.0'
+
     //compile 'com.google.android.gms:play-services-analytics:8.3.0'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
     //androidTestCompile 'tools.fastlane:screengrab:0.2.0'

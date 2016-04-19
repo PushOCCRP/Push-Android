@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="act_main_bg">#e5e5e5</color>
-    <color name="colorPrimary">#FEFEFA</color>
-    <color name="colorPrimaryDark">#430b0d</color>
+    <color name="act_main_bg">#272727</color>
+    <color name="colorPrimary">#272727</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="textColorPrimary">#333333</color>
-    <color name="windowBackground">#FFFFFF</color>
+    <color name="windowBackground">#000000</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#ff4046</color>
-    <color name="act_main_cell_date_text_color">#e23b3e</color>
-    <color name="act_main_cell_subtitle_text_color">#606060</color>
+    <color name="colorAccent">#636363</color>
+    <color name="act_main_cell_date_text_color">#636363</color>
+    <color name="act_main_cell_subtitle_text_color">#636363</color>
     <color name="transparent">#00FFFFFF</color>
 </resources>
