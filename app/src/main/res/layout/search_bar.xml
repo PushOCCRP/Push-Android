@@ -9,10 +9,10 @@
         android:id="@+id/edtSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:inputType="text"
-        android:textCursorDrawable="@null"
-        android:textColorHint="@android:color/darker_gray"
-        android:textColor="@android:color/black"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textColor="@color/colorPrimaryDark"
         android:imeOptions="actionSearch"
         android:hint="@string/search_box_hint" />
 

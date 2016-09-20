@@ -47,4 +47,11 @@
         <item name="titleColor">#FFF</item>
         <item name="subtitleColor">#FFF</item>
     </style>
+
+    <style name="Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+
+    </style>
+
+
 </resources>

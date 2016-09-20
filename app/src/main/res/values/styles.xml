@@ -21,6 +21,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--<style name="AppTheme.ActionBar" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/MyActionBarTheme</item>
+    </style>
+
+    <style name="MyActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>-->
+
     <style name="AppTheme.SpinnerItemStyle" parent="Widget.AppCompat.TextView.SpinnerItem">
         <item name="android:textColor">#ffffff</item>
     </style>

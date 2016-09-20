@@ -28,11 +28,13 @@
         android:backgroundTint="#FFFFFF"
         >
 
+
         <FrameLayout
             android:id="@+id/mHomeLayout"
             android:layout_marginTop="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
 
             <View
                 android:id="@+id/list_background"
@@ -47,10 +49,12 @@
                 android:visibility="gone"
                 android:layout_height="wrap_content" />
 
+
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/activity_main_swipe_refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp">
 
                 <com.github.ksoichiro.android.observablescrollview.ObservableListView
                     android:layout_marginTop="10dp"
@@ -60,6 +64,49 @@
                     />
 
             </android.support.v4.widget.SwipeRefreshLayout>
+            <RelativeLayout
+                android:id="@+id/promotion"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/border_shadow"
+                android:visibility="invisible">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="20dp">
+                    <TextView
+                        android:id="@+id/promotion_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:textStyle="bold"
+
+                        android:text="Promotion Headline"
+                        />
+                    <TextView
+                        android:id="@+id/promotion_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:text="This is promotion text of stuff and things and other stuff"
+                        />
+                </LinearLayout>
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content"
+                    android:text=">"
+                    android:textSize="30dp" />
+            </RelativeLayout>
+
 
             <!--<include layout="@layout/gradient_header" />-->
         </FrameLayout>
@@ -77,6 +124,7 @@
                 app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
                 app:theme="@style/Toolbar" />
 
+
             <FrameLayout
                 android:id="@+id/container_body"
 
@@ -84,6 +132,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
         </LinearLayout>
+
 
         <FrameLayout
             android:id="@+id/mSearchView"

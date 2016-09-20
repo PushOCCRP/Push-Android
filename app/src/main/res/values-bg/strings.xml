@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">Bivol.bg</string>
+
+    <string name="action_settings">Настройки</string>
+    <string name="action_refresh">Обнови</string>
+    <string name="action_search">Търси</string>
+    <string name="drawer_open">Отвори</string>
+    <string name="drawer_close">Затвори</string>
+
+    <string name="nav_item_home">Начало</string>
+    <string name="nav_item_donate">Дарения</string>
+    <string name="nav_item_about">За нас</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/nav_item_donate</item>
+        <item>@string/nav_item_about</item>
+    </string-array>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_icons">
+        <item>R.id.ic_home_black_24dp</item>
+        <item>R.id.ic_account_circle_white</item>
+        <item>R.id.ic_account_circle_white</item>
+    </string-array>
+
+    <string name="title_home">Начало</string>
+    <string name="title_item_one">Дарения</string>
+    <string name="title_item_two">За нас</string>
+    <string name="main_screen_cel_date_string">Дата</string>
+    <string name="share_via">Сподели</string>
+
+    <!-- push notification labels -->
+    <string name="notification_header">Нова статия</string>
+    <string name="notification_cancel_button">Затвори</string>
+    <string name="notification_read_button">Прочети</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Относно PUSH APP</string>
+    <string name="title_activity_detail_post">Подробности</string>
+
+    <string name="hello_world">Здравей Свят!</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="nothing"></string>
+    <string name="clock">часовник</string>
+    <string name="timePlaceholder">40 mins ago John Smith</string>
+    <string name="title_about">За насt</string>
+    <string name="donate_description">Help us grow and give you faster news updates. Your donation goes towards purchasing better equipment for a seamleass broadcast.</string>
+    <string name="amount_label">Сума</string>
+    <string name="donate_confirmation_prompt">Искате ли да дарите?</string>
+    <string name="donate_button_label">Дарявам</string>
+    <string name="enter_valid_amount">Моля, въведете валидна сума</string>
+    <string name="thankyou_for_the_donation">Благодарим Ви за дарението!</string>
+    <string name="news_category">Местни новини</string>
+    <string name="title_activity_search_results">Резултати</string>
+    <string name="menu_search">Търси</string>
+    <string name="menu_about">За нас</string>
+    <string name="search_box_hint">вашето търсене тук</string>
+    <string name="search_results">Резултати от търсенето</string>
+    <string name="searching">Търся...</string>
+    <string name="recent_results">Последни резултати от търсенето</string>
+    <string name="action_share">Сподели</string>
+    <string name="no_search_results">Не са намерени резултати</string>
+
+    <string name="choose_language">Избери език</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Анулирай</string>
+
+    <string name="player_error">Грешка при стартирането на YouTube player</string>
+    <string name="seek_to">Отиди на</string>
+    <string name="seek_to_hint">секунди</string>
+    <string name="video_button">VIDEOQ!!!@!@!</string>
+
+    <string name="by">от</string>
+    <string name="hours_ago">часа по-рано</string>
+    <string name="just_now">току що</string>
+    <string name="minutes_ago">минути по-рано</string>
+    <string name="yesterday">Вчера</string>
+    <string name="three_day_ago">Преди три дни</string>
+
+    <string name="language">Език</string>
+
+    <string name="back">Назад</string>
+
+</resources>

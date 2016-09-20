@@ -26,6 +26,11 @@
     <string name="main_screen_cel_date_string">Время</string>
     <string name="share_via">Поделиться через</string>
 
+    <!-- push notification labels -->
+    <string name="notification_header">Новости</string>
+    <string name="notification_cancel_button">Отмена</string>
+    <string name="notification_read_button">Читать</string>
+
     <string name="hello_blank_fragment">О мобильном приложении Мейдан ТВ</string>
     <string name="title_activity_detail_post">Деталь истории</string>
 

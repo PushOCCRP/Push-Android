@@ -26,6 +26,11 @@
     <string name="main_screen_cel_date_string">Tarix</string>
     <string name="share_via">Paylaşıldı</string>
 
+    <!-- push notification labels -->
+    <string name="notification_header">Xəbər var</string>
+    <string name="notification_cancel_button">Imtina et</string>
+    <string name="notification_read_button">Oxu</string>
+
     <string name="hello_blank_fragment">Meydan TV tətbiqetməsi haqqında</string>
     <string name="title_activity_detail_post">Aktivlik barədə ətraflı</string>
 

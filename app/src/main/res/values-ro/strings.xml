@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">Rise Moldova</string>
+
+    <string name="action_settings">SETĂRI</string>
+    <string name="action_refresh">REÎNCARCĂ</string>
+    <string name="action_search">CAUTĂ</string>
+    <string name="drawer_open">DESCHIDE</string>
+    <string name="drawer_close">ÎNCHIDE</string>
+
+    <string name="nav_item_home">PAGINA DE START</string>
+    <string name="nav_item_donate">DONEAZĂ</string>
+    <string name="nav_item_about">DESPRE</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/nav_item_donate</item>
+        <item>@string/nav_item_about</item>
+    </string-array>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_icons">
+        <item>R.id.ic_home_black_24dp</item>
+        <item>R.id.ic_account_circle_white</item>
+        <item>R.id.ic_account_circle_white</item>
+    </string-array>
+
+    <string name="title_home">PAGINA DE START</string>
+    <string name="title_item_one">DONEAZĂ</string>
+    <string name="title_item_two">DESPRE</string>
+    <string name="main_screen_cel_date_string">DATA</string>
+    <string name="share_via">DISTRIBUIE</string>
+
+    <!-- push notification labels -->
+    <string name="notification_header">News Alert</string>
+    <string name="notification_cancel_button">Anulează</string>
+    <string name="notification_read_button">Citește</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">About the PUSH APP</string>
+    <string name="title_activity_detail_post">DETALII</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="nothing"></string>
+    <string name="clock">clock</string>
+    <string name="timePlaceholder">40 DE MINUTE ÎN URMĂ</string>
+    <string name="title_about">About</string>
+    <string name="donate_description">Help us grow and give you faster news updates. Your donation goes towards purchasing better equipment for a seamleass broadcast.</string>
+    <string name="amount_label">Amount</string>
+    <string name="donate_confirmation_prompt">Do you want to donate</string>
+    <string name="donate_button_label">Donate</string>
+    <string name="enter_valid_amount">Please enter a valid amount</string>
+    <string name="thankyou_for_the_donation">Thank you for your Donation!</string>
+    <string name="news_category">Local</string>
+    <string name="title_activity_search_results">CAUTĂ REZULTATE</string>
+    <string name="menu_search">CAUTĂ</string>
+    <string name="menu_about">DESPRE</string>
+    <string name="search_box_hint">SCRIE AICI</string>
+    <string name="search_results">CAUTĂ REZULTATE</string>
+    <string name="searching">SE CAUTĂ...</string>
+    <string name="recent_results">REZULTATELE CĂUTĂRII RECENTE</string>
+    <string name="action_share">DEISTRIBUIE</string>
+    <string name="no_search_results">NICIUN REZULTAT GĂSIT</string>
+
+    <string name="choose_language">ALEGE LIMBA</string>
+    <string name="ok">OK</string>
+    <string name="cancel">ANULEAZĂ</string>
+
+    <string name="player_error">Error initializing YouTube player</string>
+    <string name="seek_to">MERGI LA</string>
+    <string name="seek_to_hint">SECUNDE</string>
+    <string name="video_button">VIDEOQ!!!@!@!</string>
+
+    <string name="by">, </string>
+    <string name="hours_ago">O ORĂ ÎN URMĂ</string>
+    <string name="just_now">ACUM</string>
+    <string name="minutes_ago">MINUTE ÎN URMĂ</string>
+    <string name="yesterday">IERI</string>
+    <string name="three_day_ago">3 ZILE ÎN URMĂ</string>
+
+    <string name="language">LIMBĂ</string>
+
+    <string name="back">ÎNAPOI</string>
+
+</resources>
