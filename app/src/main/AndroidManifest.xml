@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.push.cins" >
+    package="com.push.krik" >
     android:versionCode="1"
     android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.push.cins.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.push.krik.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -26,18 +26,18 @@
 
 
     <application
-        android:name="com.push.cins.PushApplication"
+        android:name="com.push.krik.PushApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/MyMaterialTheme" >
         <activity
-            android:name="com.push.cins.AboutActivity"
+            android:name="com.push.krik.AboutActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.push.cins.DetailPostActivity"
+            android:name="com.push.krik.DetailPostActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme"
             android:screenOrientation="portrait"
@@ -45,18 +45,18 @@
             android:parentActivityName=".HomeActivity">
         </activity>
         <activity
-            android:name="com.push.cins.YouTubeActivity"
+            android:name="com.push.krik.YouTubeActivity"
             android:label="YouTube Player"
             android:theme="@style/MyMaterialTheme"
             />
         <activity
-            android:name="com.push.cins.NotificationHandler"
+            android:name="com.push.krik.NotificationHandler"
             android:label="@string/title_activity_detail_post"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.push.cins.HomeActivity"
+            android:name="com.push.krik.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Toolbar" >
             <intent-filter>
@@ -73,18 +73,18 @@
             <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.push.cins.gcm" />
+                <category android:name="com.push.krik.gcm" />
             </intent-filter>
         </receiver>
         <service
-            android:name="com.push.cins.util.gcm.ListenerService"
+            android:name="com.push.krik.util.gcm.ListenerService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name="com.push.cins.util.gcm.IDListenerService"
+            android:name="com.push.krik.util.gcm.IDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />

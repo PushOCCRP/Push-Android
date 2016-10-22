@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CINS</string>
+    <string name="app_name">KRIK</string>
 
     <string name="action_settings">Podešavanja</string>
     <string name="action_refresh">Ponovo učitaj</string>
@@ -75,9 +75,9 @@
     <string name="video_button">VIDEO</string>
 
     <string name="by">,</string>
-    <string name="hours_ago">Pre % sati</string>
+<!--    <string name="hours_ago">Pre % sati</string>
     <string name="just_now">Sada</string>
-    <string name="minutes_ago">Pre % minuta</string>
+    <string name="minutes_ago">Pre % minuta</string> -->
     <string name="yesterday">Juče</string>
     <string name="three_day_ago">Pre tri dana</string>
 
