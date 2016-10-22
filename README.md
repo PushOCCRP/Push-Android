@@ -11,6 +11,6 @@ This is the repository for the Android app portion of the Push app ecosystem. Th
 # Setup steps
 
 1. Clone this repository ```git clone https://github.com/PushOCCRP/Push-Android```
-2. Run the generator [https://github.com/PushOCCRP/Push-Generator] in offline mode with the ```-o``` flag
+2. Run the generator https://github.com/PushOCCRP/Push-Generator in offline mode with the ```-o``` flag
 3. Open Android Studio. The studio will take some time to build the app up with your local settings.
 4. Do a test build, if it breaks, submit a bug report.
