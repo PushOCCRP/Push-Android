@@ -8,3 +8,10 @@
 /app/builds
 /app/safe_variables.gradle
 /fastlane
+
+**/SecretKeys.plist
+**/*.apk
+**/google-services.json
+**/fastlane
+**/*.jks
+**/import-summary.json
