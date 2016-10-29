@@ -19,7 +19,7 @@
 
 
         <ImageView
-            android:id="@+id/firstPostImage"
+            android:id="@+id/post_Image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible"
@@ -27,7 +27,7 @@
             />
     </RelativeLayout>
         <TextView
-            android:id="@+id/firstPostHeadline"
+            android:id="@+id/post_Name"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
@@ -66,7 +66,7 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/first_post_Date"
+                android:id="@+id/post_Date"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:layout_width="wrap_content"

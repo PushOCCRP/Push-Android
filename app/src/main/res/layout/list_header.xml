@@ -1,0 +1,26 @@
+<LinearLayout
+    android:id="@+id/ListHeader"
+    android:layout_width="match_parent"
+    android:layout_height="20dp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:backgroundTint="@color/light_gray" />
+    <TextView
+        android:id="@+id/header_text"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:letterSpacing="0.02"
+        android:layout_width="match_parent"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_height="wrap_content" />
+</LinearLayout>
