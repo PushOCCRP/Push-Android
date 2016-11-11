@@ -12,6 +12,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.push.rise.R;
+import com.push.rise.interfaces.YouTubeFragmentInterface;
 
 /**
  * Created by christopher on 1/8/16.

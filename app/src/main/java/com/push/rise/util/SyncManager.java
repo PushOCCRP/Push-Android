@@ -100,7 +100,13 @@ public class SyncManager {
                     //Rearrange the posts so that the first article has an image
                     //We want this to be the same order everywhere so we do it here
                     //If there's none, then we hide the image box
-                    ArrayList<Article> articles = (ArrayList<Article>)articlePost.getResults();
+                    Gson gson = new Gson();
+
+                    ArrayList<Article> articles = new ArrayList<Article>();
+                    for(LinkedTreeMap linkedTreeMapArticle: (ArrayList<LinkedTreeMap>)gson.fromJson(gson.toJsonTree(articlePost.getResults()), ArrayList.class)){
+                        Article article = gson.fromJson(gson.toJsonTree(linkedTreeMapArticle), Article.class);
+                        articles.add(article);
+                    }
 
                     if(articles.size() > 0){
                         delegate.didRetrieveArticle(articles.get(0));

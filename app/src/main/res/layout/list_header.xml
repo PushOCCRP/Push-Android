@@ -5,9 +5,14 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <View
+        android:id="@+id/header_spacer"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:backgroundTint="@color/light_grey" />
+    <View
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:backgroundTint="@color/light_gray" />
+        android:backgroundTint="@color/cardview_light_background" />
     <TextView
         android:id="@+id/header_text"
         android:paddingTop="5dp"

@@ -83,5 +83,6 @@
     <string name="language">LIMBĂ</string>
 
     <string name="back">ÎNAPOI</string>
+    <string name="title_activity_category">Categorie Articole</string>
 
 </resources>

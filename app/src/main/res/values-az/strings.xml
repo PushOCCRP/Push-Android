@@ -33,6 +33,7 @@
 
     <string name="hello_blank_fragment">Meydan TV tətbiqetməsi haqqında</string>
     <string name="title_activity_detail_post">Aktivlik barədə ətraflı</string>
+    <string name="title_activity_category">Kateqoriya Məqalələr</string>
 
     <string name="hello_world">Salam dünya!</string>
     <string name="title_activity_home">Əsas səhifə aktivliyi</string>

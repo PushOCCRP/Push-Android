@@ -7,6 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
@@ -22,6 +26,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 /**
  * Created by Zed on 7/15/2015.
@@ -42,9 +48,17 @@ public class NotificationHandler extends Activity implements ArticleDelegate {
 
         final NotificationHandler notificationHandler = this;
         if(shownInForeground){
+            BitmapDrawable drawable;
+            if(Build.VERSION.SDK_INT < LOLLIPOP){
+                drawable = (BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher);
+            }else {
+                drawable= (BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher, null);
+            }
+
             new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialog))
                     .setTitle(getApplication().getText(R.string.notification_header))
                     .setMessage(message)
+                    .setIcon(drawable)
                     .setPositiveButton(getApplication().getText(R.string.notification_read_button), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             SyncManager.getSyncManager().articleForId(articleId, getApplicationContext(), notificationHandler);
@@ -52,7 +66,7 @@ public class NotificationHandler extends Activity implements ArticleDelegate {
                     })
                     .setNegativeButton(getApplication().getText(R.string.notification_cancel_button), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
+                            onBackPressed();
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -67,13 +81,10 @@ public class NotificationHandler extends Activity implements ArticleDelegate {
         if(PostFragmentAdapter.postItems != null) {
             PostFragmentAdapter.postItems.clear();
         } else {
-            PostFragmentAdapter.postItems = new HashMap<>();
+            PostFragmentAdapter.postItems = new ArrayList<>();
         }
 
-        ArrayList<Article> articles = new ArrayList<>();
-        articles.add(article);
-
-        PostFragmentAdapter.postItems.put("", articles);
+        PostFragmentAdapter.postItems.add(article);
         i.putExtra("postPosition", 0);
         i.putExtra("postTitle", article.getHeadline());
         i.putExtra("description", article.getDescription());

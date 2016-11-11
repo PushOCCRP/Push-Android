@@ -60,6 +60,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.push.rise.adapter.PostFragmentAdapter;
 import com.push.rise.adapter.PostListAdapter;
+import com.push.rise.fragment.CategoryFragment;
 import com.push.rise.fragment.DonatePage;
 import com.push.rise.fragment.LanguageSelectDialogFragment;
 import com.push.rise.interfaces.CacheManager.ImageCacheDelegate;
@@ -452,13 +453,17 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         if (sharedPreferences != null) {
             Gson gson = new Gson();
             String json = sharedPreferences.getString(key, "");
-            ArrayList<LinkedTreeMap> tempCategories = gson.fromJson(json, ArrayList.class);
-            if(tempCategories == null){
-                return null;
-            }
+            try {
+                ArrayList<LinkedTreeMap> tempCategories = gson.fromJson(json, ArrayList.class);
+                if(tempCategories == null){
+                    return null;
+                }
 
-            for(LinkedTreeMap tempCategory: tempCategories){
-                categories.add(gson.fromJson(gson.toJsonTree(tempCategory), String.class));
+                for (LinkedTreeMap tempCategory : tempCategories) {
+                    categories.add(gson.fromJson(gson.toJsonTree(tempCategory), String.class));
+                }
+            } catch (Exception e) {
+                categories = gson.fromJson(json, ArrayList.class);
             }
         }
 
@@ -509,6 +514,10 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     public void didRetrieveArticles(Object articles, ArrayList<String> categories, RetrofitError error){
+        if(articles == null){
+            return;
+        }
+
         HashMap<String, ArrayList<Article>> articlesList = (HashMap<String, ArrayList<Article>>) articles;
         HashMap<String, ArrayList<Article>> articlesListCopy = (HashMap<String, ArrayList<Article>>)articlesList.clone();
         if(error != null){
@@ -582,42 +591,45 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                 return;
             }
 
-            final HashMap<String, ArrayList<Article>> mPosts = new HashMap<>(articles);
+        PostListAdapter mListAdapter = new PostListAdapter(this, R.layout.list_news_item, articles, categories, 5);
 
-            // There's a bug where mPosts might be null if there's a bad connection or something
-            // In which case PostFragmentAdapter will fail
-            PostFragmentAdapter.postItems = mPosts;
-            PostFragmentAdapter.categories = categories;
+        final HashMap<String, ArrayList<Article>> mPosts = new HashMap<>(articles);
 
-            PostListAdapter mListAdapter = new PostListAdapter(this, R.layout.list_news_item, articles, categories);
+        // There's a bug where mPosts might be null if there's a bad connection or something
+        // In which case PostFragmentAdapter will fail
+        PostFragmentAdapter.postItems = mListAdapter.items(true);
 
-            this.mListView.setAdapter(mListAdapter);
-            mListAdapter.notifyDataSetChanged();
-            mSwipeRefreshLayout.setRefreshing(false);
+        this.mListView.setAdapter(mListAdapter);
+        mListAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
 
 
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if(!isSearchOpened) {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(!isSearchOpened) {
+                    Object selectedItem = mListAdapter.getItemAtPosition(position);
+                    if(selectedItem.getClass() == String.class){
+                        Intent i = new Intent(getApplicationContext(), CategoryActivity.class);
+                        i.putExtra("articles", mListAdapter.getArticlesForCategory((String)selectedItem));
+                        startActivity(i);
+                        return;
+                    } else {
+                        Article article = (Article) selectedItem;
                         Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
 
-                        i.putExtra("postPosition", position);
-                        i.putExtra("postTitle", mPosts.get(position).getHeadline());
-                        i.putExtra("description", mPosts.get(position).getDescription());
+                        i.putExtra("postPosition", mListAdapter.items(false).indexOf(selectedItem));
+                        i.putExtra("postTitle", article.getHeadline());
+                        i.putExtra("description", article.getDescription());
 
                         startActivity(i);
-                        AnalyticsManager.logContentView(mPosts.get(position).getHeadline(),
-                                "Article Opened", Integer.toString(mPosts.get(position).getId()));
-
+                        AnalyticsManager.logContentView(article.getHeadline(),
+                                "Article Opened", Integer.toString(article.getId()));
                     }
                 }
+            }
 
-            });
-
-        /*}catch (ParseException e){
-            e.printStackTrace();
-        }*/
+        });
     }
 
     // ImageCacheDelegate
@@ -874,7 +886,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                 if(PostFragmentAdapter.postItems != null) {
                     PostFragmentAdapter.postItems.clear();
                 } else {
-                    PostFragmentAdapter.postItems = new HashMap<>();
+                    PostFragmentAdapter.postItems = new ArrayList<Article>();
                 }
 
                 //PostFragmentAdapter.postItems.add(articles.get(position));

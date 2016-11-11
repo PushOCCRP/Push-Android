@@ -1,4 +1,4 @@
-package com.push.rise.fragment;
+package com.push.rise.interfaces;
 
 /**
  * Created by christopher on 1/8/16.

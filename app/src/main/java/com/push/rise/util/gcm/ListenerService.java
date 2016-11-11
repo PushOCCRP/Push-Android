@@ -7,49 +7,46 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ContextThemeWrapper;
 
-import com.google.android.gms.gcm.GcmListenerService;
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.push.rise.DetailPostActivity;
-import com.push.rise.HomeActivity;
 import com.push.rise.NotificationHandler;
 import com.push.rise.R;
 
-import com.push.rise.fragment.HomeFragment;
-import com.push.rise.model.Article;
-import com.push.rise.util.AnalyticsManager;
 import com.push.rise.util.Foreground;
-import com.push.rise.util.SyncManager;
-import com.push.rise.interfaces.SyncManager.ArticleDelegate;
 
-import java.net.URI;
-import java.util.List;
+import java.util.Map;
+
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+
 
 /**
  * Created by christopher on 7/13/16.
  */
 
-public class ListenerService extends GcmListenerService {
+public class ListenerService extends FirebaseMessagingService {
     @Override
-    public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("msg");
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        Map data = remoteMessage.getData();
+
+        String message = (String)data.get("message");
         Uri sound = null;
-        if(data.get("sound").equals("default")) {
+        if(!data.containsKey("sound") || data.get("sound").equals("default")) {
             sound = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_NOTIFICATION);
         }
 
         final Intent resultIntent = new Intent(this, NotificationHandler.class);
-        resultIntent.putExtra("articleId", data.getString("article_id"));
+        resultIntent.putExtra("articleId", (String)data.get("article_id"));
         resultIntent.putExtra("message", message);
 
         if (Foreground.get().isForeground()) {
@@ -57,10 +54,21 @@ public class ListenerService extends GcmListenerService {
             resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(resultIntent);
         } else {
+            BitmapDrawable drawable;
+            if(Build.VERSION.SDK_INT < LOLLIPOP){
+                drawable = (BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher);
+            }else {
+                drawable= (BitmapDrawable)getResources().getDrawable(R.mipmap.ic_launcher, null);
+            }
+
+            Bitmap logo_bitmap = drawable.getBitmap();
+
             NotificationManager notificationManager= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(message)
+                    .setLargeIcon(logo_bitmap)
+                    .setContentTitle(getApplication().getText(R.string.notification_header))
+                    .setContentText(message)
                     .setSound(sound);
 
             // Creates an explicit intent for an Activity in your app
@@ -79,7 +87,6 @@ public class ListenerService extends GcmListenerService {
 
             notificationManager.notify(1, mBuilder.build());
         }
-
 
 
     }

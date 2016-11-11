@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PostFragmentAdapter extends FragmentPagerAdapter  {
-    public static HashMap<String, ArrayList<Article>> postItems;
-    public static ArrayList<String> categories;
+    public static ArrayList<Article> postItems;
 
     private int mCount;
     private Context mContext;
@@ -24,12 +23,7 @@ public class PostFragmentAdapter extends FragmentPagerAdapter  {
         this.mContext = mContext;
 
         if(postItems != null){
-            Integer count = 0;
-            for(String key: postItems.keySet()){
-                count++;
-                count += postItems.get(key).size();
-            }
-           mCount = count;
+           mCount = postItems.size();
         }
 
     }
@@ -37,9 +31,7 @@ public class PostFragmentAdapter extends FragmentPagerAdapter  {
     @Override
     public Fragment getItem(int position) {
         //First let's get what category we're going to be in. For the moment we're going to assume there are always ten stories
-        Integer categoryIndex = position % 10;
-
-        return DetailPost.newInstance(mContext, postItems.get(position / postItems.size()).get(position % postItems.size()));
+        return DetailPost.newInstance(mContext, postItems.get(position));
     }
 
     @Override
@@ -49,7 +41,7 @@ public class PostFragmentAdapter extends FragmentPagerAdapter  {
 
     @Override
     public CharSequence getPageTitle(int position) {
-      return PostFragmentAdapter.postItems.get(position / postItems.size()).get(position % postItems.size()).getHeadline();
+      return PostFragmentAdapter.postItems.get(position).getHeadline();
     }
 
 

@@ -1,7 +1,9 @@
 package com.push.rise.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.text.InputType;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,20 +31,33 @@ import com.push.rise.util.TypefaceManager;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+
 /**
  * @author Bryan Lamtoo.
+ * Heavily edited by Christopher Guess
  */
 public class PostListAdapter extends ArrayAdapter<Article> implements ImageCacheDelegate {
-
+    // Android's "findItemByID request is really really expensive apparently.
+    // This is the standard "ViewHolder" pattern which handles the requests at the time
+    // The object is created.
+    // All references to setting the fields should go through here
+    static class ViewHolderItem {
+        ImageView imageView;
+        TextView headline;
+        String tag;
+        TextView dateView;
+    }
     private List<Article> itemsList;
     private HashMap<String, ArrayList<Article>> itemsHash;
     private List<String> categories;
+    private Integer articlesPerCategory;
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     private LayoutInflater inflater;
@@ -59,12 +74,25 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
 
         View cell = new View(getContext());
         Article article;
+        ViewHolderItem viewHolder;
+
+        String tag = null;
+        if(cell != null){
+            ViewHolderItem viewHolderItem = (ViewHolderItem)cell.getTag();
+            if(viewHolderItem != null) {
+                tag = viewHolderItem.tag;
+            } else {
+                viewHolderItem = new ViewHolderItem();
+                cell.setTag(viewHolderItem);
+            }
+        }
 
         // If there are no categories we just go by normal ordering
         if(itemsHash == null) {
+
             // If it's the top view, initialize a first_item_view
             if(position == 0){
-                if(convertView != null && convertView.getTag() != mainViewTag){
+                if(convertView == null || tag != mainViewTag){
                     cell = inflater.inflate(R.layout.first_item_view, null);
                     cell.setTag(mainViewTag);
                 } else {
@@ -72,7 +100,7 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
                 }
             } else {
                 // Otherwise, stick with a normal list
-                if(convertView == null) {
+                if(convertView == null || tag != subViewTag) {
                     cell = inflater.inflate(R.layout.list_news_item, null);
                     cell.setTag(subViewTag);
                 } else {
@@ -87,16 +115,21 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
             List items = this.items();
             Object item = items.get(position);
             if(item.getClass() == String.class) {
-                if(convertView == null || convertView.getTag() != headerViewTag){
+                if(convertView == null || tag != headerViewTag){
                     cell = new TextView(getContext());
-                    cell.setPadding(10,10,10,10);
+                    cell.setPadding(30,30,10,20);
                     cell.setTag(headerViewTag);
                 } else {
                     cell = convertView;
                 }
 
                 TextView textView = (TextView)cell;
-                textView.setText((String)item);
+                String category_name = (String)item;
+                category_name = category_name.replace("_", " ");
+                category_name = category_name.substring(0,1).toUpperCase() + category_name.substring(1);
+
+                textView.setText(category_name);
+                textView.setTypeface(fontManager.getAmericanTypewriter());
 
                 return textView;
             } else {
@@ -105,7 +138,7 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
                 // We check if the previous element is a string
                 Object previousElement = this.items().get(position - 1);
                 if(previousElement.getClass() == String.class){
-                    if(convertView == null || convertView.getTag() != mainViewTag){
+                    if(convertView == null || tag != mainViewTag){
                         cell = inflater.inflate(R.layout.first_item_view, null);
                         cell.setTag(mainViewTag);
                     } else {
@@ -113,7 +146,7 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
                     }
                 } else {
                     // Otherwise, stick with a normal list
-                    if(convertView == null || convertView.getTag() != subViewTag) {
+                    if(convertView == null || tag != subViewTag) {
                         cell = inflater.inflate(R.layout.list_news_item, null);
                         cell.setTag(subViewTag);
                     } else {
@@ -124,23 +157,44 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
             }
         }
 
-        // Set images
-        ImageView imageView = (ImageView)cell.findViewById(R.id.post_Image);
-        imageView.setVisibility(View.INVISIBLE);
+        if(cell.getTag().getClass() != ViewHolderItem.class) {
+            viewHolder = new ViewHolderItem();
+            viewHolder.imageView = (ImageView) cell.findViewById(R.id.post_Image);
+            viewHolder.tag = (String) cell.getTag();
+            viewHolder.headline = (TextView) cell.findViewById(R.id.post_Name);
+            viewHolder.dateView = (TextView) cell.findViewById(R.id.post_Date);
 
-        if(article.getImages().size()>0) {
-            CacheManager.getInstance(getContext()).loadBitmap(article.getImages().get(0).get("url"), imageView, this);
+            cell.setTag(viewHolder);
         } else {
-            imageView.setVisibility(View.INVISIBLE);
+            viewHolder = (ViewHolderItem)cell.getTag();
         }
 
-        TextView titleView = (TextView)cell.findViewById(R.id.post_Name);
+        // Set images
+        ViewHolderItem viewHolderItem = (ViewHolderItem)cell.getTag();
+        ImageView imageView = viewHolderItem.imageView;
 
-        titleView.setTypeface(fontManager.getRobotoMedium());
-        titleView.setText(article.getHeadline());
+        try{
+            imageView.setVisibility(View.INVISIBLE);
+            if(article.getImages().size()>0) {
+                CacheManager.getInstance(getContext()).loadBitmap(article.getImages().get(0).get("url"), imageView, this);
+            } else {
+                imageView.setVisibility(View.INVISIBLE);
+            }
+        } catch(Exception e){}
 
-        try {
-            TextView dateView = (TextView)cell.findViewById(R.id.post_Date);
+        if(viewHolderItem.tag == mainViewTag){
+            TextView description = (TextView)cell.findViewById(R.id.postDescription);
+            if(article.getDescription() != null) {
+                description.setText(article.getDescription());
+            }
+        }
+
+        TextView titleView = viewHolderItem.headline;
+
+        try{
+            titleView.setTypeface(fontManager.getRobotoMedium());
+            titleView.setText(article.getHeadline());
+            TextView dateView = viewHolderItem.dateView;
             Date date = sdf.parse(String.valueOf(article.getPublishDate()));
             if (article.getAuthor().length() > 0 && SettingsManager.shouldShowAuthor(getContext())) {
                 String separator = Language.bylineSeperator(this.getContext());
@@ -160,18 +214,31 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
 
     public PostListAdapter(Context context, int layout) {
         super(context, layout);
-        this.setInitialVariables(context, layout, categories);
+        this.setInitialVariables(context, layout, categories, 0);
     }
 
-    public PostListAdapter(Context context, int layout, HashMap<String, ArrayList<Article>> items, List categories) {
+    public PostListAdapter(Context context, int layout, ArrayList<Article> items) {
         super(context, layout);
-        this.setInitialVariables(context, layout, categories);
+        this.setInitialVariables(context, layout, null, 0);
+
+        this.itemsList = items;
+    }
+
+    public PostListAdapter(Context context, int layout, HashMap<String, ArrayList<Article>> items, List categories, Integer articlesPerCategory) {
+        super(context, layout);
+        this.setInitialVariables(context, layout, categories, articlesPerCategory);
 
         this.itemsHash = items;
     }
 
-    private void setInitialVariables(Context context, int layout, List categories){
+    // If articlesPerCategory is less than 1, just show them all.
+    private void setInitialVariables(Context context, int layout, List categories, Integer articlesPerCategory){
         this.categories = categories;
+        if(articlesPerCategory < 1){
+            articlesPerCategory = Integer.MAX_VALUE;
+        }
+
+        this.articlesPerCategory = articlesPerCategory;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         // init Typeface
         fontManager = new TypefaceManager(context.getAssets());
@@ -185,7 +252,12 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
 
         Integer count = this.categories.size();
         for(String key: this.categories){
-            count += this.itemsHash.get(key).size();
+            Integer size = this.itemsHash.get(key).size();
+            if(size > articlesPerCategory){
+                count += articlesPerCategory;
+            } else {
+                count += size;
+            }
         }
 
         return count;
@@ -198,7 +270,7 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
     // This returns a List of all the elements needed to show
     // If it's not categorized it just returns the list
     // If it's categorized, the list is flattened with headers in between
-    private List items() {
+    public List items() {
         if(this.itemsHash == null){
             return this.itemsList;
         }
@@ -207,10 +279,42 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
 
         for(String key: this.categories){
             items.add(key);
-            items.addAll(this.itemsHash.get(key));
+
+            if(this.itemsHash.get(key).size() > articlesPerCategory){
+                items.addAll(this.itemsHash.get(key).subList(0, 5));
+            } else {
+                items.addAll(this.itemsHash.get(key));
+            }
         }
 
         return items;
+    }
+
+    public ArrayList<Article> items(Boolean cleanCategories) {
+        if(itemsHash == null){
+            return (ArrayList<Article>)itemsList;
+        }
+
+        List items = items();
+        List itemsCopy = items();
+        for(Object item: items){
+            if(item.getClass() == String.class){
+                itemsCopy.remove(item);
+            }
+        }
+
+        return (ArrayList<Article>)itemsCopy;
+    }
+
+    public Object getItemAtPosition(int position) {
+        return items().get(position);
+    }
+
+    public ArrayList<Article> getArticlesForCategory(String category){
+        if(itemsHash != null){
+            return itemsHash.get(category);
+        }
+        return null;
     }
 
     // ImageCacheDelegate

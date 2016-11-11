@@ -201,11 +201,22 @@ public class CacheManager implements ComponentCallbacks2 {
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         in.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-        return Base64.encodeToString(bytes.toByteArray(),Base64.DEFAULT);
+        try {
+            String encoded = Base64.encodeToString(bytes.toByteArray(), Base64.DEFAULT);
+            return encoded;
+        } catch(OutOfMemoryError e){
+            return null;
+        }
     }
+
     public final static Bitmap stringToBitmap(String in){
         byte[] bytes = Base64.decode(in, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        try {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            return bitmap;
+        } catch (OutOfMemoryError e){
+            return null;
+        }
     }
 
 

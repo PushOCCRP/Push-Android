@@ -39,6 +39,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Относно PUSH APP</string>
     <string name="title_activity_detail_post">Подробности</string>
+    <string name="title_activity_category">Категория статии</string>
 
     <string name="hello_world">Здравей Свят!</string>
     <string name="title_activity_home">HomeActivity</string>

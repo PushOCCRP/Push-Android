@@ -39,6 +39,8 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">About the PUSH APP</string>
     <string name="title_activity_detail_post">Story Detail</string>
+    <string name="title_activity_category">Category Articles</string>
+
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_home">HomeActivity</string>

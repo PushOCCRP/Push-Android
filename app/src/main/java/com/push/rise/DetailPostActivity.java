@@ -108,7 +108,9 @@ public class DetailPostActivity extends ActionBarActivity {
         if(id== com.push.rise.R.id.action_share){
             doShare();
         }else if(id==android.R.id.home){
-            onBackPressed();
+            if(!isTaskRoot()){
+                onBackPressed();
+            }
         }
 
         return super.onOptionsItemSelected(item);

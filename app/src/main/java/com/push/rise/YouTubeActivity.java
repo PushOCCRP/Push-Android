@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.push.rise.fragment.YouTubeFragmentInterface;
+import com.push.rise.interfaces.YouTubeFragmentInterface;
 
 /**
  * Created by christopher on 1/7/16.

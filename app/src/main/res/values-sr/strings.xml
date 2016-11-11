@@ -84,6 +84,7 @@
     <string name="language">Jezik</string>
 
     <string name="back">Nazad</string>
+    <string name="title_activity_category">Kategorija Članci</string>
 
 </resources>
 

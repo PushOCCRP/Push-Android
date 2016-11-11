@@ -1,18 +1,16 @@
 package com.push.rise.util;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.gson.Gson;
-import com.push.rise.BuildConfig;
 import com.push.rise.R;
-import com.push.rise.interfaces.RestApi;
-import com.push.rise.model.Article;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -20,19 +18,17 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import com.push.rise.util.Language;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
+
 import java.util.UUID;
 
-import retrofit.RestAdapter;
 
 /**
  * Created by christopher on 7/13/16.
  */
-public class NotificationManager implements LanguageListener {
+public class NotificationManager extends FirebaseInstanceIdService implements  LanguageListener {
 
     public static NotificationManager notificationManager;
     public static final MediaType JSON
@@ -60,15 +56,23 @@ public class NotificationManager implements LanguageListener {
 
     public void registerForNotifications(Context context) {
         app_context = context;
-        GetInstanceGCMTokenTask getInstanceGCMTokenTask = new GetInstanceGCMTokenTask();
-        getInstanceGCMTokenTask.execute(context);
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        registerWithUniqush(token);
 
         Language.addListener(this);
     }
 
-    public void didRegisterForNotifications(String token){
-        Log.i(null, "Token: "+token);
-        registerWithUniqush(token);
+    @Override
+    public void onTokenRefresh() {
+        // Get updated InstanceID token.
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+
+        // If you want to send messages to this application instance or
+        // manage this apps subscriptions on the server side, send the
+        // Instance ID token to your app server.
+        unregisterWithUniqush();
+        registerWithUniqush(refreshedToken);
     }
 
     private void registerWithUniqush(final String token) {
@@ -197,40 +201,5 @@ public class NotificationManager implements LanguageListener {
         editor.commit();
     }
 
-    protected class GetInstanceGCMTokenTask extends AsyncTask<Context, Void, String> {
 
-        @Override
-        protected String doInBackground(Context... params) {
-            InstanceID instanceId = InstanceID.getInstance(params[0]);
-            String token = null;
-            try {
-                token = instanceId.getToken(app_context.getString(R.string.google_api_app_number), GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return token;
-        }
-
-        // -- gets called just before thread begins
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        // -- called if the cancel button is pressed
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-
-        // -- called as soon as doInBackground method completes
-        // -- notice that the third param gets passed to this method
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            NotificationManager.getNotificationManager().didRegisterForNotifications(result);
-            // Show the toast message here
-        }
-    }
 }
