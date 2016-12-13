@@ -50,7 +50,7 @@
     <string name="title_about">O nama</string>
     <string name="donate_description">Pomozite nam da rastemo i brže Vam damo ažurirane vesti. Vaša donacija namenjena je kupovini bolje opreme za besprekorno izveštavanje.</string>
     <string name="amount_label">Iznos</string>
-    <string name="donate_confirmation_prompt">Želite li da donirate</string>
+    <string name="donate_confirmation_prompt">Želite li da donirate?</string>
     <string name="donate_button_label">Donirajte</string>
     <string name="enter_valid_amount">Molimo Vas unesite ispravan iznos</string>
     <string name="thankyou_for_the_donation">Hvala Vam na donaciji!</string>
@@ -69,7 +69,7 @@
     <string name="ok">U redu</string>
     <string name="cancel">Otkaži</string>
 
-    <string name="player_error">Greška prilikom pokretanja Youtube plejer</string>
+    <string name="player_error">Greška prilikom pokretanja YouTube plejera</string>
     <string name="seek_to">Skok na</string>
     <string name="seek_to_hint">sekunde</string>
     <string name="video_button">VIDEO</string>
@@ -87,4 +87,3 @@
     <string name="title_activity_category">Kategorija Članci</string>
 
 </resources>
-
