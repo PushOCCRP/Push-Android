@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CIN</string>
+    <string name="app_name">Centar za istraživačko novinarstvo</string>
 
     <string name="action_settings">Podešavanja</string>
     <string name="action_refresh">Ponovo učitaj</string>
