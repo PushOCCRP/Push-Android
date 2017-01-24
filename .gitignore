@@ -7,11 +7,14 @@
 /captures
 /app/builds
 /app/safe_variables.gradle
-/fastlane
+/app/build.gradle
+/fastlane/report.xml
+
 
 **/SecretKeys.plist
 **/*.apk
 **/google-services.json
-**/fastlane
+**/Appfile
+**/Fastfile
 **/*.jks
 **/import-summary.json
