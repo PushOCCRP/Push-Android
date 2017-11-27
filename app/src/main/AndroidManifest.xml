@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.push.meydan" >
-    android:versionCode="190"
-    android:versionName="1.9.0">
+    package="com.pushapp.test" >
+    android:versionCode="1"
+    android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.push.meydan.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.pushapp.test.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -26,18 +26,18 @@
 
 
     <application
-        android:name="com.push.meydan.PushApplication"
+        android:name="com.pushapp.test.PushApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/MyMaterialTheme" >
         <activity
-            android:name="com.push.meydan.AboutActivity"
+            android:name="com.pushapp.test.AboutActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.push.meydan.DetailPostActivity"
+            android:name="com.pushapp.test.DetailPostActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme"
             android:screenOrientation="portrait"
@@ -45,23 +45,23 @@
             android:parentActivityName=".HomeActivity">
         </activity>
         <activity
-            android:name="com.push.meydan.CategoryActivity"
+            android:name="com.pushapp.test.CategoryActivity"
             android:label="@string/app_name"
             android:theme="@style/MyMaterialTheme"
         />
         <activity
-            android:name="com.push.meydan.YouTubeActivity"
+            android:name="com.pushapp.test.YouTubeActivity"
             android:label="YouTube Player"
             android:theme="@style/MyMaterialTheme"
         />
         <activity
-            android:name="com.push.meydan.NotificationHandler"
+            android:name="com.pushapp.test.NotificationHandler"
             android:label="@string/title_activity_detail_post"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.push.meydan.HomeActivity"
+            android:name="com.pushapp.test.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Toolbar" >
             <intent-filter>
@@ -72,7 +72,7 @@
         </activity>
 
         <service
-            android:name="com.push.meydan.util.gcm.IDListenerService">
+            android:name="com.pushapp.test.util.gcm.IDListenerService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
@@ -87,7 +87,7 @@
             <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.push.meydan.gcm" />
+                <category android:name="com.pushapp.test.gcm" />
             </intent-filter>
         </receiver>
 

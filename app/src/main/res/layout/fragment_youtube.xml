@@ -6,6 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_youtube_layout"
-    tools:context="com.push.meydan.fragment.YouTube">
+    tools:context="com.pushapp.test.fragment.YouTube">
 
 </LinearLayout>

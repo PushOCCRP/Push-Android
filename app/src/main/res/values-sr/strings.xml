@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">KRIK</string>
+    <string name="app_name">Push Sample Test</string>
 
     <string name="action_settings">Podešavanja</string>
     <string name="action_refresh">Ponovo učitaj</string>

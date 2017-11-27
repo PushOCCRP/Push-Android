@@ -19,7 +19,7 @@
             app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
             app:theme="@style/Toolbar" />
 
-        <fragment android:name="com.push.meydan.fragment.CategoryFragment"
+        <fragment android:name="com.pushapp.test.fragment.CategoryFragment"
             android:id="@+id/category_fragment"
             android:layout_weight="1"
             android:layout_width="match_parent"
