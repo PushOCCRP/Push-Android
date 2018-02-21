@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.push.krik">
+    package="com.pushapp.missourian">
 
     <!-- screengrab: https://github.com/fastlane/fastlane/tree/master/screengrab#readme -->
     <!-- Allows unlocking your device and activating its screen so UI tests can succeed -->

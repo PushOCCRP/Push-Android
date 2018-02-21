@@ -8,6 +8,15 @@ This is the repository for the Android app portion of the Push app ecosystem. Th
 - In-line images in stories
 - YouTube player support
 
+# Requirements
+
+- \*nix based system (tested on MacOS 10.13 but should work similarly on Linux.)
+- Git [Installation instructions here](https://git-scm.com/book/en/v1/Getting-Started-Installing-Git)
+- Android Studio [found here](https://developer.android.com/studio/index.html)
+- The [Push Backend](https://github.com/PushOCCRP/Push-Backend) must be set up before you start here. These instructions are pretty short since most of the work is done by that part of the project.
+
+*Note:* This project with _not_ work without the generator. The generator adds in specifically needed and customized files, without them everything will break.
+
 # Setup steps
 
 1. Clone this repository ```git clone https://github.com/PushOCCRP/Push-Android```
