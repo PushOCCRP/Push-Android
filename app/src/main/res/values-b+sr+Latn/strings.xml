@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KRIK</string>
+
+    <string name="action_settings">Podešavanja</string>
+    <string name="action_refresh">Ponovo učitaj</string>
+    <string name="action_search">Pretraga</string>
+    <string name="drawer_open">Otvori</string>
+    <string name="drawer_close">Zatvori</string>
+
+    <string name="nav_item_home">Početna strana</string>
+    <string name="nav_item_donate">Donirajte</string>
+    <string name="nav_item_about">O nama</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/nav_item_donate</item>
+        <item>@string/nav_item_about</item>
+    </string-array>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_icons">
+        <item>R.id.ic_home_black_24dp</item>
+        <item>R.id.ic_account_circle_white</item>
+        <item>R.id.ic_account_circle_white</item>
+    </string-array>
+
+    <string name="title_home">Početna strana</string>
+    <string name="title_item_one">Donirajte</string>
+    <string name="title_item_two">O nama</string>
+    <string name="main_screen_cel_date_string">Datum</string>
+    <string name="share_via">Podelite putem</string>
+
+    <!-- push notification labels -->
+    <string name="notification_header">Nova priča</string>
+    <string name="notification_cancel_button">Otkaži</string>
+    <string name="notification_read_button">Čitaj</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">O PUSH APP-u</string>
+    <string name="title_activity_detail_post">Više o priči</string>
+
+    <string name="hello_world">Zdravo svima!</string>
+    <string name="title_activity_home">Početna strana</string>
+
+    <string name="nothing">ništa</string>
+    <string name="clock">sat</string>
+    <string name="timePlaceholder">pre 40 minuta John Smith</string>
+    <string name="title_about">O nama</string>
+    <string name="donate_description">Pomozite nam da rastemo i brže Vam damo ažurirane vesti. Vaša donacija namenjena je kupovini bolje opreme za besprekorno izveštavanje.</string>
+    <string name="amount_label">Iznos</string>
+    <string name="donate_confirmation_prompt">Želite li da donirate?</string>
+    <string name="donate_button_label">Donirajte</string>
+    <string name="enter_valid_amount">Molimo Vas unesite ispravan iznos</string>
+    <string name="thankyou_for_the_donation">Hvala Vam na donaciji!</string>
+    <string name="news_category">Lokal</string>
+    <string name="title_activity_search_results">Rezultati pretrage</string>
+    <string name="menu_search">Pretraga</string>
+    <string name="menu_about">O nama</string>
+    <string name="search_box_hint">ovde kucaj</string>
+    <string name="search_results">Rezultati pretrage</string>
+    <string name="searching">Pretraga je u toku...</string>
+    <string name="recent_results">Nedavni rezultati pretrage</string>
+    <string name="action_share">Podeli</string>
+    <string name="no_search_results">Nema rezultata pretrage</string>
+
+    <string name="choose_language">Izaberite jezik</string>
+    <string name="ok">U redu</string>
+    <string name="cancel">Otkaži</string>
+
+    <string name="player_error">Greška prilikom pokretanja YouTube plejera</string>
+    <string name="seek_to">Skok na</string>
+    <string name="seek_to_hint">sekunde</string>
+    <string name="video_button">VIDEO</string>
+
+    <string name="by">,</string>
+<!--    <string name="hours_ago">Pre % sati</string>
+    <string name="just_now">Sada</string>
+    <string name="minutes_ago">Pre % minuta</string> -->
+    <string name="yesterday">Juče</string>
+    <string name="three_day_ago">Pre tri dana</string>
+
+    <string name="language">Jezik</string>
+
+    <string name="back">Nazad</string>
+    <string name="title_activity_category">Kategorija Članci</string>
+
+</resources>
