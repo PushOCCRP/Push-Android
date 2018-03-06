@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    colorize (0.8.1)
+    highline (1.7.10)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  colorize
+  highline
+
+BUNDLED WITH
+   1.16.0

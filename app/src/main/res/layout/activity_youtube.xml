@@ -10,7 +10,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
+<<<<<<< HEAD
         <fragment android:name="com.pushapp.missourian.fragment.YouTubeFragment"
+=======
+        <fragment android:name="com.pushapp.press.fragment.YouTubeFragment"
+>>>>>>> commit_test
             android:id="@+id/fragment_youtube"
             android:layout_weight="1"
             android:layout_width="match_parent"

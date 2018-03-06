@@ -19,7 +19,11 @@
             app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
             app:theme="@style/Toolbar" />
 
+<<<<<<< HEAD
         <fragment android:name="com.pushapp.missourian.fragment.CategoryFragment"
+=======
+        <fragment android:name="com.pushapp.press.fragment.CategoryFragment"
+>>>>>>> commit_test
             android:id="@+id/category_fragment"
             android:layout_weight="1"
             android:layout_width="match_parent"

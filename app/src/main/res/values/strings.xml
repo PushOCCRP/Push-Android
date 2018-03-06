@@ -1,5 +1,9 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">The Columbia Missourian</string>
+=======
+    <string name="app_name">Rise Moldova</string>
+>>>>>>> commit_test
 
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
