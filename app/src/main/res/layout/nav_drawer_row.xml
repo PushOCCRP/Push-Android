@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
-<com.pushapp.missourian.layouts.MaterialRippleLayout
-=======
 <com.pushapp.press.layouts.MaterialRippleLayout
->>>>>>> commit_test
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/section_ripple"
@@ -59,8 +55,4 @@
             android:layout_centerVertical="true" />
 
     </RelativeLayout>
-<<<<<<< HEAD
-</com.pushapp.missourian.layouts.MaterialRippleLayout>
-=======
 </com.pushapp.press.layouts.MaterialRippleLayout>
->>>>>>> commit_test

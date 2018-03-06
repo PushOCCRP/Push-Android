@@ -171,11 +171,7 @@
 
     <fragment
         android:id="@+id/fragment_navigation_drawer"
-<<<<<<< HEAD
-        android:name="com.pushapp.missourian.FragmentDrawer"
-=======
         android:name="com.pushapp.press.FragmentDrawer"
->>>>>>> commit_test
         android:layout_width="@dimen/nav_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
