@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+require 'find'
+require 'colorize'
+require 'highline'
+
+@cli = HighLine.new
+
+def check_for_folder path, folder_name
+	directories = Dir.entries(path)
+	directories = filter_folders directories
+	error "Too many folders in '#{path}'" if directories.count > 1
+	error "No '#{folder_name}' folder found in '#{path}'" if directories[0] != folder_name
+end
+
+def error message
+	@cli.say "---------------------------------------------------------"
+	@cli.say "Error: #{message}".red
+	@cli.say "Please run the Push generator with the --development tag before attempting to push anything to repository".yellow
+	@cli.say "---------------------------------------------------------"
+	exit
+end
+
+def filter_folders folders
+	return folders - ['.', '..', '.DS_Store']
+end
+
+check_for_folder './app/src/main/java/', 'com'
+check_for_folder './app/src/main/java/com', 'pushapp'
+check_for_folder './app/src/main/java/com/pushapp', 'press'
+@cli.say 'Development folders look good. 💃 🕺'
