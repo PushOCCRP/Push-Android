@@ -52,6 +52,7 @@
     <string name="amount_label">Сума</string>
     <string name="donate_confirmation_prompt">Искате ли да дарите?</string>
     <string name="donate_button_label">Дарявам</string>
+    <string name="logout_button_label">Излез от профила си</string>
     <string name="enter_valid_amount">Моля, въведете валидна сума</string>
     <string name="thankyou_for_the_donation">Благодарим Ви за дарението!</string>
     <string name="news_category">Местни новини</string>

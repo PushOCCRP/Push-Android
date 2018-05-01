@@ -15,9 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.pushapp.press.model.Article;
+import com.pushapp.press.util.AuthenticationManager;
 
 import java.util.ArrayList;
 
@@ -46,6 +48,8 @@ public class AboutActivity extends AppCompatActivity {
             window.setStatusBarColor(color);
         }
 
+        String donationURL = getString(R.string.donation_url);
+
     }
 
     private void initActionBar() {
@@ -63,8 +67,18 @@ public class AboutActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         String donationURL = getString(R.string.donation_url);
-        if(!donationURL.equals("")){
+
+        if(!donationURL.equals("") || AuthenticationManager.getAuthenticationManager().isLoggedIn(getApplicationContext())) {
             getMenuInflater().inflate(R.menu.menu_about, menu);
+
+            if (donationURL.equals("")) {
+                menu.getItem(0).setVisible(false);
+            }
+
+            if (!AuthenticationManager.getAuthenticationManager().isLoggedIn(getApplicationContext())) {
+                menu.getItem(1).setVisible(false);
+            }
+
         }
 
         return true;
@@ -79,8 +93,10 @@ public class AboutActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id== R.id.action_donate){
+        if(id== R.id.action_donate) {
             showDonate();
+        }else if(id==R.id.action_logout) {
+            logout();
         }else if(id==android.R.id.home){
             onBackPressed();
         }
@@ -91,5 +107,10 @@ public class AboutActivity extends AppCompatActivity {
     public void showDonate() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.donation_url)));
         startActivity(browserIntent);
+    }
+
+    public void logout() {
+        AuthenticationManager.getAuthenticationManager().logout(getApplicationContext());
+        onBackPressed();
     }
 }

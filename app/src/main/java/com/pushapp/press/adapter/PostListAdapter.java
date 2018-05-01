@@ -182,6 +182,8 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                imageView.setVisibility(View.GONE);
+
                                 return false;
                             }
 
@@ -199,6 +201,7 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                imageView.setVisibility(View.GONE);
                                 return false;
                             }
 
@@ -211,7 +214,7 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
                         })
                         .into(imageView);
             } else {
-                imageView.setVisibility(View.INVISIBLE);
+                imageView.setVisibility(View.GONE);
             }
         } catch(Exception e){
             Log.w("error", "Exception");

@@ -45,6 +45,7 @@
     <string name="amount_label">Сумма</string>
     <string name="donate_confirmation_prompt">Вы хотите помочь сайту?</string>
     <string name="donate_button_label">Помоги сайту</string>
+    <string name="logout_button_label">Выйти</string>
     <string name="enter_valid_amount">Поддержать на сумму</string>
     <string name="thankyou_for_the_donation">Спасибо за Вашу поддержку!</string>
     <string name="news_category">Категория</string>

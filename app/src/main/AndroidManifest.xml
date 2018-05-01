@@ -31,6 +31,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/MyMaterialTheme" >
+        <activity android:name=".LoginActivity"
+            android:label="Login"
+            android:theme="@style/MyMaterialTheme" >
+        </activity>
         <activity
             android:name="com.pushapp.press.AboutActivity"
             android:label="@string/title_activity_detail_post"

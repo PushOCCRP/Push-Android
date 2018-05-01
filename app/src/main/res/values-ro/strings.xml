@@ -51,6 +51,7 @@
     <string name="amount_label">Amount</string>
     <string name="donate_confirmation_prompt">Do you want to donate</string>
     <string name="donate_button_label">Donate</string>
+    <string name="logout_button_label">Deconectare</string>
     <string name="enter_valid_amount">Please enter a valid amount</string>
     <string name="thankyou_for_the_donation">Thank you for your Donation!</string>
     <string name="news_category">Local</string>

@@ -52,6 +52,7 @@
     <string name="amount_label">Iznos</string>
     <string name="donate_confirmation_prompt">Želite li da donirate?</string>
     <string name="donate_button_label">Donirajte</string>
+    <string name="logout_button_label">Odjaviti se</string>
     <string name="enter_valid_amount">Molimo Vas unesite ispravan iznos</string>
     <string name="thankyou_for_the_donation">Hvala Vam na donaciji!</string>
     <string name="news_category">Lokal</string>

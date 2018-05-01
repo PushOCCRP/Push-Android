@@ -55,6 +55,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
+import com.pushapp.press.util.AuthenticationManager;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -229,6 +230,14 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     @Override
     protected void onResume() {
         super.onResume();
+
+        if(this.getResources().getString(R.string.login_required).equalsIgnoreCase("true")) {
+            if(!AuthenticationManager.getAuthenticationManager().isLoggedIn(getApplicationContext())) {
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+                return;
+            }
+        }
 
         savePreferences(false);
         checkForCrashes();
@@ -918,7 +927,8 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         findViewById(com.pushapp.press.R.id.searchProgress).setVisibility(View.VISIBLE);
         ((TextView)findViewById(com.pushapp.press.R.id.searchResults)).setText(getString(com.pushapp.press.R.string.searching));
 
-        restAPI.searchArticles(AnalyticsManager.installationUUID(this).toString(), searchString, 20150501, 20150505, 2, 5, Language.getLanguage(this).getLanguage(), new Callback<ArticlePost>() {
+        String apiKey = AuthenticationManager.getAuthenticationManager().apiKey(getApplicationContext());
+        restAPI.searchArticles(AnalyticsManager.installationUUID(this).toString(), apiKey, searchString, 20150501, 20150505, 2, 5, Language.getLanguage(this).getLanguage(), new Callback<ArticlePost>() {
             @Override
             public void success(final ArticlePost articlePost, Response response) {
                 ArrayList<Article> results = (ArrayList<Article>)articlePost.getResults();

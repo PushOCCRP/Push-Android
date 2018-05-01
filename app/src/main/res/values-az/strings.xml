@@ -46,6 +46,7 @@
     <string name="amount_label">Məbləğ</string>
     <string name="donate_confirmation_prompt">Dəstək olmaq istəyirsiniz?</string>
     <string name="donate_button_label">Yardım</string>
+    <string name="logout_button_label">Çıxış</string>
     <string name="enter_valid_amount">Xahiş edirik, göndərəcəyiniz məbləği yazın</string>
     <string name="thankyou_for_the_donation">Dəstəyiniz üçün təşəkkür edirik!</string>
     <string name="news_category">Bölmə</string>

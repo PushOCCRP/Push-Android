@@ -62,7 +62,8 @@ public class SyncManager {
                 language = locale.getLanguage();
             }
 
-            restAPI.getArticles(AnalyticsManager.installationUUID(context).toString(), language, true, new Callback<ArticlePost>() {
+            String apiKey = AuthenticationManager.getAuthenticationManager().apiKey(this.applicationContext);
+            restAPI.getArticles(AnalyticsManager.installationUUID(context).toString(), apiKey, language, true, new Callback<ArticlePost>() {
                 @Override
                 public void success(ArticlePost articlePost, Response response) {
                     //There's a bunch of type juggling here because of the nested nature of it all
@@ -103,7 +104,8 @@ public class SyncManager {
 
     public void articleForId(String article_id, Context context, final ArticleDelegate delegate){
         if(Online()){
-            restAPI.getArticle(AnalyticsManager.installationUUID(context).toString(), article_id, Language.getLanguage(context).getLanguage(), new Callback<ArticlePost>() {
+            String apiKey = AuthenticationManager.getAuthenticationManager().apiKey(this.applicationContext);
+            restAPI.getArticle(AnalyticsManager.installationUUID(context).toString(), apiKey, article_id, Language.getLanguage(context).getLanguage(), new Callback<ArticlePost>() {
                 @Override
                 public void success(ArticlePost articlePost, Response response) {
                     //Rearrange the posts so that the first article has an image
