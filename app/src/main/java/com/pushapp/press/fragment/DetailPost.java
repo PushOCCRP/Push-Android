@@ -35,6 +35,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.pushapp.press.util.StringReplacer;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.text.util.Linkify;
@@ -213,7 +215,11 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
         if(postPhotoByline != null){
             mPhotoByline.setTextColor(Color.LTGRAY);
-            mPhotoByline.setText(postPhotoByline);
+            if(postItem.getHeaderImage() != null){
+                mPhotoByline.setText(postItem.getHeaderImage().get("caption"));
+            } else {
+                mPhotoByline.setText(postItem.getImages().get(0).get("caption"));
+            }
         } else {
             mPhotoByline.setVisibility(View.GONE);
         }
@@ -299,7 +305,30 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         final DetailPost finalDetailPost = this;
         String body = postBody;
 
+        Pattern regex = Pattern.compile("<img src=\"([^\"]*)\" [^>]*>");
+
+        List<HashMap<String, String>> images = postItem.getImages();
+
+        // Adds caption below images.
+        body = StringReplacer.replace(body, regex, (Matcher m) -> {
+            String url = m.group(1).replace("http://", "").replace("https://", "");
+            HashMap<String, String> matchingImage = null;
+            for(HashMap<String, String> image : images){
+                String imageUrl = image.get("url").replace("http://", "").replace("https://", "");
+                if(imageUrl.equalsIgnoreCase(url)){
+                    matchingImage = image;
+                }
+            }
+
+            if(matchingImage == null || postItem.getHeaderImage().size() == 0 && matchingImage.get("url").equalsIgnoreCase(postItem.getImages().get(0).get("url"))){
+                return "";
+            }
+
+            return m.group() + "<br><br><small>" + matchingImage.get("caption")+"</small>";
+        });
+
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+
             body = postBody.replace("<img", "<font size=3><br /></font><img");
         }
 

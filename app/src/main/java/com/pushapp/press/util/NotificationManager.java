@@ -5,9 +5,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.android.gms.iid.InstanceID;
+//import com.google.android.gms.iid.InstanceID;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.gson.Gson;
 import com.pushapp.press.R;
@@ -62,11 +63,7 @@ public class NotificationManager extends FirebaseInstanceIdService implements  L
         new AsyncTask() {
             @Override
             protected String doInBackground(Object... params) {
-                String token = "";
-                try {
-                    token = InstanceID.getInstance(app_context).getToken(app_context.getResources().getString(R.string.google_api_app_number),"GCM");
-                } catch (IOException ex) {
-                }
+                String token = FirebaseInstanceId.getInstance().getToken();
                 Log.i(null, token);
 
                 registerWithUniqush(token);
@@ -84,12 +81,7 @@ public class NotificationManager extends FirebaseInstanceIdService implements  L
         // Get updated InstanceID token.
         // String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
-        String refreshedToken = null;
-        try {
-            refreshedToken = InstanceID.getInstance(app_context).getToken(app_context.getResources().getString(R.string.server_url),"GCM");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
@@ -109,6 +101,7 @@ public class NotificationManager extends FirebaseInstanceIdService implements  L
 
         // Extrapolate this out to a generator variable
         Log.w("", "*****************");
+
         if(app_context.getString(R.string.debug).equals("true")) {
             options.put("sandbox", "true");
             Log.i("", "Sandbox is true");

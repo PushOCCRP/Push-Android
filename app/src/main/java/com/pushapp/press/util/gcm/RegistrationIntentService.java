@@ -7,9 +7,13 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
+//import com.google.android.gms.gcm.GcmPubSub;
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.pushapp.press.R;
 
 import java.io.IOException;
@@ -37,9 +41,8 @@ public class RegistrationIntentService extends IntentService {
             // R.string.gcm_defaultSenderId (the Sender ID) is typically derived from google-services.json.
             // See https://developers.google.com/cloud-messaging/android/start for details on this file.
             // [START get_token]
-            InstanceID instanceID = InstanceID.getInstance(this);
-            String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+            FirebaseInstanceId instanceID = FirebaseInstanceId.getInstance();
+            String token = instanceID.getToken();
             // [END get_token]
             Log.i(TAG, "GCM Registration Token: " + token);
 
@@ -85,10 +88,10 @@ public class RegistrationIntentService extends IntentService {
      */
     // [START subscribe_topics]
     private void subscribeTopics(String token) throws IOException {
-        GcmPubSub pubSub = GcmPubSub.getInstance(this);
-        for (String topic : TOPICS) {
-            pubSub.subscribe(token, "/topics/" + topic, null);
-        }
+//        GcmPubSub pubSub = GcmPubSub.getInstance(this);
+//        for (String topic : TOPICS) {
+//            pubSub.subscribe(token, "/topics/" + topic, null);
+//        }
     }
 // [END subscribe_topics]
 }

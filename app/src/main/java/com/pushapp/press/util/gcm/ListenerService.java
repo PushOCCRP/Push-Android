@@ -45,7 +45,7 @@ public class ListenerService extends FirebaseMessagingService {
         // There's a small chance that a notification not in the correct language might get sent
         // This will make sure it doesn't get shown.
         String currentLanguage = Language.getLanguage(getApplicationContext()).getLanguage();
-        if(!data.get("language").equals(currentLanguage)){
+        if(data.get("language") == null || !data.get("language").equals(currentLanguage)){
             return;
         }
 

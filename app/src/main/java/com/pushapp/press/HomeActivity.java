@@ -233,8 +233,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
         if(this.getResources().getString(R.string.login_required).equalsIgnoreCase("true")) {
             if(!AuthenticationManager.getAuthenticationManager().isLoggedIn(getApplicationContext())) {
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
+                logoutAndShowLoginScreen();
                 return;
             }
         }
@@ -305,6 +304,12 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     private void checkForUpdates() {
         // Remove this for store builds!
         // UpdateManager.register(this, getResources().getString(R.string.hockey_key));
+    }
+
+    private void logoutAndShowLoginScreen() {
+        AuthenticationManager.getAuthenticationManager().logout(getApplicationContext());
+        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(i);
     }
 
     private void setUpPromotions() {
@@ -584,6 +589,14 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
             displayArticles(tempArticles, categories);
         } else {
+
+            // Basically if we get this far and categories is null AND login is required, it means there's an error with the login.
+            // So we bail out here and go back to the login screen.
+            if(categories == null){
+                logoutAndShowLoginScreen();
+                return;
+            }
+
             HashMap<String, ArrayList<Article>> articlesList = (HashMap<String, ArrayList<Article>>) articles;
             HashMap<String, ArrayList<Article>> articlesListCopy = (HashMap<String, ArrayList<Article>>) articlesList.clone();
 
