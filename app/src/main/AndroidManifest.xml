@@ -7,10 +7,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.pushapp.press.permission.C2D_MESSAGE" />
+    <!--<uses-permission android:name="com.njnewscommons.route40.permission.C2D_MESSAGE" />-->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
+    <!--<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />-->
     <!-- Needed for push notifications that contain VIBRATE flag. Optional, but recommended. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -26,7 +26,7 @@
 
 
     <application
-        android:name="com.pushapp.press.PushApplication"
+        android:name="com.njnewscommons.route40.PushApplication"
         android:allowBackup="true"
         android:largeHeap="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,12 +37,12 @@
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.pushapp.press.AboutActivity"
+            android:name="com.njnewscommons.route40.AboutActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.pushapp.press.DetailPostActivity"
+            android:name="com.njnewscommons.route40.DetailPostActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme"
             android:screenOrientation="portrait"
@@ -50,23 +50,23 @@
             android:parentActivityName=".HomeActivity">
         </activity>
         <activity
-            android:name="com.pushapp.press.CategoryActivity"
+            android:name="com.njnewscommons.route40.CategoryActivity"
             android:label="@string/app_name"
             android:theme="@style/MyMaterialTheme"
         />
         <activity
-            android:name="com.pushapp.press.YouTubeActivity"
+            android:name="com.njnewscommons.route40.YouTubeActivity"
             android:label="YouTube Player"
             android:theme="@style/MyMaterialTheme"
         />
         <activity
-            android:name="com.pushapp.press.NotificationHandler"
+            android:name="com.njnewscommons.route40.NotificationHandler"
             android:label="@string/title_activity_detail_post"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.pushapp.press.HomeActivity"
+            android:name="com.njnewscommons.route40.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Toolbar" >
             <intent-filter>
@@ -76,35 +76,22 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="com.pushapp.press.gcm" />
-            </intent-filter>
-        </receiver>
-
         <service
-            android:name="com.pushapp.press.util.gcm.IDListenerService">
+            android:name="com.njnewscommons.route40.util.gcm.IDListenerService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name="com.pushapp.press.util.gcm.ListenerService"
-            android:exported="false" >
+            android:name="com.njnewscommons.route40.util.gcm.ListenerService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:name="com.pushapp.press.util.gcm.RegistrationIntentService"
+            android:name="com.njnewscommons.route40.util.gcm.RegistrationIntentService"
             android:exported="false">
         </service>
 
@@ -119,8 +106,18 @@
         <!-- Hockey App -->
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
 
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
 
     </application>
 
 </manifest>
-

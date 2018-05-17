@@ -64,9 +64,13 @@ public class NotificationManager extends FirebaseInstanceIdService implements  L
             @Override
             protected String doInBackground(Object... params) {
                 String token = FirebaseInstanceId.getInstance().getToken();
-                Log.i(null, token);
+                try {
+                    Log.i(null, token);
 
-                registerWithUniqush(token);
+                    registerWithUniqush(token);
+                } catch (Exception e){
+                    AnalyticsManager.logError("Error refreshing token.");
+                }
                 return null;
             }
 

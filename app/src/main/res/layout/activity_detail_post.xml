@@ -46,7 +46,6 @@
             android:padding="10dip"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            app:fillColor="@color/colorPrimary"
             app:strokeColor="@color/colorAccent"
             />
     </LinearLayout>
