@@ -1,5 +1,7 @@
 package com.pushapp.press;
 
+import com.clostra.newnode.NewNode;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,7 @@ public class PushApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        NewNode.init();
 
         Foreground.init(this);
 
