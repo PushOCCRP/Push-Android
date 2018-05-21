@@ -291,7 +291,9 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
 
     private void checkForCrashes() {
-        CrashManager.register(this, getResources().getString(R.string.hockey_key), new MyCrashManagerListener());
+        if(getResources().getString(R.string.hockey_key) == 32) {
+            CrashManager.register(this, getResources().getString(R.string.hockey_key), new MyCrashManagerListener());
+        }
     }
 
     // Prevents this from leaking
