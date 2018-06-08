@@ -35,6 +35,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.pushapp.press.model.PushImage;
+import com.pushapp.press.model.PushVideo;
 import com.pushapp.press.util.StringReplacer;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -58,6 +60,10 @@ import java.util.regex.Pattern;
 
 import android.text.util.Linkify;
 import android.text.method.LinkMovementMethod;
+
+import io.realm.RealmList;
+
+import static com.androidquery.util.AQUtility.getContext;
 
 public final class DetailPost extends Fragment implements ObservableScrollViewCallbacks, ComponentCallbacks2 {
     private static final String KEY_CONTENT = "TestFragment:Content";
@@ -112,18 +118,18 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         fragment.postBody = postItem.getBody();
         fragment.postTitle = postItem.getHeadline();
 
-        List<HashMap<String, String>> images = postItem.getImages();
-        HashMap<String, String> headerImage = postItem.getHeaderImage();
+        RealmList<PushImage> images = postItem.getImages();
+        PushImage headerImage = postItem.getHeaderImage();
 
-        if(headerImage != null && headerImage.size() > 0) {
-            fragment.postImageUrl.add(headerImage.get("url"));
+        if(headerImage != null ) {
+            fragment.postImageUrl.add(headerImage.url);
         } else if(images.size() > 0) {
-            fragment.postImageUrl.add(images.get(0).get("url"));
+            fragment.postImageUrl.add(images.get(0).url);
         }
 
-        List<HashMap<String, String>> videos = postItem.getVideos();
+        RealmList<PushVideo> videos = postItem.getVideos();
         if(videos.size() > 0){
-            fragment.postVideoIds.add(videos.get(0).get("youtube_id"));
+            fragment.postVideoIds.add(videos.get(0).youtubeId);
         }
 
         fragment.postAuthor = postItem.getAuthor();
@@ -216,9 +222,9 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
         if(postPhotoByline != null){
             mPhotoByline.setTextColor(Color.LTGRAY);
             if(postItem.getHeaderImage() != null){
-                mPhotoByline.setText(postItem.getHeaderImage().get("caption"));
+                mPhotoByline.setText(postItem.getHeaderImage().caption);
             } else {
-                mPhotoByline.setText(postItem.getImages().get(0).get("caption"));
+                mPhotoByline.setText(postItem.getImages().get(0).caption);
             }
         } else {
             mPhotoByline.setVisibility(View.GONE);
@@ -307,24 +313,27 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
         Pattern regex = Pattern.compile("<img src=\"([^\"]*)\" [^>]*>");
 
-        List<HashMap<String, String>> images = postItem.getImages();
+        RealmList<PushImage> images = postItem.getImages();
 
         // Adds caption below images.
         body = StringReplacer.replace(body, regex, (Matcher m) -> {
             String url = m.group(1).replace("http://", "").replace("https://", "");
-            HashMap<String, String> matchingImage = null;
-            for(HashMap<String, String> image : images){
-                String imageUrl = image.get("url").replace("http://", "").replace("https://", "");
+            PushImage matchingImage = null;
+            for(PushImage image : images){
+                String imageUrl = image.url.replace("http://", "").replace("https://", "");
                 if(imageUrl.equalsIgnoreCase(url)){
                     matchingImage = image;
                 }
             }
 
-            if(matchingImage == null || postItem.getHeaderImage().size() == 0 && matchingImage.get("url").equalsIgnoreCase(postItem.getImages().get(0).get("url"))){
+            if(matchingImage == null ||
+                    postItem.getHeaderImage() == null ||
+                    postItem.getHeaderImage().url.length() == 0 &&
+                            matchingImage.url.equalsIgnoreCase(postItem.getImages().get(0).url)){
                 return "";
             }
 
-            return m.group() + "<br><br><small>" + matchingImage.get("caption")+"</small>";
+            return m.group() + "<br><br><small>" + matchingImage.caption+"</small>";
         });
 
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -360,6 +369,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             Bitmap originalBitmap = ((BitmapDrawable)resource).getBitmap();
+
                             Bitmap bitmap = originalBitmap.copy(originalBitmap.getConfig(), false);
                             didLoadImage(bitmap, source);
                             return false;
@@ -370,7 +380,6 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
                     Drawable drawable = new ColorDrawable(Color.TRANSPARENT);
                     return drawable;
                 }
-
             }
         };
 

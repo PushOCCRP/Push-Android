@@ -176,8 +176,8 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
 
         try{
             imageView.setVisibility(View.INVISIBLE);
-            if(article.getHeaderImage() != null && article.getHeaderImage().size() > 0){
-                GlideApp.with(cell).load(article.getHeaderImage())
+            if(article.getHeaderImage() != null){
+                GlideApp.with(cell).load(article.getHeaderImage().url)
                         .placeholder(new ColorDrawable(Color.BLACK))
                         .listener(new RequestListener<Drawable>() {
                             @Override
@@ -196,7 +196,7 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
                         })
                         .into(imageView);
             } else if(article.getImages().size() > 0) {
-                GlideApp.with(cell).load(article.getImages().get(0).get("url"))
+                GlideApp.with(cell).load(article.getImages().get(0).url)
                         .placeholder(new ColorDrawable(Color.BLACK))
                         .listener(new RequestListener<Drawable>() {
                             @Override

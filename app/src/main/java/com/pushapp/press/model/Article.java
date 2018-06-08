@@ -8,10 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.Index;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * @author Bryan Lamtoo.
  */
-public class Article implements Serializable{
+public class Article extends RealmObject implements Serializable{
 
     @Expose
     private String headline;
@@ -30,24 +35,25 @@ public class Article implements Serializable{
     private String language;
     @Expose
     @SerializedName("header_image")
-    private HashMap<String, String> header_image = new HashMap<String, String>();
+    private PushImage header_image = new PushImage();
     @Expose
     @SerializedName("images")
-    private List<HashMap<String, String>> images = new ArrayList<HashMap<String, String>>();
+    private RealmList<PushImage> images = new RealmList<>();
     @Expose
     @SerializedName("videos")
-    private List<HashMap<String, String>> videos = new ArrayList<HashMap<String, String>>();
+    private RealmList<PushVideo> videos = new RealmList<PushVideo>();
     @Expose
+    @PrimaryKey
     private String id;
     @SerializedName("image_urls")
     @Expose
-    private List<String> imageUrls = new ArrayList<String>();
+    private RealmList<String> imageUrls = new RealmList<String>();
     @SerializedName("captions")
     @Expose
-    private List<String> photoBylines = new ArrayList<String>();
+    private RealmList<String> photoBylines = new RealmList<String>();
     @SerializedName("photoBylines")
     @Expose
-    private List<String> captions = new ArrayList<String>();
+    private RealmList<String> captions = new RealmList<String>();
     @SerializedName("url")
     @Expose
     private String url;
@@ -202,9 +208,10 @@ public class Article implements Serializable{
      * The header_image
      */
     public void setHeaderImage(HashMap<String, String> headerImage) {
-        this.header_image = headerImage;
-        List<HashMap<String, String>> images = this.getImages();
-        if(images.size() > 0 && headerImage != null && images.get(0).get("url") == headerImage.get("url")){
+        PushImage image = PushImage.image(headerImage);
+        this.header_image = image;
+        RealmList<PushImage> images = this.getImages();
+        if(images.size() > 0 && image != null && images.get(0).url == image.url){
             images.remove(0);
             this.setImages(images);
         }
@@ -215,8 +222,17 @@ public class Article implements Serializable{
      * @return
      * The images
      */
-    public HashMap<String, String> getHeaderImage() {
-        return header_image;
+    public PushImage getHeaderImage() {
+        if(header_image != null && header_image.url != null) {
+            return header_image;
+        }
+
+        if(images.size() > 0){
+            return getImages().first();
+        }
+
+        return new PushImage();
+        //return header_image;
     }
 
     /**
@@ -226,10 +242,20 @@ public class Article implements Serializable{
      */
     public void setImages(List<HashMap<String, String>> images) {
 
-        if(images.size() > 0 && this.getHeaderImage() != null && images.get(0).get("url") == this.getHeaderImage().get("url")){
+        RealmList<PushImage> pushImages = new RealmList<PushImage>();
+        for (HashMap<String, String> image: images) {
+            PushImage pushImage = PushImage.image(image);
+            pushImages.add(pushImage);
+        }
+
+        if(pushImages.size() > 0 && this.getHeaderImage() != null && pushImages.get(0).url == this.getHeaderImage().url){
             images.remove(0);
         }
 
+        this.images = pushImages;
+    }
+
+    private void setImages(RealmList<PushImage> images) {
         this.images = images;
     }
 
@@ -238,7 +264,7 @@ public class Article implements Serializable{
      * @return
      * The images
      */
-    public List<HashMap<String, String>> getImages() {
+    public RealmList<PushImage> getImages() {
         return images;
     }
 
@@ -247,7 +273,7 @@ public class Article implements Serializable{
      * @param videos
      * The videos
      */
-    public void setVideos(List<HashMap<String, String>> videos) {
+    public void setVideos(RealmList<PushVideo> videos) {
         this.videos = videos;
     }
 
@@ -256,7 +282,7 @@ public class Article implements Serializable{
      * @return
      * The videos
      */
-    public List<HashMap<String, String>> getVideos() {
+    public RealmList<PushVideo> getVideos() {
         return videos;
     }
 
@@ -276,7 +302,9 @@ public class Article implements Serializable{
      * The image_urls
      */
     public void setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
+        RealmList<String> list = new RealmList<>();
+        list.addAll(imageUrls);
+        this.imageUrls = list;
     }
 
 
@@ -285,7 +313,7 @@ public class Article implements Serializable{
      * @return
      * The image captions
      */
-    public List<String> getCaptions() {
+    public RealmList<String> getCaptions() {
         return captions;
     }
 
@@ -295,7 +323,9 @@ public class Article implements Serializable{
      * The image captions
      */
     public void setCaptions(List<String> captions) {
-        this.captions = captions;
+        RealmList<String> list = new RealmList<>();
+        list.addAll(captions);
+        this.captions = list;
     }
 
     /**
@@ -303,7 +333,7 @@ public class Article implements Serializable{
      * @return
      * The image bylines
      */
-    public List<String> getPhotoBylines() {
+    public RealmList<String> getPhotoBylines() {
         return photoBylines;
     }
 
@@ -313,7 +343,9 @@ public class Article implements Serializable{
      * The image captions
      */
     public void setPhotoBylines(List<String> photoBylines) {
-        this.photoBylines = photoBylines;
+        RealmList<String> list = new RealmList<>();
+        list.addAll(photoBylines);
+        this.photoBylines = list;
     }
 
     /**
@@ -322,6 +354,9 @@ public class Article implements Serializable{
      * The url
      */
     public String getUrl() {
+        if(url == null){
+            return "";
+        }
         return url;
     }
 

@@ -91,6 +91,8 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TimeZone;
 
+import io.realm.Realm;
+import io.realm.RealmList;
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -133,6 +135,8 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Realm.init(getApplicationContext());
+
         setContentView(com.pushapp.press.R.layout.activity_home);
         fragmentStack = new Stack<>();
         sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
@@ -144,7 +148,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
         appcrashed=!didUserLeft;
         if(appcrashed) {
-            clearCachedPosts();
+//            clearCachedPosts();
         }
         savePreferences(false);
 
@@ -254,8 +258,8 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
         if(sharedPreferences.getBoolean("searchClicked", false)) {
             updateViews(true);
-            Object posts = getCachedPosts("Articles");
-            ArrayList<String> categories = getCachedCategories("Categories");
+            Object posts = SyncManager.syncManager.getCachedPosts("Articles");
+            ArrayList<String> categories = SyncManager.syncManager.getCachedCategories("Categories");
             displayArticles(posts, categories);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("searchClicked",false);
@@ -289,11 +293,24 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         savePreferences(true);
     }
 
+    private void displayFromCache() {
+        Object articles = SyncManager.syncManager.getCachedPosts("Articles");
+        ArrayList<String> categories = SyncManager.syncManager.getCachedCategories("Categories");
+
+        if (articles != null) {
+            displayArticles(articles, categories);
+            if (loadNews()) {
+                checkForNewContent();
+            }
+        } else {
+            firstRun = true;
+            checkForNewContent();
+        }
+    }
+
 
     private void checkForCrashes() {
-        if(getResources().getString(R.string.hockey_key) == 32) {
-            CrashManager.register(this, getResources().getString(R.string.hockey_key), new MyCrashManagerListener());
-        }
+        //CrashManager.register(this, getResources().getString(R.string.hockey_key), new MyCrashManagerListener());
     }
 
     // Prevents this from leaking
@@ -390,119 +407,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     private void initViews() {
     }
 
-    private void displayFromCache() {
-        Object articles = getCachedPosts("Articles");
-        ArrayList<String> categories = getCachedCategories("Categories");
 
-        if(articles != null){
-            displayArticles(articles, categories);
-            if(loadNews()) {
-                checkForNewContent();
-            }
-        }else{
-            firstRun = true;
-            checkForNewContent();
-        }
-
-
-    }
-
-    public void cachePosts(String key, final Object articles) {
-        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-        if (sharedPreferences != null) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(articles);
-            editor.putString(key, json);
-            editor.apply();
-        }
-    }
-
-    public void cacheCategories(String key, final ArrayList<String> categories){
-        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-        if (sharedPreferences != null) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(categories);
-            editor.putString(key, json);
-            editor.apply();
-        }
-    }
-
-    public void clearCachedPosts() {
-        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-        if (sharedPreferences != null) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
-            editor.apply();
-        }
-    }
-
-    public Object getCachedPosts(String key) {
-        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-
-        try {
-
-            // Java type flipping is such a huge pain...
-            if (sharedPreferences != null) {
-                Gson gson = new Gson();
-                String json = sharedPreferences.getString(key, "");
-                Object tempArticles = gson.fromJson(json, Object.class);
-                if (tempArticles == null) {
-                    return null;
-                }
-
-                if (tempArticles.getClass() == ArrayList.class) {
-                    ArrayList<Article> articles = new ArrayList<Article>();
-                    for (LinkedTreeMap articleMap : (ArrayList<LinkedTreeMap>) tempArticles) {
-                        Article article = gson.fromJson(gson.toJsonTree(articleMap), Article.class);
-                        articles.add(article);
-                    }
-                    return articles;
-                } else {
-                    HashMap<String, ArrayList<Article>> articles = new HashMap<>();
-                    HashMap<String, ArrayList<LinkedTreeMap>> tempArticlesHash = gson.fromJson(gson.toJsonTree(tempArticles), HashMap.class);
-                    for (String tempKey : tempArticlesHash.keySet()) {
-                        ArrayList<LinkedTreeMap> tempArticleArray = tempArticlesHash.get(tempKey);
-                        ArrayList<Article> categoryArticles = new ArrayList<>();
-
-                        for (LinkedTreeMap articleMap : tempArticleArray) {
-                            Article article = gson.fromJson(gson.toJsonTree(articleMap), Article.class);
-                            categoryArticles.add(article);
-                        }
-                        articles.put(tempKey, categoryArticles);
-                    }
-                    return articles;
-                }
-            }
-        } catch (Exception e){
-            return null;
-        }
-        return null;
-    }
-
-    public ArrayList<String> getCachedCategories(String key) {
-        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-        ArrayList<String> categories = new ArrayList<>();
-        if (sharedPreferences != null) {
-            Gson gson = new Gson();
-            String json = sharedPreferences.getString(key, "");
-            try {
-                ArrayList<LinkedTreeMap> tempCategories = gson.fromJson(json, ArrayList.class);
-                if(tempCategories == null){
-                    return null;
-                }
-
-                for (LinkedTreeMap tempCategory : tempCategories) {
-                    categories.add(gson.fromJson(gson.toJsonTree(tempCategory), String.class));
-                }
-            } catch (Exception e) {
-                categories = gson.fromJson(json, ArrayList.class);
-            }
-        }
-
-        return categories;
-    }
 
     boolean loadNews(){
         long difference = System.currentTimeMillis()
@@ -587,7 +492,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                 tempArticles.add(0, intendedTopArticle);
             }
 
-            cachePosts("Articles", tempArticles);
+            //cachePosts("Articles", tempArticles);
 
             displayArticles(tempArticles, categories);
         } else {
@@ -634,8 +539,8 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
             articlesList = articlesListCopy;
 
-            cachePosts("Articles", articlesList);
-            cacheCategories("Categories", categories);
+            //cachePosts("Articles", articlesList);
+            //cacheCategories("Categories", categories);
 
             displayArticles(articlesList, categories);
         }
@@ -671,8 +576,8 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
         PostListAdapter mListAdapter;
         if(articles.getClass() == ArrayList.class){
-            mListAdapter = new PostListAdapter(this, R.layout.list_news_item, (ArrayList<Article>)articles);
-            mPosts = new ArrayList((ArrayList<Article>) articles);
+            mListAdapter = new PostListAdapter(this, R.layout.list_news_item, (ArrayList)articles);
+            mPosts = articles;
         } else {
             mListAdapter = new PostListAdapter(this, R.layout.list_news_item, (HashMap<String, ArrayList<Article>>)articles, categories, 5);
             mPosts = new HashMap((HashMap<String, ArrayList<Article>>)articles);

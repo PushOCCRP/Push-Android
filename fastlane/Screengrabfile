@@ -1,6 +1,6 @@
 # remove the leading '#' to uncomment lines
 
-app_package_name 'com.pushapp.madison365'
+app_package_name 'com.push.occrpnews'
 # use_tests_in_packages ['your.screenshot.tests.package']
 
 # app_apk_path 'path/to/your/app.apk'

@@ -1,6 +1,8 @@
 package com.pushapp.press.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -14,11 +16,17 @@ import com.pushapp.press.interfaces.SyncManager.ArticlesDelegate;
 import com.pushapp.press.model.Article;
 import com.pushapp.press.model.ArticlePost;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Set;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import io.realm.Sort;
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -74,9 +82,14 @@ public class SyncManager {
                     // If categories are not enabled
                     if(articlePost.getResults().getClass() == ArrayList.class){
                         ArrayList<Article> tempArticles = new ArrayList<Article>();
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
                         for (LinkedTreeMap jsonArticle : (ArrayList<LinkedTreeMap>)articlePost.getResults()) {
-                            tempArticles.add(reconstructArticleFromJSON(jsonArticle));
+                            Article article = reconstructArticleFromJSON(jsonArticle);
+                            tempArticles.add(article);
+                            realm.copyToRealmOrUpdate(article);
                         }
+                        realm.commitTransaction();
                         delegate.didRetrieveArticles(tempArticles, null, null);
                     } else {
                         HashMap<String, ArrayList<LinkedTreeMap>> categories = gson.fromJson(gson.toJsonTree(articlePost.getResults()), HashMap.class);
@@ -127,6 +140,74 @@ public class SyncManager {
             });
         }
     }
+
+    // Caching!!!
+
+
+    public Object getCachedPosts(String key) {
+//        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
+
+        try {
+            Realm realm = Realm.getDefaultInstance();
+            RealmQuery<Article> query = realm.where(Article.class);
+
+            // Java type flipping is such a huge pain...
+            RealmResults<Article> articles = query.findAll().sort("publish_date", Sort.DESCENDING);
+            ArrayList<Article> array = new ArrayList<>();
+            array.addAll(articles.subList(0,9));
+            return array;
+//            if (tempArticles.getClass() == ArrayList.class) {
+//                ArrayList<Article> articles = new ArrayList<Article>();
+//                for (LinkedTreeMap articleMap : (ArrayList<LinkedTreeMap>) tempArticles) {
+//                    Article article = gson.fromJson(gson.toJsonTree(articleMap), Article.class);
+//                    articles.add(article);
+//                }
+//                return articles;
+//            } else {
+//                HashMap<String, ArrayList<Article>> articles = new HashMap<>();
+//                HashMap<String, ArrayList<LinkedTreeMap>> tempArticlesHash = gson.fromJson(gson.toJsonTree(tempArticles), HashMap.class);
+//                for (String tempKey : tempArticlesHash.keySet()) {
+//                    ArrayList<LinkedTreeMap> tempArticleArray = tempArticlesHash.get(tempKey);
+//                    ArrayList<Article> categoryArticles = new ArrayList<>();
+//
+//                    for (LinkedTreeMap articleMap : tempArticleArray) {
+//                        Article article = gson.fromJson(gson.toJsonTree(articleMap), Article.class);
+//                        categoryArticles.add(article);
+//                    }
+//                    articles.put(tempKey, categoryArticles);
+//                }
+//                return articles;
+//            }
+            //}
+        } catch (Exception e){
+            return null;
+        }
+        //return null;
+    }
+
+    public ArrayList<String> getCachedCategories(String key) {
+//        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
+        ArrayList<String> categories = new ArrayList<>();
+//        if (sharedPreferences != null) {
+//            Gson gson = new Gson();
+//            String json = sharedPreferences.getString(key, "");
+//            try {
+//                ArrayList<LinkedTreeMap> tempCategories = gson.fromJson(json, ArrayList.class);
+//                if(tempCategories == null){
+//                    return null;
+//                }
+//
+//                for (LinkedTreeMap tempCategory : tempCategories) {
+//                    categories.add(gson.fromJson(gson.toJsonTree(tempCategory), String.class));
+//                }
+//            } catch (Exception e) {
+//                categories = gson.fromJson(json, ArrayList.class);
+//            }
+//        }
+
+        return categories;
+    }
+
 
 
 

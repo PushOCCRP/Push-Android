@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--<uses-permission android:name="com.njnewscommons.route40.permission.C2D_MESSAGE" />-->
+    <!--<uses-permission android:name="com.pushapp.press.permission.C2D_MESSAGE" />-->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
     <!--<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />-->
@@ -26,7 +26,7 @@
 
 
     <application
-        android:name="com.njnewscommons.route40.PushApplication"
+        android:name="com.pushapp.press.PushApplication"
         android:allowBackup="true"
         android:largeHeap="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,12 +37,12 @@
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.njnewscommons.route40.AboutActivity"
+            android:name="com.pushapp.press.AboutActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.njnewscommons.route40.DetailPostActivity"
+            android:name="com.pushapp.press.DetailPostActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme"
             android:screenOrientation="portrait"
@@ -50,23 +50,23 @@
             android:parentActivityName=".HomeActivity">
         </activity>
         <activity
-            android:name="com.njnewscommons.route40.CategoryActivity"
+            android:name="com.pushapp.press.CategoryActivity"
             android:label="@string/app_name"
             android:theme="@style/MyMaterialTheme"
         />
         <activity
-            android:name="com.njnewscommons.route40.YouTubeActivity"
+            android:name="com.pushapp.press.YouTubeActivity"
             android:label="YouTube Player"
             android:theme="@style/MyMaterialTheme"
         />
         <activity
-            android:name="com.njnewscommons.route40.NotificationHandler"
+            android:name="com.pushapp.press.NotificationHandler"
             android:label="@string/title_activity_detail_post"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.njnewscommons.route40.HomeActivity"
+            android:name="com.pushapp.press.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Toolbar" >
             <intent-filter>
@@ -77,21 +77,21 @@
         </activity>
 
         <service
-            android:name="com.njnewscommons.route40.util.gcm.IDListenerService">
+            android:name="com.pushapp.press.util.gcm.IDListenerService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name="com.njnewscommons.route40.util.gcm.ListenerService">
+            android:name="com.pushapp.press.util.gcm.ListenerService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:name="com.njnewscommons.route40.util.gcm.RegistrationIntentService"
+            android:name="com.pushapp.press.util.gcm.RegistrationIntentService"
             android:exported="false">
         </service>
 

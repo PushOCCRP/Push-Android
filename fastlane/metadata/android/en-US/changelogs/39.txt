@@ -1,0 +1,1 @@
+This versions smooths out story rendering and makes inline images a lot better looking.
