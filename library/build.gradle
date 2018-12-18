@@ -18,5 +18,6 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:18.+'
+    compile 'com.android.support:support-v4.+'
+    implementation 'com.clostra.newnode:newnode:+'
 }

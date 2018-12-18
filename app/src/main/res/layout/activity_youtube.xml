@@ -5,19 +5,13 @@
     android:layout_width="match_parent"
     tools:context=".YouTubeActivity">
 
-    <LinearLayout
+    <com.google.android.youtube.player.YouTubePlayerView
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:id="@+id/youtube_view">
 
-        <fragment android:name="com.pushapp.press.fragment.YouTubeFragment"
-            android:id="@+id/fragment_youtube"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_youtube" />
-
-    </LinearLayout>
+    </com.google.android.youtube.player.YouTubePlayerView>
 
 
 </FrameLayout>

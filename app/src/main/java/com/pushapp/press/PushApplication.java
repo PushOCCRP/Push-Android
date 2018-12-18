@@ -12,6 +12,7 @@ import com.pushapp.press.util.Language;
 import com.pushapp.press.util.NotificationManager;
 import com.pushapp.press.util.SyncManager;
 import com.pushapp.press.util.Foreground;
+import com.clostra.newnode.NewNode;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -26,7 +27,7 @@ public class PushApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-
+        NewNode.init();
         Foreground.init(this);
 
         ImageQueueSingleton.getInstance(this);
@@ -45,7 +46,7 @@ public class PushApplication extends Application {
 
         Intent i = new Intent(this, HomeActivity.class);
         i.putExtra("is_notification", true);
-        //otification.DefaultNotificationHandler.onNotificationClickIntent(i, Notification.DefaultNotificationHandler.NotificationType.plain);
+        //Notification.DefaultNotificationHandler.onNotificationClickIntent(i, Notification.DefaultNotificationHandler.NotificationType.plain);
         //Notification.DefaultNotificationHandler.onNotificationClickIntent(i, Notification.DefaultNotificationHandler.NotificationType.media);
 
         //PushClient.start();

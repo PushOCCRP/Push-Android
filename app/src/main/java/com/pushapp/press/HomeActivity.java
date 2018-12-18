@@ -55,6 +55,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
+import com.pushapp.press.model.Category;
 import com.pushapp.press.util.AuthenticationManager;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.google.gson.Gson;
@@ -81,6 +82,7 @@ import com.pushapp.press.util.SettingsManager;
 import com.pushapp.press.util.SyncManager;
 import com.pushapp.press.interfaces.SyncManager.ArticlesDelegate;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -92,6 +94,7 @@ import java.util.Stack;
 import java.util.TimeZone;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -136,6 +139,10 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         super.onCreate(savedInstanceState);
 
         Realm.init(getApplicationContext());
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(config);
 
         setContentView(com.pushapp.press.R.layout.activity_home);
         fragmentStack = new Stack<>();
@@ -168,7 +175,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             Language.addListener(this);
         }
         mListView = (ObservableListView) findViewById(R.id.mList);
-        initViews();
+
         mListView.setBackgroundColor(Color.WHITE);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -259,8 +266,12 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         if(sharedPreferences.getBoolean("searchClicked", false)) {
             updateViews(true);
             Object posts = SyncManager.syncManager.getCachedPosts("Articles");
-            ArrayList<String> categories = SyncManager.syncManager.getCachedCategories("Categories");
-            displayArticles(posts, categories);
+            ArrayList<Category> categories = SyncManager.syncManager.getCachedCategories("Categories");
+            ArrayList<String> tempCategories= new ArrayList<String>();
+            for(Category c : categories){
+                tempCategories.add(c.getCategory());
+            }
+            displayArticles(posts, tempCategories);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("searchClicked",false);
             editor.commit();
@@ -295,10 +306,14 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
 
     private void displayFromCache() {
         Object articles = SyncManager.syncManager.getCachedPosts("Articles");
-        ArrayList<String> categories = SyncManager.syncManager.getCachedCategories("Categories");
+        ArrayList<Category> categories = SyncManager.syncManager.getCachedCategories("Categories");
+        ArrayList<String> tempCategories= new ArrayList<String>();
+        for(Category c : categories){
+            tempCategories.add(c.getCategory());
+        }
 
         if (articles != null) {
-            displayArticles(articles, categories);
+            displayArticles(articles, tempCategories);
             if (loadNews()) {
                 checkForNewContent();
             }
@@ -404,8 +419,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         restAPI = restAdapter.create(RestApi.class);
     }
 
-    private void initViews() {
-    }
+
 
 
 
@@ -442,6 +456,9 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                     downloadProgressView.setVisibility(View.VISIBLE);
                 }
             }
+
+
+
 
             mSwipeRefreshLayout.setRefreshing(true);
             SyncManager.getSyncManager().articles(this, this);

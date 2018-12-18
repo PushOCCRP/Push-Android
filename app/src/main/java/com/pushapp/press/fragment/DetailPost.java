@@ -129,7 +129,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
         RealmList<PushVideo> videos = postItem.getVideos();
         if(videos.size() > 0){
-            fragment.postVideoIds.add(videos.get(0).youtubeId);
+            fragment.postVideoIds.add(videos.get(0).youtube_id);
         }
 
         fragment.postAuthor = postItem.getAuthor();

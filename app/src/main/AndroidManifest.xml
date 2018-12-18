@@ -56,6 +56,7 @@
         />
         <activity
             android:name="com.pushapp.press.YouTubeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="YouTube Player"
             android:theme="@style/MyMaterialTheme"
         />

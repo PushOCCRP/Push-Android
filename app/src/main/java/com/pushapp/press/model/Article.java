@@ -1,5 +1,7 @@
 package com.pushapp.press.model;
 
+import android.media.Image;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -26,7 +28,7 @@ public class Article extends RealmObject implements Serializable{
     private String body;
     @SerializedName("publish_date")
     @Expose
-    private Integer publishDate;
+    private String publishDate;
     @Expose
     private String author;
     @Expose
@@ -41,7 +43,7 @@ public class Article extends RealmObject implements Serializable{
     private RealmList<PushImage> images = new RealmList<>();
     @Expose
     @SerializedName("videos")
-    private RealmList<PushVideo> videos = new RealmList<PushVideo>();
+    private RealmList<PushVideo> videos = new RealmList<>();
     @Expose
     @PrimaryKey
     private String id;
@@ -117,7 +119,7 @@ public class Article extends RealmObject implements Serializable{
      * @return
      * The publishDate
      */
-    public Integer getPublishDate() {
+    public String getPublishDate() {
         return publishDate;
     }
 
@@ -126,7 +128,7 @@ public class Article extends RealmObject implements Serializable{
      * @param publishDate
      * The publish_date
      */
-    public void setPublishDate(Integer publishDate) {
+    public void setPublishDate(String publishDate) {
         this.publishDate = publishDate;
     }
 
@@ -235,12 +237,23 @@ public class Article extends RealmObject implements Serializable{
         //return header_image;
     }
 
+    public RealmList<PushImage> getImages() {
+        return images;
+    }
+
+    public void setImages(RealmList<PushImage> images) {
+        this.images = images;
+    }
+
+
+
+
     /**
      *
-     * @param images
+    // * @param images
      * The images
      */
-    public void setImages(List<HashMap<String, String>> images) {
+    /*public void setImages(List<HashMap<String, String>> images) {
 
         RealmList<PushImage> pushImages = new RealmList<PushImage>();
         for (HashMap<String, String> image: images) {
@@ -264,7 +277,7 @@ public class Article extends RealmObject implements Serializable{
      * @return
      * The images
      */
-    public RealmList<PushImage> getImages() {
+   /* public RealmList<PushImage> getImages() {
         return images;
     }
 

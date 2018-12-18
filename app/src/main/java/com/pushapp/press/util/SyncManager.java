@@ -7,7 +7,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.internal.LinkedTreeMap;
 import com.pushapp.press.R;
 import com.pushapp.press.interfaces.RestApi;
@@ -15,15 +25,24 @@ import com.pushapp.press.interfaces.SyncManager.ArticleDelegate;
 import com.pushapp.press.interfaces.SyncManager.ArticlesDelegate;
 import com.pushapp.press.model.Article;
 import com.pushapp.press.model.ArticlePost;
+import com.pushapp.press.model.Category;
+import com.pushapp.press.model.PushImage;
+import com.pushapp.press.model.PushVideo;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -32,6 +51,8 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import static com.crashlytics.android.core.CrashlyticsCore.TAG;
 
 /**
  * Created by christopher on 7/13/16.
@@ -92,17 +113,63 @@ public class SyncManager {
                         realm.commitTransaction();
                         delegate.didRetrieveArticles(tempArticles, null, null);
                     } else {
-                        HashMap<String, ArrayList<LinkedTreeMap>> categories = gson.fromJson(gson.toJsonTree(articlePost.getResults()), HashMap.class);
+
+                       Gson gson1 = new GsonBuilder()
+                                .setExclusionStrategies(new ExclusionStrategy() {
+                                    @Override
+                                    public boolean shouldSkipField(FieldAttributes f) {
+                                        return f.getDeclaringClass().equals(RealmObject.class);
+                                    }
+
+                                    @Override
+                                    public boolean shouldSkipClass(Class<?> clazz) {
+                                        return false;
+                                    }
+                                })
+                                .registerTypeAdapter(Article.class, new ArticleSerializer())
+                                .registerTypeAdapter(PushImage.class, new PushImageSerializer())
+                                .registerTypeAdapter(PushVideo.class, new PushVideoSerializer())
+                                .create();
+
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+
+                        HashMap<String, ArrayList<LinkedTreeMap>> categories = gson1.fromJson(gson1.toJsonTree(articlePost.getResults()), HashMap.class);
+
+
+
 
                         for (String tempArrayListKey : categories.keySet()) {
                             //Now we need to cycle through each hash key and add it back to the list
+                            //Category category = reconstructCategoryFromJSON(categories.get(tempArrayListKey));
+                            //category.setCategory(tempArrayListKey);
+                            //category.setLanguage((String) categories.get(tempArrayListKey).get(0).get("language"));
+
+                            //Log.i("categorie",categories.get(tempArrayListKey).toString());
+                            RealmList<Article> tempArticles = new RealmList<>();
 
                             ArrayList<LinkedTreeMap> categoryList = (ArrayList<LinkedTreeMap>) categories.get(tempArrayListKey);
+                            for (LinkedTreeMap jsonArticle : (ArrayList<LinkedTreeMap>)categories.get(tempArrayListKey)) {
+                                Article article = reconstructArticleFromJSON(jsonArticle);
+                                tempArticles.add(article);
+
+                            }
+
+                            Category category = new Category(tempArrayListKey,"en",tempArticles);
+                            realm.copyToRealmOrUpdate(category);
 
 
-                            ArrayList<Article> tempArticles = reconstructArticleArrayFromJSON(categoryList);
-                            articles.put(tempArrayListKey, tempArticles);
+                            ArrayList<Article> tempArticles1 = reconstructArticleArrayFromJSON(categoryList);
+                            articles.put(tempArrayListKey, tempArticles1);
+                           // Category category = new Category(tempArrayListKey,"en",articles);
+                            //realm.copyToRealmOrUpdate(category);
+
                         }
+                        realm.commitTransaction();
+
+                        Log.i("Realm", realm.getPath());
+
+
                         delegate.didRetrieveArticles(articles, articlePost.getCategories(), null);
                     }
                 }
@@ -114,6 +181,16 @@ public class SyncManager {
             });
         }
     }
+
+    public void logLargeString(String str) {
+        if(str.length() > 3000) {
+            Log.i(TAG, str.substring(0, 3000));
+            logLargeString(str.substring(3000));
+        } else {
+            Log.i(TAG, str); // continuation
+        }
+    }
+
 
     public void articleForId(String article_id, Context context, final ArticleDelegate delegate){
         if(Online()){
@@ -156,56 +233,27 @@ public class SyncManager {
             ArrayList<Article> array = new ArrayList<>();
             array.addAll(articles.subList(0,9));
             return array;
-//            if (tempArticles.getClass() == ArrayList.class) {
-//                ArrayList<Article> articles = new ArrayList<Article>();
-//                for (LinkedTreeMap articleMap : (ArrayList<LinkedTreeMap>) tempArticles) {
-//                    Article article = gson.fromJson(gson.toJsonTree(articleMap), Article.class);
-//                    articles.add(article);
-//                }
-//                return articles;
-//            } else {
-//                HashMap<String, ArrayList<Article>> articles = new HashMap<>();
-//                HashMap<String, ArrayList<LinkedTreeMap>> tempArticlesHash = gson.fromJson(gson.toJsonTree(tempArticles), HashMap.class);
-//                for (String tempKey : tempArticlesHash.keySet()) {
-//                    ArrayList<LinkedTreeMap> tempArticleArray = tempArticlesHash.get(tempKey);
-//                    ArrayList<Article> categoryArticles = new ArrayList<>();
 //
-//                    for (LinkedTreeMap articleMap : tempArticleArray) {
-//                        Article article = gson.fromJson(gson.toJsonTree(articleMap), Article.class);
-//                        categoryArticles.add(article);
-//                    }
-//                    articles.put(tempKey, categoryArticles);
-//                }
-//                return articles;
-//            }
-            //}
         } catch (Exception e){
             return null;
         }
         //return null;
     }
 
-    public ArrayList<String> getCachedCategories(String key) {
-//        sharedPreferences = getSharedPreferences("preferences", Activity.MODE_PRIVATE);
-        ArrayList<String> categories = new ArrayList<>();
-//        if (sharedPreferences != null) {
-//            Gson gson = new Gson();
-//            String json = sharedPreferences.getString(key, "");
-//            try {
-//                ArrayList<LinkedTreeMap> tempCategories = gson.fromJson(json, ArrayList.class);
-//                if(tempCategories == null){
-//                    return null;
-//                }
-//
-//                for (LinkedTreeMap tempCategory : tempCategories) {
-//                    categories.add(gson.fromJson(gson.toJsonTree(tempCategory), String.class));
-//                }
-//            } catch (Exception e) {
-//                categories = gson.fromJson(json, ArrayList.class);
-//            }
-//        }
+    public ArrayList<Category> getCachedCategories(String key) {
+      try {
+            Realm realm = Realm.getDefaultInstance();
+            RealmQuery<Category> query = realm.where(Category.class);
 
-        return categories;
+            // Java type flipping is such a huge pain...
+            RealmResults<Category> categories = query.findAll();//.sort("publish_date", Sort.DESCENDING);
+            ArrayList<Category> array = new ArrayList<Category>();
+           array.addAll(categories);
+            return array;
+
+       } catch (Exception e){
+            return null;
+        }
     }
 
 
@@ -252,18 +300,63 @@ public class SyncManager {
     }
 
     private Article reconstructArticleFromJSON(LinkedTreeMap json) {
-        Gson gson = gson();
+        Gson gson  = new GsonBuilder().serializeNulls()
+                .setExclusionStrategies(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes f) {
+                        return f.getDeclaringClass().equals(RealmObject.class);
 
-        Article article = gson.fromJson(gson.toJsonTree(json), Article.class);
+                    }
+
+                    @Override
+                    public boolean shouldSkipClass(Class<?> clazz) {
+                        return false;
+                    }
+                })
+                .registerTypeAdapter(Article.class, new ArticleSerializer())
+                .registerTypeAdapter(PushImage.class, new PushImageSerializer())
+                .registerTypeAdapter(PushVideo.class, new PushVideoSerializer())
+                .registerTypeAdapter(String.class, new StringConverter())
+                .create();
+
+        Article articleTest = new Article();
+        try {
+            String gsonTest = gson.toJson(json);
+
+             articleTest = gson.fromJson(gsonTest, Article.class);
+        }catch (Exception e){
+            Log.e("exception",e.getLocalizedMessage());
+        }
+       Article article =gson.fromJson(gson.toJson(json),Article.class);
+
         return article;
     }
 
+
     private Gson gson(){
         if(this.gson == null){
-            this.gson = new Gson();
+            this.gson = new GsonBuilder()
+                    .setExclusionStrategies(new ExclusionStrategy() {
+                        @Override
+                        public boolean shouldSkipField(FieldAttributes f) {
+                            return f.getDeclaringClass().equals(RealmObject.class);
+                        }
+
+                        @Override
+                        public boolean shouldSkipClass(Class<?> clazz) {
+                            return false;
+                        }
+                    })
+                    .registerTypeAdapter(Article.class, new ArticleSerializer())
+                    .registerTypeAdapter(PushImage.class, new PushImageSerializer())
+                    .registerTypeAdapter(PushVideo.class, new PushVideoSerializer())
+                    .create();
+            gson.serializeNulls();
         }
 
         return this.gson;
     }
 
 }
+
+
