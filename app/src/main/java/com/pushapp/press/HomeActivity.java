@@ -89,6 +89,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 import java.util.TimeZone;
@@ -143,6 +144,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(config);
+
 
         setContentView(com.pushapp.press.R.layout.activity_home);
         fragmentStack = new Stack<>();
@@ -281,7 +283,9 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
             handleMenuSearch();
         }
 
+       // setContentView(com.pushapp.press.R.layout.activity_home);
         //throw new RuntimeException("This is a crash");
+
 
     }
 
@@ -308,12 +312,35 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         Object articles = SyncManager.syncManager.getCachedPosts("Articles");
         ArrayList<Category> categories = SyncManager.syncManager.getCachedCategories("Categories");
         ArrayList<String> tempCategories= new ArrayList<String>();
-        for(Category c : categories){
-            tempCategories.add(c.getCategory());
+        HashMap<String, ArrayList<Article>> tempArticles = new HashMap<String, ArrayList<Article>>();
+
+        Locale locale = Language.getLanguage(this.getApplicationContext());
+
+        String language = this.getApplicationContext().getString(R.string.default_language);
+
+        if(locale != null) {
+            language = locale.getLanguage();
+        }
+        if (language.equals("tg")){
+            language = "tj";
         }
 
-        if (articles != null) {
-            displayArticles(articles, tempCategories);
+        for(Category c : categories){
+
+            tempCategories.add(c.getCategory());
+            ArrayList<Article> temp = new ArrayList<Article>();
+            temp.addAll(c.getArticles());
+            tempArticles.put(c.getCategory(), temp);
+
+
+        }
+
+
+
+        if (articles != null  ) {
+            displayArticles(tempArticles , tempCategories);
+
+
             if (loadNews()) {
                 checkForNewContent();
             }
@@ -592,7 +619,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         final Object mPosts;
 
         PostListAdapter mListAdapter;
-        if(articles.getClass() == ArrayList.class){
+        if(articles.getClass() == ArrayList.class && categories == null){
             mListAdapter = new PostListAdapter(this, R.layout.list_news_item, (ArrayList)articles);
             mPosts = articles;
         } else {
@@ -616,7 +643,53 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                     Object selectedItem = mListAdapter.getItemAtPosition(position);
                     if(selectedItem.getClass() == String.class){
                         Intent i = new Intent(getApplicationContext(), CategoryActivity.class);
-                        i.putExtra("articles", mListAdapter.getArticlesForCategory((String)selectedItem));
+
+                        ArrayList<Article> temp = mListAdapter.getArticlesForCategory((String)selectedItem);
+                        //i.putExtra("articles", temp);
+                        i.putExtra("category_name", (String)selectedItem);
+
+                        startActivity(i);
+                        return;
+                    } else {
+                        Article article = (Article) selectedItem;
+                        Intent i = new Intent(HomeActivity.this, DetailPostActivity.class);
+
+                        i.putExtra("postPosition", mListAdapter.items(false).indexOf(selectedItem));
+                        i.putExtra("postTitle", article.getHeadline());
+                        i.putExtra("description", article.getDescription());
+
+                        startActivity(i);
+                        AnalyticsManager.logContentView(article.getHeadline(),
+                                "Article Opened", article.getId());
+                    }
+                }
+            }
+
+        });
+    }
+
+
+
+    private void displayArticlesFromRealm( final Object articles, ArrayList<String> categories)  {
+        PostListAdapter mListAdapter;
+
+        mListAdapter = new PostListAdapter(this, R.layout.list_news_item);
+
+        this.mListView.setAdapter(mListAdapter);
+        mListAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(!isSearchOpened) {
+                    Object selectedItem = mListAdapter.getItemAtPosition(position);
+                    if(selectedItem.getClass() == String.class){
+                        Intent i = new Intent(getApplicationContext(), CategoryActivity.class);
+
+                        ArrayList<Article> temp = mListAdapter.getArticlesForCategory((String)selectedItem);
+                        //i.putExtra("articles", temp);
                         i.putExtra("category_name", (String)selectedItem);
 
                         startActivity(i);
@@ -700,6 +773,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     @Override
     public void onBackPressed() {
 
+        super.onBackPressed();
 
         Fragment frag = getSupportFragmentManager().findFragmentByTag("Fragment");
         if(frag != null) {
@@ -864,8 +938,17 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         findViewById(com.pushapp.press.R.id.searchProgress).setVisibility(View.VISIBLE);
         ((TextView)findViewById(com.pushapp.press.R.id.searchResults)).setText(getString(com.pushapp.press.R.string.searching));
 
+
+
+
+        String language = Language.getLanguage(this).getLanguage();
+
+        if (language == "tg"){
+            language = "tj";
+        }
+
         String apiKey = AuthenticationManager.getAuthenticationManager().apiKey(getApplicationContext());
-        restAPI.searchArticles(AnalyticsManager.installationUUID(this).toString(), apiKey, searchString, 20150501, 20150505, 2, 5, Language.getLanguage(this).getLanguage(), new Callback<ArticlePost>() {
+        restAPI.searchArticles(AnalyticsManager.installationUUID(this).toString(), apiKey, searchString, 20150501, 20150505, 2, 5, language, new Callback<ArticlePost>() {
             @Override
             public void success(final ArticlePost articlePost, Response response) {
                 ArrayList<Article> results = (ArrayList<Article>)articlePost.getResults();

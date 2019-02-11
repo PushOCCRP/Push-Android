@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Asia-Plus</string>
+
+        <string name="action_settings">Танзим</string>
+        <string name="action_refresh">Навкунӣ</string>
+        <string name="action_search">Ҷустуҷӯ</string>
+        <string name="drawer_open">Боз кардан</string>
+        <string name="drawer_close">Пӯшидан</string>
+
+        <string name="nav_item_home">Домой</string>
+        <string name="nav_item_donate">Хайр кардан</string>
+        <string name="nav_item_about">Дар бораи</string>
+
+        <!-- navigation drawer item labels  -->
+        <string-array name="nav_drawer_labels">
+            <item>@string/nav_item_home</item>
+            <item>@string/nav_item_donate</item>
+            <item>@string/nav_item_about</item>
+        </string-array>
+
+        <!-- navigation drawer item labels  -->
+        <string-array name="nav_drawer_icons">
+            <item>R.id.ic_home_black_24dp</item>
+            <item>R.id.ic_account_circle_white</item>
+            <item>R.id.ic_account_circle_white</item>
+        </string-array>
+
+        <string name="title_home">Хона</string>
+        <string name="title_item_one">Хайр кардан</string>
+        <string name="title_item_two">Дар бораи</string>
+        <string name="main_screen_cel_date_string">Сана</string>
+        <string name="share_via">Ба дигарон фиристодан</string>
+
+        <!-- push notification labels -->
+        <string name="notification_header">Паёми нав</string>
+        <string name="notification_cancel_button">Лағв кардан</string>
+        <string name="notification_read_button">Хондан</string>
+
+
+
+        <string name="hello_world">Салом дунё!</string>
+        <string name="title_activity_home">Хона</string>
+
+        <string name="nothing"></string>
+        <string name="clock">Соат</string>
+        <string name="timePlaceholder">40 дақиқа пеш Ҷон Сми</string>
+        <string name="title_about">Дар бораи</string>
+        <string name="donate_description">Ба мо кӯмак кунед, то рушд намуда, ба шумо хабарҳои тоза пешкаш кунем. Кӯмаки молии шумо барои хариди таҷҳизоти беҳтар ҷиҳати пахши бидуни таваққуф равона мегардад.</string>
+        <string name="amount_label">Теъдод</string>
+        <string name="donate_confirmation_prompt">Мехоҳед кӯмак кунед? </string>
+        <string name="donate_button_label">Хайр кардан</string>
+        <string name="logout_button_label">Баромадан</string>
+        <string name="enter_valid_amount">Лутфан, шумораи дурустро ворид намоед.</string>
+        <string name="thankyou_for_the_donation">Ташаккур барои кӯмакатон!</string>
+        <string name="news_category">Маҳаллӣ</string>
+        <string name="title_activity_search_results">Натиҷаи ҷустуҷӯ</string>
+        <string name="menu_search">Ҷустуҷӯ</string>
+        <string name="menu_about">Дар бораи мо</string>
+        <string name="search_box_hint">Инҷо чоп кунед</string>
+        <string name="search_results">Натиҷаи ҷустуҷӯ</string>
+        <string name="searching">Ҷустуҷӯ</string>
+        <string name="recent_results">Натиҷаи ҷустуҷӯ</string>
+        <string name="action_share">Ба дигарон фиристед</string>
+        <string name="no_search_results">Натиҷа нест</string>
+
+        <string name="choose_language">Интихоби забон</string>
+        <string name="ok">Ок</string>
+        <string name="cancel">Бекор кардан</string>
+
+        <string name="player_error">Хато дар боз намудани YouTube</string>
+        <string name="seek_to">Гузаштан ба</string>
+        <string name="seek_to_hint">Сонияҳо</string>
+        <string name="video_button">Навор</string>
+
+        <string name="by">Бо</string>
+        <string name="hours_ago">соате қабл</string>
+        <string name="just_now">Ҳоло</string>
+        <string name="minutes_ago">дақиқае қабл</string>
+        <string name="yesterday">Дирӯз</string>
+        <string name="three_day_ago">3 рӯз қабл</string>
+
+        <string name="language">Забон</string>
+
+        <string name="back">Бозгашт</string>
+        <string name="title_activity_login">Вуруд</string>
+
+        <!-- Strings related to login -->
+        <string name="prompt_email">Почтаи электронӣ</string>
+        <string name="prompt_password">Гузарвожа</string>
+        <string name="action_sign_in">Вуруд</string>
+        <string name="action_sign_in_short">Вуруд</string>
+        <string name="error_invalid_email">Суроғаи почтаи электронӣ хато аст</string>
+        <string name="error_invalid_password">Гузарвожа кӯтоҳ аст</string>
+        <string name="error_incorrect_password"> Гузарвожа нодуруст аст</string>
+        <string name="error_field_required">Пуркунии ин сатр ҳатмӣ аст</string>
+
+
+</resources>

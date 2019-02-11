@@ -16,8 +16,14 @@ import android.view.WindowManager;
 import com.pushapp.press.fragment.CategoryFragment;
 import com.pushapp.press.interfaces.CategoryFragmentInterface;
 import com.pushapp.press.model.Article;
+import com.pushapp.press.model.Category;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 /**
  * Created by christopher on 10/29/16.
@@ -26,7 +32,7 @@ import java.util.ArrayList;
 public class CategoryActivity extends AppCompatActivity implements CategoryFragmentInterface {
     private Toolbar mToolbar;
 
-    private ArrayList<Article> articles;
+    public ArrayList<Article> articles;
 
     @Override
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -57,6 +63,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryFragm
         Intent i = this.getIntent();
         getSupportActionBar().setTitle((String)i.getExtras().get("category_name"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        articles = getArticles();
     }
 
     @Override
@@ -83,6 +90,22 @@ public class CategoryActivity extends AppCompatActivity implements CategoryFragm
     }
 
     public ArrayList<Article> getArticles(){
-        return articles;
+        Realm realm = Realm.getDefaultInstance();
+        Intent i = this.getIntent();
+        Category query = realm.where(Category.class).equalTo("category",(String)i.getExtras().get("category_name")).findFirst();
+
+
+        //RealmQuery<Category> category = query.equalTo("category",(String)i.getExtras().get("category_name"));
+
+
+        RealmList<Article> temps =  query.getArticles();
+        ArrayList<Article> tempsArray = new ArrayList<Article>();
+
+        for (Article article : temps ){
+            tempsArray.add(article);
+        }
+
+        return tempsArray;
+
     }
 }

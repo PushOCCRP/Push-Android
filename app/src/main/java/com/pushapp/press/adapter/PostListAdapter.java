@@ -21,6 +21,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
 import com.pushapp.press.HomeActivity;
 import com.pushapp.press.interfaces.CacheManager.ImageCacheDelegate;
+import com.pushapp.press.model.Category;
 import com.pushapp.press.util.DateUtil;
 import com.pushapp.press.R;
 import com.pushapp.press.model.Article;
@@ -33,6 +34,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 
 /**
@@ -258,7 +265,19 @@ public class PostListAdapter extends ArrayAdapter<Article> implements ImageCache
 
     public PostListAdapter(Context context, int layout) {
         super(context, layout);
-        this.setInitialVariables(context, layout, categories, 0);
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Category> query = realm.where(Category.class);
+
+        Log.d("", "path: " + realm.getPath());
+        // Java type flipping is such a huge pain...
+        RealmResults<Category> categories = query.findAll();
+        ArrayList<Article> array = new ArrayList<>();
+        this.itemsList = categories.get(0).getArticles();
+
+
+
+        this.setInitialVariables(context, layout, categories, 5);
     }
 
     public PostListAdapter(Context context, int layout, ArrayList<Article> items) {

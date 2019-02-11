@@ -90,13 +90,26 @@ public class SyncManager {
             if(locale != null) {
                 language = locale.getLanguage();
             }
+            if (language == "tg"){
+                language = "tj";
+            }
 
             String apiKey = AuthenticationManager.getAuthenticationManager().apiKey(this.applicationContext);
+
             restAPI.getArticles(AnalyticsManager.installationUUID(context).toString(), apiKey, language, true, new Callback<ArticlePost>() {
                 @Override
                 public void success(ArticlePost articlePost, Response response) {
                     //There's a bunch of type juggling here because of the nested nature of it all
                     Gson gson = gson();
+                    Locale locale = Language.getLanguage(context);
+
+                    String language = context.getString(R.string.default_language);
+                    if(locale != null) {
+                        language = locale.getLanguage();
+                    }
+                    if (language == "tg"){
+                        language = "tj";
+                    }
 
                     HashMap<String, ArrayList<Article>> articles = new HashMap<String, ArrayList<Article>>();
 
@@ -155,7 +168,7 @@ public class SyncManager {
 
                             }
 
-                            Category category = new Category(tempArrayListKey,"en",tempArticles);
+                            Category category = new Category(tempArrayListKey,language,tempArticles);
                             realm.copyToRealmOrUpdate(category);
 
 
@@ -228,8 +241,9 @@ public class SyncManager {
             Realm realm = Realm.getDefaultInstance();
             RealmQuery<Article> query = realm.where(Article.class);
 
+            Log.d("", "path: " + realm.getPath());
             // Java type flipping is such a huge pain...
-            RealmResults<Article> articles = query.findAll().sort("publish_date", Sort.DESCENDING);
+            RealmResults<Article> articles = query.findAll().sort("publishDate", Sort.DESCENDING);
             ArrayList<Article> array = new ArrayList<>();
             array.addAll(articles.subList(0,9));
             return array;

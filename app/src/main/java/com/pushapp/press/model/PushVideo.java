@@ -1,5 +1,6 @@
 package com.pushapp.press.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import io.realm.RealmObject;

@@ -209,11 +209,11 @@ public class Article extends RealmObject implements Serializable{
      * @param headerImage
      * The header_image
      */
-    public void setHeaderImage(PushImage headerImage) {
-
-        this.header_image = headerImage;
+    public void setHeaderImage(HashMap<String, String> headerImage) {
+        PushImage image = PushImage.image(headerImage);
+        this.header_image = image;
         RealmList<PushImage> images = this.getImages();
-        if(images.size() > 0 && headerImage != null && images.get(0).url == headerImage.url){
+        if(images.size() > 0 && image != null && images.get(0).url == image.url){
             images.remove(0);
             this.setImages(images);
         }
@@ -225,11 +225,10 @@ public class Article extends RealmObject implements Serializable{
      * The images
      */
     public PushImage getHeaderImage() {
-
         if(header_image != null && header_image.url != null) {
             return header_image;
         }else{
-            setHeaderImage(getImages().first());
+            setHeaderImage(getImages().first().getHashMap());
         }
 
         if(images.size() > 0){

@@ -1,6 +1,9 @@
 package com.pushapp.press.model;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.RealmList;
@@ -36,9 +39,9 @@ public class Category extends RealmObject {
     }
 
     @PrimaryKey
-    private String category;
-    private String language;
-    private RealmList<Article> articles;
+    public String category;
+    public String language;
+    public RealmList<Article> articles;
 
     public Category(){}
 
@@ -47,6 +50,5 @@ public class Category extends RealmObject {
         this.language = language;
         this.articles = articles;
     }
-
 
 }
