@@ -29,7 +29,19 @@ public class ArticlePost implements Serializable {
         private Object results = new Object();
 
         @Expose
+        private Object categoriesOrder = new Object();
+
+        @Expose
         private ArrayList<String> categories;
+
+
+        public Object getCategoriesOrder() {
+                return categoriesOrder;
+        }
+
+        public void setCategoriesOrder(Object categoriesOrder) {
+                this.categoriesOrder = categoriesOrder;
+        }
 
         /**
          *

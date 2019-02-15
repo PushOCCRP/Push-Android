@@ -38,17 +38,27 @@ public class Category extends RealmObject {
         this.articles = articles;
     }
 
+    public String getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(String orderIndex) {
+        this.orderIndex = orderIndex;
+    }
+
     @PrimaryKey
     public String category;
     public String language;
+    public String orderIndex;
     public RealmList<Article> articles;
 
     public Category(){}
 
-    public Category(String category, String language, RealmList<Article> articles){
+    public Category(String category, String language, RealmList<Article> articles, String orderIndex){
         this.category = category;
         this.language = language;
         this.articles = articles;
+        this.orderIndex = orderIndex;
     }
 
 }

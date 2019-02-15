@@ -149,7 +149,8 @@ public class SyncManager {
 
                         HashMap<String, ArrayList<LinkedTreeMap>> categories = gson1.fromJson(gson1.toJsonTree(articlePost.getResults()), HashMap.class);
 
-
+                        HashMap<String, String> categoriesOrder = gson1.fromJson(gson1.toJsonTree(articlePost.getCategoriesOrder()), HashMap.class);
+                        //Log.i("categorie",categories.get(categoriesOrder).toString());
 
 
                         for (String tempArrayListKey : categories.keySet()) {
@@ -168,7 +169,9 @@ public class SyncManager {
 
                             }
 
-                            Category category = new Category(tempArrayListKey,language,tempArticles);
+                            Category category = new Category(tempArrayListKey,language,tempArticles, categoriesOrder.get(tempArrayListKey));
+                            Log.i("orderIndex", categoriesOrder.toString());
+                            Log.i("orderIndex", categoriesOrder.get(tempArrayListKey));
                             realm.copyToRealmOrUpdate(category);
 
 

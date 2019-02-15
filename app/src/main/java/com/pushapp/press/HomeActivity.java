@@ -97,6 +97,9 @@ import java.util.TimeZone;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import io.realm.Sort;
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -309,7 +312,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     private void displayFromCache() {
-        Object articles = SyncManager.syncManager.getCachedPosts("Articles");
+       /* Object articles = SyncManager.syncManager.getCachedPosts("Articles");
         ArrayList<Category> categories = SyncManager.syncManager.getCachedCategories("Categories");
         ArrayList<String> tempCategories= new ArrayList<String>();
         HashMap<String, ArrayList<Article>> tempArticles = new HashMap<String, ArrayList<Article>>();
@@ -347,7 +350,96 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
         } else {
             firstRun = true;
             checkForNewContent();
+        }*/
+
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Article> queryArticles = realm.where(Article.class);
+        RealmQuery<Category> queryCategories = realm.where(Category.class);
+
+
+        Locale locale = Language.getLanguage(this.getApplicationContext());
+
+        String language = this.getApplicationContext().getString(R.string.default_language);
+
+        if(locale != null) {
+            language = locale.getLanguage();
         }
+        if (language.equals("tg")){
+            language = "tj";
+        }
+
+
+
+
+        RealmResults<Article> articles = queryArticles.equalTo("language", language).findAll().sort("publishDate", Sort.DESCENDING);
+        RealmResults<Category> categories = queryCategories.equalTo("language", language).findAll().sort("orderIndex", Sort.ASCENDING);
+        HashMap<String, ArrayList<Article>> hashArticles = new HashMap<String, ArrayList<Article>>();
+        if(!categories.isEmpty()){
+            ArrayList<String> tempCategories= new ArrayList<String>();
+
+            for(Category c : categories){
+
+                tempCategories.add(c.getCategory());
+                ArrayList<Article> tempArticles = new ArrayList<Article>();
+                for (Article a : c.getArticles()){
+                    Article tempArticle = new Article();
+                    tempArticle.setAuthor(a.getAuthor());
+                    tempArticle.setBody(a.getBody());
+                    tempArticle.setCaptions(a.getCaptions());
+                    tempArticle.setDescription(a.getDescription());
+                    tempArticle.setHeadline(a.getHeadline());
+                    tempArticle.setId(a.getId());
+                    tempArticle.setImages(a.getImages());
+                    tempArticle.setImageUrls(a.getImageUrls());
+                    tempArticle.setLanguage(a.getLanguage());
+                    tempArticle.setOrganization(a.getOrganization());
+                    tempArticle.setPhotoBylines(a.getPhotoBylines());
+                    tempArticle.setPublishDate(a.getPublishDate());
+                    tempArticle.setVideos(a.getVideos());
+
+                    tempArticles.add(tempArticle);
+                }
+
+
+
+                hashArticles.put(c.getCategory(),tempArticles );
+            }
+            displayArticles(hashArticles, tempCategories);
+
+
+
+        }else if (categories.isEmpty() && !articles.isEmpty()) {
+            ArrayList<Article> array = new ArrayList<Article>();
+            array.addAll(articles.subList(0, 9));
+
+
+            ArrayList<Article> tempArticles = new ArrayList<Article>();
+            for (Article a : articles){
+                Article tempArticle = new Article();
+                tempArticle.setAuthor(a.getAuthor());
+                tempArticle.setBody(a.getBody());
+                tempArticle.setCaptions(a.getCaptions());
+                tempArticle.setDescription(a.getDescription());
+                tempArticle.setHeadline(a.getHeadline());
+                tempArticle.setId(a.getId());
+                tempArticle.setImages(a.getImages());
+                tempArticle.setImageUrls(a.getImageUrls());
+                tempArticle.setLanguage(a.getLanguage());
+                tempArticle.setOrganization(a.getOrganization());
+                tempArticle.setPhotoBylines(a.getPhotoBylines());
+                tempArticle.setPublishDate(a.getPublishDate());
+                tempArticle.setVideos(a.getVideos());
+
+                tempArticles.add(tempArticle);
+            }
+            
+            displayArticles(tempArticles,null);
+        }else {
+            firstRun = true;
+            checkForNewContent();
+        }
+//
     }
 
 
@@ -644,7 +736,7 @@ public class HomeActivity extends AppCompatActivity implements OnFragmentInterac
                     if(selectedItem.getClass() == String.class){
                         Intent i = new Intent(getApplicationContext(), CategoryActivity.class);
 
-                        ArrayList<Article> temp = mListAdapter.getArticlesForCategory((String)selectedItem);
+                        //ArrayList<Article> temp = mListAdapter.getArticlesForCategory((String)selectedItem);
                         //i.putExtra("articles", temp);
                         i.putExtra("category_name", (String)selectedItem);
 

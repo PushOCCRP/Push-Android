@@ -82,6 +82,10 @@ public class CategoryFragment extends Fragment implements ObservableScrollViewCa
         mListView.setAdapter(mListAdapter);
     }
 
+    public ArrayList<Article> getArticles() {
+        return articles;
+    }
+
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll,
                                 boolean dragging) {

@@ -17,13 +17,16 @@ import com.pushapp.press.fragment.CategoryFragment;
 import com.pushapp.press.interfaces.CategoryFragmentInterface;
 import com.pushapp.press.model.Article;
 import com.pushapp.press.model.Category;
+import com.pushapp.press.util.Language;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by christopher on 10/29/16.
@@ -38,8 +41,12 @@ public class CategoryActivity extends AppCompatActivity implements CategoryFragm
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        articles = getArticles();
+        this.getIntent().putExtra("articles", articles);
+
         setContentView(R.layout.activity_category);
         initActionBar();
+
 
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -63,7 +70,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryFragm
         Intent i = this.getIntent();
         getSupportActionBar().setTitle((String)i.getExtras().get("category_name"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        articles = getArticles();
+
     }
 
     @Override
@@ -92,20 +99,34 @@ public class CategoryActivity extends AppCompatActivity implements CategoryFragm
     public ArrayList<Article> getArticles(){
         Realm realm = Realm.getDefaultInstance();
         Intent i = this.getIntent();
+
         Category query = realm.where(Category.class).equalTo("category",(String)i.getExtras().get("category_name")).findFirst();
 
+        ArrayList<Article> tempArticles = new ArrayList<Article>();
+        for (Article a : query.getArticles()){
+            Article tempArticle = new Article();
+            tempArticle.setAuthor(a.getAuthor());
+            tempArticle.setBody(a.getBody());
+            tempArticle.setCaptions(a.getCaptions());
+            tempArticle.setDescription(a.getDescription());
+            tempArticle.setHeadline(a.getHeadline());
+            tempArticle.setId(a.getId());
+            tempArticle.setImages(a.getImages());
+            tempArticle.setImageUrls(a.getImageUrls());
+            tempArticle.setLanguage(a.getLanguage());
+            tempArticle.setOrganization(a.getOrganization());
+            tempArticle.setPhotoBylines(a.getPhotoBylines());
+            tempArticle.setPublishDate(a.getPublishDate());
+            tempArticle.setVideos(a.getVideos());
 
-        //RealmQuery<Category> category = query.equalTo("category",(String)i.getExtras().get("category_name"));
-
-
-        RealmList<Article> temps =  query.getArticles();
-        ArrayList<Article> tempsArray = new ArrayList<Article>();
-
-        for (Article article : temps ){
-            tempsArray.add(article);
+            tempArticles.add(tempArticle);
         }
 
-        return tempsArray;
+
+
+
+
+        return tempArticles;
 
     }
 }
