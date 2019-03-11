@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.pushapp.press.LoginActivity"
+    tools:context="com.push.occrp.LoginActivity"
     android:background="@color/navigationBarColor">
 
     <!-- Login progress -->

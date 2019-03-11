@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pushapp.press"
-    android:versionCode="1"
-    android:versionName="1.0">
+    package="com.push.occrp" 
+    android:versionCode="100"
+    android:versionName="4.01">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--<uses-permission android:name="com.pushapp.press.permission.C2D_MESSAGE" />-->
+    <!--<uses-permission android:name="com.push.occrp.permission.C2D_MESSAGE" />-->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
     <!--<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />-->
@@ -17,6 +17,7 @@
   <!-- Fastland Supply screenshot app -->
   <!-- Allows unlocking your device and activating its screen so UI tests can succeed -->
   <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+
   <!-- Allows for storing and retrieving screenshots -->
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -25,7 +26,7 @@
 
 
     <application
-        android:name="com.pushapp.press.PushApplication"
+        android:name="com.push.occrp.PushApplication"
         android:allowBackup="true"
         android:largeHeap="true"
         android:icon="@mipmap/ic_launcher"
@@ -36,12 +37,12 @@
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.pushapp.press.AboutActivity"
+            android:name="com.push.occrp.AboutActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.pushapp.press.DetailPostActivity"
+            android:name="com.push.occrp.DetailPostActivity"
             android:label="@string/title_activity_detail_post"
             android:theme="@style/MyMaterialTheme"
             android:screenOrientation="portrait"
@@ -49,24 +50,23 @@
             android:parentActivityName=".HomeActivity">
         </activity>
         <activity
-            android:name="com.pushapp.press.CategoryActivity"
+            android:name="com.push.occrp.CategoryActivity"
             android:label="@string/app_name"
             android:theme="@style/MyMaterialTheme"
         />
         <activity
-            android:name="com.pushapp.press.YouTubeActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:name="com.push.occrp.YouTubeActivity"
             android:label="YouTube Player"
             android:theme="@style/MyMaterialTheme"
         />
         <activity
-            android:name="com.pushapp.press.NotificationHandler"
+            android:name="com.push.occrp.NotificationHandler"
             android:label="@string/title_activity_detail_post"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/MyMaterialTheme" >
         </activity>
         <activity
-            android:name="com.pushapp.press.HomeActivity"
+            android:name="com.push.occrp.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Toolbar" >
             <intent-filter>
@@ -77,21 +77,21 @@
         </activity>
 
         <service
-            android:name="com.pushapp.press.util.gcm.IDListenerService">
+            android:name="com.push.occrp.util.gcm.IDListenerService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name="com.pushapp.press.util.gcm.ListenerService">
+            android:name="com.push.occrp.util.gcm.ListenerService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:name="com.pushapp.press.util.gcm.RegistrationIntentService"
+            android:name="com.push.occrp.util.gcm.RegistrationIntentService"
             android:exported="false">
         </service>
 
