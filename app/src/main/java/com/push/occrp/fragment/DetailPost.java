@@ -124,9 +124,9 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
 
 
         if(headerImage != null ) {
-            fragment.postImageUrl.add(headerImage.url);
+            fragment.postImageUrl.add(headerImage.getUrl());
         } else if(images.size() > 0) {
-            fragment.postImageUrl.add(images.get(0).url);
+            fragment.postImageUrl.add(images.get(0).getUrl());
         }
 
         RealmList<PushVideo> videos = postItem.getVideos();
@@ -251,7 +251,7 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
     @Override
     public void onStart() {
         super.onStart();
-        if (postImageUrl.isEmpty()) {
+        if (!postImageUrl.isEmpty() && postImageUrl.get(0) != null) {
             if (postImageUrl.size() > 0) {
                 GlideApp.with(this).load(postImageUrl.get(0))
                         .listener(new RequestListener<Drawable>() {
@@ -285,8 +285,16 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
                 mProgress.setVisibility(View.GONE);
                 mAnchor.setVisibility(View.GONE);
             }
+           } /*else{
+            RealmList<PushImage> images = postItem.getImages();
+            for(PushImage img : images){
+                postImageUrl.add(img.getUrl());
+
+            }
+            onStart();*/
+
         }
-    }
+
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -327,8 +335,10 @@ public final class DetailPost extends Fragment implements ObservableScrollViewCa
             images.add(imgTemp);
         }
 
-        if(images.get(0).getUrl().equals(headerImage.getUrl())){
-            images.remove(0);
+        if (images.size() > 0) {
+            if (images.get(0).getUrl().equals(headerImage.getUrl())) {
+                images.remove(0);
+            }
         }
 
         // Adds caption below images.

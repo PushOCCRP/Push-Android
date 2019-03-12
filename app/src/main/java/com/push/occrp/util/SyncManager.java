@@ -100,6 +100,13 @@ public class SyncManager {
                 @Override
                 public void success(ArticlePost articlePost, Response response) {
                     //There's a bunch of type juggling here because of the nested nature of it all
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.deleteAll();
+                    realm.commitTransaction();
+
+
                     Gson gson = gson();
                     Locale locale = Language.getLanguage(context);
 
@@ -116,7 +123,7 @@ public class SyncManager {
                     // If categories are not enabled
                     if(articlePost.getResults().getClass() == ArrayList.class){
                         ArrayList<Article> tempArticles = new ArrayList<Article>();
-                        Realm realm = Realm.getDefaultInstance();
+
                         realm.beginTransaction();
                         for (LinkedTreeMap jsonArticle : (ArrayList<LinkedTreeMap>)articlePost.getResults()) {
                             Article article = reconstructArticleFromJSON(jsonArticle);
@@ -144,7 +151,7 @@ public class SyncManager {
                                 .registerTypeAdapter(PushVideo.class, new PushVideoSerializer())
                                 .create();
 
-                        Realm realm = Realm.getDefaultInstance();
+
                         realm.beginTransaction();
 
                         HashMap<String, ArrayList<LinkedTreeMap>> categories = gson1.fromJson(gson1.toJsonTree(articlePost.getResults()), HashMap.class);
