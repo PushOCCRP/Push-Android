@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.push.occrp">
+    package="com.push.occrpnews">
 
     <application>
     </application>
