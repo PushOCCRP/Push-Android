@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Centar za istraživačko novinarstvo</string>
+    <string name="action_refresh">განახლება</string>
+    <string name="action_search">ძებნა</string>
+    <string name="action_settings">რეგულირება</string>
+    <string name="action_share">გაზიარება</string>
+    <string name="back">უკან</string>
+    <string name="by">,</string>
+    <string name="cancel">გამორთვა</string>
+    <string name="choose_language">აირჩიე ენა</string>
+    <string name="clock">საათი</string>
+    <string name="donate_button_label">შემოწირულობა</string>
+    <string name="hello_blank_fragment">შესახებ</string>
+    <string name="menu_about">შესახებ</string>
+    <string name="menu_search">ძებნა</string>
+    <string name="nav_item_about">შესახებ</string>
+    <string name="nav_item_donate">შემოწირულობა</string>
+    <string name="nav_item_home">მთავარი</string>
+    <string name="news_category">ადგილობრივი</string>
+    <string name="no_search_results">შედეგი არ მოიძებნა</string>
+    <string name="notification_cancel_button">გაუქმება</string>
+    <string name="notification_header">ახალი შეტყობინება</string>
+    <string name="notification_read_button">წაკითხვა</string>
+    <string name="ok">ოკ</string>
+    <string name="player_error">შეცდომა იუთუბის  ჩატვირთვისას</string>
+    <string name="recent_results">ძიების ბოლო შედეგები</string>
+    <string name="search_box_hint">ძებნა</string>
+    <string name="search_results">ძიების შედეგი</string>
+    <string name="searching">ძიება...</string>
+    <string name="seek_to">გადასვლა</string>
+    <string name="seek_to_hint">წამები</string>
+    <string name="share_via">გაზიარება</string>
+    <string name="title_about">შესახებ</string>
+    <string name="title_activity_category">კატეგორიები</string>
+    <string name="title_activity_detail_post">ვრცლად</string>
+    <string name="title_activity_home">დახურვა</string>
+    <string name="title_activity_search_results">ძიების შედეგი</string>
+    <string name="title_home">მთავარი</string>
+    <string name="title_item_two">შესახებ</string>
+    <string name="title_item_one">შემოწირულობა</string>
+    <string name="video_button">ვიდეო</string>
+    <string name="yesterday">გუშინ</string>
+</resources>

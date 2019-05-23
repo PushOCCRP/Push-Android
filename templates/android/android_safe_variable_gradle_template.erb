@@ -1,0 +1,32 @@
+buildTypes {
+    debug{
+        resValue "string", "server_url", "<%= settings[:credentials]['server-url'] %>"
+        resValue "string", "hockey_key", "<%= settings[:credentials]['hockey-key'] %>"
+        resValue "string", "google_api_app_number", "<%= settings[:credentials]['google-api-app-number'] %>"
+        resValue "string", "app_number", "<%= settings[:credentials]['play-store-app-number'] %>"
+        resValue "string", "youtube_key", "<%= settings[:credentials]['youtube-access-key'] %>"
+        resValue "string", "default_language", "<%= settings["default-language"] %>"
+        resValue "string", "available_languages", "<%= settings["languages"].join(',') %>"
+        resValue "string", "donation_url", "<%= settings[:credentials]['donation-url'] %>"
+        resValue "string", "show_author", "<%= settings["show-author"] %>"
+        resValue "string", "debug", "<%= setting[:debug] ? "true" : "false" %>"
+        resValue "string", "login_required", "<%= setting["login-required"] == "true" ? "true" : "false" %>"
+    }
+    release {
+        resValue "string", "server_url", "<%= settings[:credentials]['server-url'] %>"
+        resValue "string", "hockey_key", "<%= settings[:credentials]['hockey-key'] %>"
+        resValue "string", "google_api_app_number", "<%= settings[:credentials]['google-api-app-number'] %>"
+        resValue "string", "app_number", "<%= settings[:credentials]['play-store-app-number'] %>"
+        resValue "string", "youtube_key", "<%= settings[:credentials]['youtube-access-key'] %>"
+        resValue "string", "default_language", "<%= settings["default-language"] %>"
+        resValue "string", "available_languages", "<%= settings["languages"].join(',') %>"
+        resValue "string", "donation_url", "<%= settings[:credentials]['donation-url'] %>"
+        resValue "string", "show_author", "<%= settings["show-author"] %>"
+        resValue "string", "debug", "<%= setting[:debug] ? "true" : "false" %>"
+        resValue "string", "login_required", "<%= setting["login-required"] == "true" ? "true" : "false" %>"
+    }
+}
+//Not my favorite choice, but to be honest, you should never get this anyways
+lintOptions {
+    disable 'MissingTranslation'
+}

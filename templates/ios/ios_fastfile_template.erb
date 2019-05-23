@@ -1,0 +1,269 @@
+# Customise this file, documentation can be found here:
+# https://github.com/KrauseFx/fastlane/tree/master/docs
+# All available actions: https://github.com/KrauseFx/fastlane/blob/master/docs/Actions.md
+# can also be listed using the `fastlane actions` command
+
+# Change the syntax highlighting to Ruby
+# All lines starting with a # are ignored when running `fastlane`
+
+# By default, fastlane will send which actions are used
+# No personal data is shared, more information on https://github.com/fastlane/enhancer
+# Uncomment the following line to opt out
+# opt_out_usage
+
+# If you want to automatically update fastlane if a new version is available:
+# update_fastlane
+
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+fastlane_version "1.48.0"
+
+default_platform :ios
+
+platform :ios do
+  before_all do |lane, options|
+
+    clear_derived_data
+    # disable_automatic_code_signing(path: "Push.xcodeproj")
+    project_path="../Push.xcodeproj"
+
+    <%#project = Xcodeproj::Project.open(project_path)
+    target = project.targets.first
+    target.build_configurations.first.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = "$(sigh_testapp_appstore)"
+    target.build_configurations.last.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = "$(sigh_testapp_appstore)"
+
+    target.build_configurations.first.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = ENV['CODE_SIGN_IDENTITY']
+    target.build_configurations.last.build_settings['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] =  ENV['CODE_SIGN_IDENTITY']
+
+    target.build_configurations.first.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = ENV['APP_IDENTIFIER']
+    target.build_configurations.last.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = ENV['APP_IDENTIFIER']
+
+    target.build_configurations.first.build_settings['DEVELOPMENT_TEAM'] = ENV['FASTLANE_TEAM_ID']
+    target.build_configurations.last.build_settings['DEVELOPMENT_TEAM'] = ENV['FASTLANE_TEAM_ID']
+
+    project.save%>
+
+    if(lane != :offline && lane != :add_devices && lane != :create)
+      #cocoapods 
+      <% if settings[:build_number].nil? || settings[:build_number].empty? %>
+        increment_build_number(build_number:<%= "'#{settings[:build_number]}'" %>)
+      <% else %>
+        increment_build_number(build_number:<%= "'#{settings[:build_number]}'" %>)
+      <% end %>
+    end
+
+    # xctool # run the tests of your app
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    snapshot
+  end
+  
+  desc "Creates App"
+
+
+
+  lane :create do
+    produce(
+      username: "<%= settings[:credentials]['apple-developer-email']%>",
+      app_identifier: "<%= settings['ios-bundle-identifier'] %>",
+      company_name: "<%= settings['company-name'] %>",
+      itc_team_name: "<%= settings['company-name'] %>",
+      app_name: "<%= settings['name'] %>",
+      language: "<%= settings[:itunes_languages].join(",") %>"
+    )
+  end
+
+  desc "Adds devices"
+  lane :add_devices do
+    register_devices(
+        devices: {
+            
+        }
+    )
+  end
+
+  desc "Creates development and stuff"
+  lane :bootstrap do |options|
+    cert(
+      username: '<%= settings[:credentials]['apple-developer-email']%>',
+      team_id: '<%= settings[:credentials]['apple-developer-team-id'] %>',
+      development: true
+    )
+
+    produce(
+      username: "<%= settings[:credentials]['apple-developer-email']%>",
+      app_identifier: "<%= settings['ios-bundle-identifier'] %>",
+      company_name: "<%= settings['company-name'] %>",
+      itc_team_name: "<%= settings['company-name'] %>",
+      app_name: "<%= settings['name'] %>",
+      language: "<%= settings[:itunes_languages].join(",") %>"
+    )
+
+    sigh(
+      development: true,
+      force: true,
+      username: "<%= settings[:credentials]['apple-developer-email']%>",
+      app_identifier: "<%= settings['ios-bundle-identifier'] %>",
+      team_id: '<%= settings[:credentials]['apple-developer-team-id'] %>',
+    )
+
+
+    
+    # use the UID of the newly created provisioning profile
+    # ENV["PROFILE_UUID"] = lane_context[SharedValues::SIGH_UDID]
+
+    update_project_provisioning(
+    )
+
+  end
+
+
+  desc "Used to test the generator"
+  lane :gen_test do |options|
+    cert(
+      development: true,
+      username: '<%= settings[:credentials]['apple-developer-email']%>',
+      team_id: '<%= settings[:credentials]['apple-developer-team-id'] %>',
+    )
+
+    sigh(
+      development: true,
+      force: true,
+      username: "<%= settings[:credentials]['apple-developer-email']%>",
+      app_identifier: "<%= settings['ios-bundle-identifier'] %>",
+      team_id: '<%= settings[:credentials]['apple-developer-team-id'] %>',
+
+    )
+    
+    # use the UID of the newly created provisioning profile
+    # ENV["PROFILE_UUID"] = lane_context[SharedValues::SIGH_UDID]
+
+    update_project_provisioning(
+    )
+
+    gym(
+      export_method: "development",
+      clean: true,
+      scheme: 'Push',
+    )
+  end
+
+  desc "Used to test the generator when offline"
+  lane :offline do |options|
+    # use the UID of the newly created provisioning profile
+    ENV["PROFILE_UUID"] = lane_context[SharedValues::SIGH_UDID]
+
+    gym(
+      export_method: "development",
+      clean: true,
+      scheme: 'Push',
+    )
+  end
+
+  desc "Submit a new Beta Build to HockeyApp"
+  desc "This will also make sure the profile is up to date"
+  lane :beta do |options|
+    cert(
+      username: '<%= settings[:credentials]['apple-developer-email']%>',
+      team_id: '<%= settings[:credentials]['apple-developer-team-id'] %>',
+    )
+    sigh(
+      force: true,
+      username: "<%= settings[:credentials]['apple-developer-email']%>",
+      app_identifier: "<%= settings['ios-bundle-identifier'] %>",
+      team_id: '<%= settings[:credentials]['apple-developer-team-id'] %>',
+    )
+    
+    # use the UID of the newly created provisioning profile
+    ENV["PROFILE_UUID"] = lane_context[SharedValues::SIGH_UDID]
+
+    build_app(scheme: "Push", 
+              include_bitcode: true,
+              )
+
+    sync_code_signing(type: "appstore")    # see code signing guide for more information
+
+    upload_to_testflight(
+      changelog: options[:notes]
+    )
+
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
+
+  desc "Deploy a new version to the App Store"
+  lane :deploy do
+    # disable_automatic_code_signing(path: "Push.xcodeproj")
+
+    increment_version_number(version_number:<%= "'#{settings[:version_number]}'" %>)
+    #ensure_no_debug_code(text: "NSLog")
+    cert(
+      development: false,
+      username: '<%= settings[:credentials]['apple-developer-email']%>',
+      team_id: '<%= settings[:credentials]['apple-developer-team-id'] %>',
+    )
+    
+    #snapshot
+    sigh(
+	    force: true,
+      cert_id: "#{lane_context[SharedValues::CERT_CERTIFICATE_ID]}",
+    	username: "<%= settings[:credentials]['apple-developer-email']%>",
+    	app_identifier: "<%= settings['ios-bundle-identifier'] %>",
+      team_id: '<%= settings[:credentials]['apple-developer-team-id'] %>',
+    )
+
+    # update_project_provisioning(
+    #   xcodeproj: "Push.xcodeproj",
+    #   build_configuration: "Release",
+    # )
+
+    gym(
+        configuration:"Release",
+        scheme: "Push",
+        export_method: "app-store",
+	      clean: true,
+        include_symbols: true,
+        include_bitcode: true,
+        export_options: {
+          provisioningProfiles: { 
+            "<%= settings['ios-bundle-identifier'] %>" => "#{lane_context[SharedValues::SIGH_NAME]}",
+          }
+        }
+    )
+
+    deliver(
+    	force: true,
+    	username: "<%= settings[:credentials]['apple-developer-email']%>",
+      <% if settings[:credentials]['apple-itc-team-id'] %>
+        team_id: "<%= settings[:credentials]['apple-itc-team-id']%>"
+      <% end %>
+    )
+
+  end
+
+  after_all do |lane|
+    # enable_automatic_code_signing(path: "Push.xcodeproj")
+
+    # This block is called, only if the executed lane was successful
+    
+    # slack(
+    #   message: "Successfully deployed new App Update."
+    # )
+  end
+
+  error do |lane, exception|
+    # enable_automatic_code_signing(path: "Push.xcodeproj")
+
+    # slack(
+    #   message: exception.message,
+    #   success: false
+    # )
+  end
+end
+
+
+
+# More information about multiple platforms in fastlane: https://github.com/KrauseFx/fastlane/blob/master/docs/Platforms.md
+# All available actions: https://github.com/KrauseFx/fastlane/blob/master/docs/Actions.md

@@ -1,0 +1,142 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://jitpack.io" }
+        jcenter()
+        google()
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.google.gms:google-services:4.2.0'
+        classpath 'com.android.tools.build:gradle:3.3.2'
+
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'realm-android'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+    defaultConfig {
+        applicationId 'com.push.occrp'
+        minSdkVersion 17
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        android.compileOptions.sourceCompatibility 1.8
+
+        // Enabling multidex support.
+        // multiDexEnabled true
+
+    }
+
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        debug {
+            manifest.srcFile 'src/debug/AndroidManifest.xml'
+        }
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+        abortOnError false
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
+
+
+apply from: 'safe_variables.gradle', to: android
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url 'http://jcenter.bintray.com' }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:cardview-v7:28..0.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation files('libs/android-query-full.0.26.8.jar')
+    implementation 'com.viewpagerindicator:library:2.4.1@aar'
+    implementation 'com.github.siyamed:android-shape-imageview:0.9@aar'
+    implementation 'com.github.ksoichiro:android-observablescrollview:1.5.2'
+    implementation 'com.clostra.newnode:newnode:+'
+    implementation 'de.measite.minidns:minidns-hla:0.2.4'
+    // push library dependecies
+    implementation 'com.android.support:support-v13:28.0.0'
+    //implementation 'com.google.android.gms:play-services-base:16.0.1'
+    //implementation 'com.google.android.gms:play-services-analytics:16.0.1'
+
+    //Retrofit + Http Client
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation 'com.squareup.okhttp:okhttp:2.3.0'
+    implementation 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    //library dependency
+    //Gson (json) parser
+    implementation 'com.google.code.gson:gson:2.8.0'
+    //ReactiveX + Android support
+    implementation 'io.reactivex:rxjava:1.0.10'
+    implementation 'io.reactivex:rxandroid:0.24.0'
+    implementation 'com.github.oxo42:stateless4j:2.5.0'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true;
+    }
+    implementation 'com.android.volley:volley:1.1.0'
+
+    // Glide Image Provider
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor group: 'com.github.bumptech.glide', name: 'compiler', version: '4.7.1'
+
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.8'
+    implementation 'com.google.firebase:firebase-core:16.0.0'
+    implementation "com.google.firebase:firebase-messaging:17.0.0"
+
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support:support-annotations:27.+'
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    // Set this dependency to use JUnit 4 rules
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    // Set this dependency to build and run Espresso tests
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    // Set this dependency to build and run UI Automator tests
+    //androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+
+    //androidTestCompile 'tools.fastlane:screengrab:0.5.4'
+}
+
+apply plugin: 'com.google.gms.google-services'

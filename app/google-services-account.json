@@ -1,99 +1,12 @@
 {
-  "project_info": {
-    "project_number": "772215886083",
-    "firebase_url": "https://occrp-7993b.firebaseio.com",
-    "project_id": "occrp-7993b"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:772215886083:android:c4b25d83406fa249",
-        "android_client_info": {
-          "package_name": "com.push.occrp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "772215886083-7n2pvmo5rbdsi54pf9tfa107fkbl0l07.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "772215886083-ka3iip8168dfu2e84bc4dnuppe93k9o7.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "772215886083-7mb2q5pmc19nlkergc0vi35mnq7t09db.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "772215886083-7mb2q5pmc19nlkergc0vi35mnq7t09db.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD0_UhVT-gm5xR6JMDlnd1OtiSNor49vBA"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-69099704-1"
-          }
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:772215886083:android:c8ff9ca0281feff8",
-        "android_client_info": {
-          "package_name": "com.push.occrpnews"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "772215886083-7n2pvmo5rbdsi54pf9tfa107fkbl0l07.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "772215886083-ka3iip8168dfu2e84bc4dnuppe93k9o7.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "772215886083-7mb2q5pmc19nlkergc0vi35mnq7t09db.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "772215886083-7mb2q5pmc19nlkergc0vi35mnq7t09db.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD0_UhVT-gm5xR6JMDlnd1OtiSNor49vBA"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
+  "type": "service_account",
+  "project_id": "krik-1372",
+  "private_key_id": "2b3da888861ef2aa210113ccb285074d0ffe629e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCtsk4gc5RE31SG\nvNTANJeS9f+eW3WcbRENbXTFsHklHsi3TFcPBfzh0H4snSPXfbT82jpnwCaZZwXJ\n9hjE28OM4geyQZ8U0xyGr4EmbNtK2VgKr7lnC1kMrUs4JJoCd2kQF0Y4OqhPFIvr\nrKmSAhc8Oq88FMFzshUf/G351zGkme1Htd1cpph7t6hZrrQRJ2udrnNuiKM0PqwX\nO3r7T0umam+WnimJpPedYNs4j8c79ZrGvaEh9UOiMr8ifnWUZS3BUGgMbyTwEBts\nb5S40mPzNohk5zeXhWdUJnSrS82ZlVB9ouKCz05tzroX66vtd6AFGycrDoX3JYpk\n5wg0HibNAgMBAAECggEAC2Cq5yb9RwtbHccnAr7vK2Dtw4hL3Mb0urXdnSRKay/D\nmgmMrcOIpVMsUKPQJqUgeZC+d8ubzfJPowx5vbtfe4T6xctCnBW9wFOk/TaBV/IV\nQpKC/+07yy2kftnSWVVL6e2g7eH5vhs1lNRv+DndsOiTve3BjRdnK2l9SY0j4wkO\nhBFLbMbvHC+RUGakQCYnZ6/FpqJjNFQDedgAFetfFMCi2WuYSltrcjxr3eIfBBkd\nC9qUb3opO9w9pad6xyRscXS3LGISdNBmOAwaN5PWYvlK3Kx0Lw5FuFON2DVqHTuj\ngZdWoN8foslBn6xBcnO3+tX4eLYOaVjE8sbLVcoHSQKBgQDayY46DPdbcvx2Oj3s\n3hSkDJmdvAUNa/X0RppB7G/xNHzGy1cT+xH4VDHyU1B+exiJ0y6ffEAculQne38k\nsl3LP80Rt0hEqaluGAPj4STn5k6x3DuSUnHdwv25kZMDqmDooDOyjIUhW5v2XnTP\n9WoSWKrx9ASnD0U9LOjIk5Z8RwKBgQDLPWdXGEWOh47KMPVh18IYisZydZDZuO2X\njZB2IMcq3eZSk7k07WAZPRgOKDVU0gfH8/BP0MMHo6VBAIAVHBMhwClsPxkk8AAH\nLhUahBFQXfVxwSi5N4Dx6GMguxn0sid/bHiqIYfXZBljHPmYYxYDQXU9y7M3HUn0\nlCJqBH9SSwKBgQC6OmX9s5u5E58hY2HihQY8vRzkzm3ehs7MJmyXQJHoViz/aYWt\nVEBvh/sbsR8LCexRJJjC2BgaW9/V26DVs51yq9P6CHBTQbceJwLorXOkkLzbWAK9\nAcA6awddNTRWImhqmjJnAIUxZ7DRfIUhnluzUhXv7S0opi7ha6CZWkb1cQKBgGbq\n8kC9bsOtS5aB0lC4tHY/GBzwAeju54m+SzA2iwTfF3orijcOGYLOWDcbD16jeQM9\nOS0B1zEwIkfXXATUka+eoptJHI+C5VC9ejxSMn5TBi6TlO6t96MIfeIePReXe77g\nC/6DOknNS7nP+2i6jHQbmqYvV9KKB2BN/1tWaa8fAoGATk5WPoK5/10Bi06iF0Bm\n/zeWMwh+KMFqgXdggtKe0AVylWg7mgQ2gDk3lIbft1ZhZ9/BsScm7jRAzEO9vg7q\nOgZs/iq17yN0PmLKrQOm3jZ1dl5jwnna+vPcHYKcOB2ZhYiUPIJNL8Vu2QhKgeIS\nN1r7fGBrpq6+nD99Vt3Zre8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "krik-1372@appspot.gserviceaccount.com",
+  "client_id": "",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/krik-1372%40appspot.gserviceaccount.com"
 }
